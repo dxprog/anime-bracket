@@ -45,7 +45,7 @@ namespace Lib {
 		public static function Query($sql, $params = null)
 		{
 			$retVal = null;
-			
+
 			try {
 				$comm = self::$_conn->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 				$comm->execute($params);
@@ -69,6 +69,7 @@ namespace Lib {
 				self::$lastError = self::$_conn->errorInfo();
 				
 			} catch (Exception $e) {
+				echo $sql, PHP_EOL; exit;
 				self::$lastError = $e->Message();
 				throw $e;
 			}

@@ -1,0 +1,29 @@
+[
+    {
+        "redirect": true,
+        "rule": "^nominate$",
+        "replace": "nominate/"
+    },
+    {
+        "rule": "^nominate/$",
+        "replace": "page=bracket&action=nominate"
+    },
+	{
+		"rule": "^tier/([0-9]+)$",
+		"replace": "tier/$1/",
+		"redirect": true
+	},
+	{
+		"rule": "^tier/([0-9]+)/$",
+		"replace": "page=bracket&action=tier"	
+	},
+	{
+		"rule": "^vote$",
+		"replace": "vote/",
+		"redirect": true
+	},
+	{
+		"rule": "^vote/$",
+		"replace": "page=bracket&action=vote"
+	}
+]

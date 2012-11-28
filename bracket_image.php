@@ -1,8 +1,8 @@
 <?php
 
-define('AWS_KEY', 'AWS_KEY');
-define('AWS_SECRET', 'AWS_SECRET');
-define('AWS_ENABLED', false);
+define('AWS_KEY', '-AWS-KEY-');
+define('AWS_SECRET', '-AWS-SECRET-');
+define('AWS_ENABLED', true);
 
 function drawText($img, $text, $size, $maxWidth, $x, $bottom, $side) {
 	
@@ -54,7 +54,7 @@ function characterDraw($img, $character, $x, $y, $side) {
 		// imagefilledrectangle($img, $x, $y + 5, $x + 75, $y + 80, $blueHighlight);
 		imagecopy($img, $highlightBox, $x, $y + 5, 0, 0, 75, 75);
 		imageline($img, $x + 280, $y + 56, $x + 290, $y + 56, $bgGreen);
-		if (null != $character) {
+		if (null != $character && $character->characterId > 1) {
 			$char = characterGetImage(base_convert($character->characterId, 10, 36));
 			if (isset($character->votes) && $character->votes > 0) {
 				drawText($img, $character->votes . ' votes', 16, 192, $x + 86, $y + 56, $side);
@@ -63,7 +63,7 @@ function characterDraw($img, $character, $x, $y, $side) {
 			drawText($img, strtoupper($character->characterName), 12, 192, $x + 85, $y + 30, $side);
 		} else {
 			$char = characterGetImage('unknown');
-			imagecopy($img, $char, $x + 5, $y, 0, 0, 75, 75);
+			imagecopyresampled($img, $char, $x + 5, $y, 0, 0, 75, 75, 150, 150);
 		}
 		imagedestroy($char);
 	} else {
@@ -71,7 +71,7 @@ function characterDraw($img, $character, $x, $y, $side) {
 		// imagefilledrectangle($img, $x + 220, $y + 5, $x + 295, $y + 80, $blueHighlight);
 		imagecopy($img, $highlightBox, $x + 220, $y + 5, 0, 0, 75, 75);
 		imageline($img, $x + 10, $y + 56, $x + 20, $y + 56, $bgGreen);
-		if (null != $character) {
+		if (null != $character && $character->characterId > 1) {
 			$char = characterGetImage(base_convert($character->characterId, 10, 36));
 			imagecopyresampled($img, $char, $x + 225, $y, 0, 0, 75, 75, 150, 150);
 			drawText($img, strtoupper($character->characterName), 12, 192, $x + 15, $y + 30, $side);
@@ -80,7 +80,7 @@ function characterDraw($img, $character, $x, $y, $side) {
 			}
 		} else {
 			$char = characterGetImage('unknown');
-			imagecopy($img, $char, $x + 225, $y, 0, 0, 75, 75);
+			imagecopyresampled($img, $char, $x + 225, $y, 0, 0, 75, 75, 150, 150);
 		}
 		imagedestroy($char);	
 	}
@@ -89,7 +89,7 @@ function characterDraw($img, $character, $x, $y, $side) {
 
 function roundDraw($img, $character1, $character2, $tier, $order, $side = 0) {
 	
-	global $width, $height, $count, $bgGreen;
+	global $width, $height, $count, $bgGreen, $paddingTop;
 	
 	$rHeight = pow(2, $tier + 1) * 102.5;
 	$offsetY = ($rHeight / 2 - 102.5) / 2;
@@ -98,7 +98,7 @@ function roundDraw($img, $character1, $character2, $tier, $order, $side = 0) {
 	$x = $tier * 298 + 10;
 	$x = abs($side * $width - ($x + $side * 298));
 	
-	$y = $rHeight * round($order - ($count / 2 * $side)) + 5 + $offsetY;
+	$y = $rHeight * round($order - ($count / 2 * $side)) + 5 + $offsetY + $paddingTop;
 	$lineY1 = $y + 56;
 	
 	echo $tier, ', ', $x, ', ', $y, PHP_EOL;
@@ -128,6 +128,7 @@ function roundDraw($img, $character1, $character2, $tier, $order, $side = 0) {
 include('lib/aal.php');
 include('lib/S3.php');
 
+$paddingTop = Lib\Url::GetInt('paddingTop', 0);
 $startTier = Lib\Url::GetInt('tier');
 $title = 'ROUND ' . $startTier;
 $group = Lib\Url::GetInt('group', false);
@@ -141,6 +142,7 @@ if (false !== $group) {
 }
 
 $title = false === $group && $startTier === 1 ? 'FULL BRACKET' : $title;
+$title = isset($_GET['title']) ? strtoupper($_GET['title']) : $title;
 
 $count = $roundCount = $row->total;
 $columns = 1;
@@ -151,8 +153,8 @@ while ($count > 1) {
 $count = $roundCount;
 echo $count, ', ', $columns, PHP_EOL;
 
-$width = ($columns * 2) * 300 + 30;
-$height = $count / 2 * 205 + 30;
+$width = ($columns * 2) * 300 + 330;
+$height = $count / 2 * 205 + 30 + $paddingTop;
 
 $out = imagecreatetruecolor($width, $height);
 $highlightBox = imagecreatefrompng('bracket_highlight.png');
@@ -173,7 +175,11 @@ imagedestroy($img);
 
 drawCenterText($out, $title, 32, 207);
 
-for ($i = $startTier; $i < $startTier + $columns; $i++) {
+$end = $startTier + $columns;
+for ($i = $startTier; $i < $end; $i++) {
+	
+	echo '--', $i , ',', $end, '--', PHP_EOL;
+	
 	if (false !== $group) {
 		$rounds = Api\Round::getRoundsByGroup(3, $i, $group);
 	} else {
@@ -191,10 +197,35 @@ for ($i = $startTier; $i < $startTier + $columns; $i++) {
 			$order++;
 		}
 	}
+	
+	if ($order >= $count && $i + 1 >= $end) {
 		
-	while ($order < $count) {
-		roundDraw($out, null, null, $i - $startTier, $order, floor($order / ($count / 2)) * 1);
-		$order++;
+		$char = $round->roundCharacter1->votes > $round->roundCharacter2->votes ? $round->roundCharacter1 : $round->roundCharacter2;
+		$charImg = characterGetImage(base_convert($char->characterId, 10, 36));
+		$srcWidth = imagesx($charImg);
+		$srcHeight = imagesy($charImg);
+		$x = ($width - $srcWidth) / 2;
+		$y = ($height - $srcHeight) / 2 - $paddingTop;
+		imageline($out, $x - 100, $y + $srcHeight / 2 - 6, $x + $srcWidth + 100, $y + $srcHeight / 2 - 6, $bgGreen);
+		imagecopy($out, $highlightBox, $x - 5, $y + 5, 0, 0, 150, 150);
+		imagecopy($out, $charImg, $x, $y, 0, 0, $srcWidth, $srcHeight);
+		drawCenterText($out, strtoupper($char->characterName), 32, $y + $srcHeight + 45);
+		
+	} else {	
+		while ($order < $count) {
+			roundDraw($out, null, null, $i - $startTier, $order, floor($order / ($count / 2)) * 1);
+			$order++;
+		}
+		
+		$charImg = characterGetImage('unknown');
+		$srcWidth = imagesx($charImg);
+		$srcHeight = imagesy($charImg);
+		$x = ($width - $srcWidth) / 2;
+		$y = ($height - $paddingTop - $srcHeight) / 2 + $paddingTop;
+		imageline($out, $x - 130, $y + $srcHeight / 2 - 6, $x + $srcWidth + 130, $y + $srcHeight / 2 - 6, $bgGreen);
+		imagecopy($out, $highlightBox, $x - 5, $y + 5, 0, 0, 150, 150);
+		imagecopy($out, $charImg, $x, $y, 0, 0, $srcWidth, $srcHeight);
+		
 	}
 	
 }
