@@ -10,18 +10,23 @@ namespace Controller {
 		public static function render() {
 			
 			$action = Lib\Url::Get('action');
+			Lib\Display::setVariable('BRACKET_ID', BRACKET_ID);
 			
-			switch ($action) {
-				case 'nominate':
-					Lib\Display::setTemplate('nominate');
-					break;
-				case 'vote':
-					self::_displayCurrentRound(3);
-					break;
-				case 'tier':
-					$tier = Lib\Url::GetInt('tier');
-					self::_displayRound(3, $tier);
-					break;
+			$bracket = Api\Bracket::getBracketById(BRACKET_ID);
+			if (null != $bracket) {
+				Lib\Display::setVariable('TITLE', $bracket->bracketName);
+				switch ($action) {
+					case 'nominate':
+						Lib\Display::setTemplate('nominate');
+						break;
+					case 'vote':
+						self::_displayCurrentRound(BRACKET_ID);
+						break;
+					case 'tier':
+						$tier = Lib\Url::GetInt('tier');
+						self::_displayRound(BRACKET_ID, $tier);
+						break;
+				}
 			}
 			
 		}
