@@ -75,11 +75,19 @@ namespace Api {
 		public $roundCharacter2Id = 0;
 		
 		/**
+		 * Whether the user has voted on this round
+		 */
+		public $roundVoted = false;
+		
+		/**
 		 * Constructor
 		 */
 		public function __construct($round = null) {
 			if (is_object($round)) {
 				$this->copyFromDbRow($round);
+				if (isset($round->user_vote)) {
+					$this->roundVoted = $round->user_vote > 0;
+				}
 			}
 		}
 		
@@ -106,7 +114,7 @@ namespace Api {
 			$cacheKey = 'GetBracketRounds_' . $bracketId . '_' . $tier . '_' . ($group !== false ? $group : 'all') . '_' . $ip;
 			$retVal = Lib\Cache::Get($cacheKey);
 			if (false === $retVal || $ignoreCache) {
-				$params = array( ':bracketId' => $bracketId, ':tier' => $tier, ':ip' => $ip, ':date' => strtotime('today') );
+				$params = array( ':bracketId' => $bracketId, ':tier' => $tier, ':ip' => $ip );
 				
 				if (false !== $group) {
 					$params[':group'] = $group;
@@ -117,10 +125,10 @@ namespace Api {
 						$retVal = self::getBracketRounds($bracketId, $tier, false, $ignoreCache);
 						$result = null;
 					} else {
-						$result = Lib\Db::Query('SELECT * FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_group = :group AND round_id NOT IN (SELECT round_id FROM votes WHERE vote_ip = :ip AND vote_date >= :date) ORDER BY round_order', $params);
+						$result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE vote_ip = :ip AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier AND r.round_group = :group ORDER BY r.round_order', $params);
 					}
 				} else {
-					$result = Lib\Db::Query('SELECT * FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_id NOT IN (SELECT round_id FROM votes WHERE vote_ip = :ip AND vote_date >= :date) ORDER BY round_order', $params);
+					$result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE vote_ip = :ip AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier ORDER BY r.round_order', $params);
 				}
 				
 				if ($result && $result->count > 0) {
