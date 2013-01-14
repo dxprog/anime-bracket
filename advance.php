@@ -21,18 +21,18 @@ function getWinner($round) {
 
 require('lib/aal.php');
 
-$row = Lib\Db::Fetch(Lib\Db::Query('SELECT MIN(round_tier) AS round_tier FROM round WHERE round_final = 0'));
-$params = array( ':tier' => $row->round_tier);
-$row = Lib\Db::Fetch(Lib\Db::Query('SELECT MIN(round_group) AS round_group FROM round WHERE round_tier = :tier AND round_final = 0', $params));
+$row = Lib\Db::Fetch(Lib\Db::Query('SELECT MIN(round_tier) AS round_tier FROM round WHERE round_final = 0 AND bracket_id = :bracketId', array( ':bracketId' => BRACKET_ID )));
+$params = array( ':tier' => $row->round_tier, ':bracketId' => BRACKET_ID );
+$row = Lib\Db::Fetch(Lib\Db::Query('SELECT MIN(round_group) AS round_group FROM round WHERE round_tier = :tier AND round_final = 0 AND bracket_id = :bracketId', $params));
 $params[':group'] = $row->round_group;
 
 // Finalize the rounds
 if (COMMIT) {
-	Lib\Db::Query('UPDATE round SET round_final = 1 WHERE bracket_id = 3 AND round_group = :group AND round_tier = :tier', $params);
+	Lib\Db::Query('UPDATE round SET round_final = 1 WHERE bracket_id = :bracketId AND round_group = :group AND round_tier = :tier', $params);
 }
 
 
-$result = Lib\Db::Query('SELECT *, (SELECT COUNT(DISTINCT vote_ip) FROM votes WHERE round_id = r.round_id AND character_id = r.round_character1_id) AS char1_votes, (SELECT COUNT(DISTINCT vote_ip) FROM votes WHERE round_id = r.round_id AND character_id = r.round_character2_id AND vote_ip NOT LIKE "%b%") AS char2_votes FROM round r WHERE r.round_tier = :tier AND r.round_group = :group ORDER BY r.round_order', $params);if ($result->count > 1) {
+$result = Lib\Db::Query('SELECT *, (SELECT COUNT(DISTINCT vote_ip) FROM votes WHERE round_id = r.round_id AND character_id = r.round_character1_id) AS char1_votes, (SELECT COUNT(DISTINCT vote_ip) FROM votes WHERE round_id = r.round_id AND character_id = r.round_character2_id AND vote_ip NOT LIKE "%b%") AS char2_votes FROM round r WHERE r.round_tier = :tier AND r.bracket_id = :bracketId AND r.round_group = :group ORDER BY r.round_order', $params);if ($result->count > 1) {
 	$order = 0;
 	while ($round1 = Lib\Db::Fetch($result)) {
 		
@@ -61,7 +61,7 @@ $result = Lib\Db::Query('SELECT *, (SELECT COUNT(DISTINCT vote_ip) FROM votes WH
 			$char2 = Api\Character::getCharacterById($character2);
 			
 			$round = new Api\Round();
-			$round->bracketId = 3;
+			$round->bracketId = BRACKET_ID;
 			$round->roundCharacter1Id = $character1;
 			$round->roundCharacter2Id = $character2;
 			$round->roundTier = $round1->round_tier + 1;
@@ -86,7 +86,7 @@ $result = Lib\Db::Query('SELECT *, (SELECT COUNT(DISTINCT vote_ip) FROM votes WH
 	$char1 = Api\Character::getCharacterById($character1);
 	
 	$round = new Api\Round();
-	$round->bracketId = 3;
+	$round->bracketId = BRACKET_ID;
 	$round->roundCharacter1Id = $character1;
 	$round->roundCharacter2Id = 1;
 	$round->roundTier = $round1->round_tier + 2;
@@ -113,7 +113,7 @@ $result = Lib\Db::Query('SELECT *, (SELECT COUNT(DISTINCT vote_ip) FROM votes WH
 	$order = 0;
 	foreach ($characters as $id => $bool) {
 		$round = new Api\Round();
-		$round->bracketId = 3;
+		$round->bracketId = BRACKET_ID;
 		$round->roundCharacter1Id = $id;
 		$round->roundCharacter2Id = 1;
 		$round->roundTier = $round1->round_tier + 1;
