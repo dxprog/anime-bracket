@@ -3,7 +3,7 @@
 require('lib/aal.php');
 
 $characters = [];
-$result = Lib\Db::Query('SELECT c.*, COUNT(1) AS total FROM votes v INNER JOIN `character` c ON c.character_id = v.character_id GROUP BY v.character_id ORDER BY total DESC LIMIT 256');
+$result = Lib\Db::Query('SELECT c.*, COUNT(1) AS total FROM votes v INNER JOIN `character` c ON c.character_id = v.character_id WHERE c.bracket_id = :bracketId GROUP BY v.character_id ORDER BY total DESC LIMIT 256', array( ':bracketId' => BRACKET_ID ));
 while ($row = Lib\Db::Fetch($result)) {
 	$characters[] = new Api\Character($row);
 }
@@ -26,7 +26,7 @@ while ($i < $count) {
 		$characters[$i]->done = true;
 		
 		$round = new Api\Round();
-		$round->bracketId = 3;
+		$round->bracketId = BRACKET_ID;
 		$round->roundTier = 1;
 		$round->roundCharacter1Id = $character1->characterId;
 		$round->roundCharacter2Id = $character2->characterId;
@@ -45,6 +45,6 @@ while ($i < $count) {
 
 }
 
-$rounds = Api\Round::getBracketRounds(3, 1, 0);
+$rounds = Api\Round::getBracketRounds(BRACKET_ID, 1, 0);
 $xml = Lib\SerializeXML::serialize($rounds);
 echo $xml;
