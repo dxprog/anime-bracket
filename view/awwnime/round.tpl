@@ -2,8 +2,9 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>The Great 2012 Awwnime Bracket</title>
+		<title>{TITLE}</title>
 		<link rel="stylesheet" type="text/css" href="/view/awwnime/styles/awwnime.css?20121117T1639" />
+		<link rel="stylesheet" type="text/css" href="/view/awwnime/styles/bracket_{BRACKET_ID}.css?20120113" />
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	</head>
 	<body>
@@ -45,13 +46,15 @@
 						$this = $(e.currentTarget),
 						$parent = $this.parent();
 					
-					$('.wildcard .selected').removeClass('selected');
-					
-					if (!$this.hasClass('selected')) {
-						$parent.find('.selected').removeClass('selected');
-						$this.addClass('selected');
-					} else {
-						$this.removeClass('selected');
+					if (e.target.tagName !== 'A' && !$parent.hasClass('voted')) {				
+						$('.wildcard .selected').removeClass('selected');
+						
+						if (!$this.hasClass('selected')) {
+							$parent.find('.selected').removeClass('selected');
+							$this.addClass('selected');
+						} else {
+							$this.removeClass('selected');
+						}
 					}
 				},
 				
@@ -75,7 +78,7 @@
 							url:'/process.php?action=vote',
 							type:'POST',
 							dataType:'json',
-							data:{ bracketId:3, votes:voteData},
+							data:{ bracketId:4, votes:voteData},
 							success:voteCallback
 						});
 					}
