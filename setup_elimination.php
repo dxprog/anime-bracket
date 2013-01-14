@@ -3,7 +3,7 @@
 require('lib/aal.php');
 
 $characters = [];
-$result = Lib\Db::Query('SELECT * FROM `character` WHERE bracket_id = 3 ORDER BY RAND()');
+$result = Lib\Db::Query('SELECT * FROM `character` WHERE bracket_id = :bracketId ORDER BY RAND()', array( ':bracketId' => BRACKET_ID ));
 while ($row = Lib\Db::Fetch($result)) {
 	$characters[] = new Api\Character($row);
 }
@@ -23,7 +23,7 @@ while ($i < $count) {
 		$characters[$i]->done = true;
 		
 		$round = new Api\Round();
-		$round->bracketId = 3;
+		$round->bracketId = BRACKET_ID;
 		$round->roundCharacter1Id = $character1->characterId;
 		$round->roundCharacter2Id = $character2->characterId;
 		$round->roundOrder = rand() % ($count - $i);
@@ -36,6 +36,6 @@ while ($i < $count) {
 
 print_r($characters);
 
-$rounds = Api\Round::getBracketRounds(3, 0);
+$rounds = Api\Round::getBracketRounds(BRACKET_ID, 0);
 $xml = Lib\SerializeXML::serialize($rounds);
 echo $xml;
