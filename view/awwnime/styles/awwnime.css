@@ -34,6 +34,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif;; margin-top:10p
 #intro img { position:absolute; right:-173px; top:-48px; }
 #intro a.nominate { display:block; width:354px; height:0; padding-top:80px; overflow:hidden; background:url(images/awwnime_nominate.png) no-repeat; margin:20px 0 0 5px; }
 #intro a.vote { display:block; width:354px; height:0; padding-top:80px; overflow:hidden; background:url(images/vote.png) no-repeat; margin:20px 0 0 5px; }
+#intro p a { color:#494a4c; font:normal 24px 'Helvetica Condensed Bold', sans-serif; }
 
 #nominate { margin-left:60px; position:relative; }
 #nominate h2 { width:445px; }
@@ -60,9 +61,13 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif;; margin-top:10p
 #round .message { font:normal 30px/1 'Helvetica Condensed Bold', sans-serif; color:#494a4c; text-transform:uppercase; text-align:center; margin-top:5px; }
 #round .rounds { margin-top:40px; overflow:hidden; }
 #round .round { height:155px; background:url(images/round_bg.png) no-repeat 0 52px; margin-bottom:40px; }
-#round .wildcard .round { background:url(images/wildcard_entrant.png) no-repeat center 52px; float:left; padding-right:10px; }
+#round .wildcard .round,
+#round .elimination .round { background:url(images/wildcard_entrant.png) no-repeat center 52px; float:left; padding-right:10px; }
+
+#round .elimination .round { float:none; }
+
 #round .entrant { width:396px; float:left; position:relative; height:155px; }
-#round .wildcard .entrant { margin:0 auto; float:none; }
+#round .wildcard .entrant, #round .elimination .entrant { margin:0 auto; float:none; }
 #round .entrant:hover,
 #round .entrant.selected { cursor:pointer; background:url(images/check.png) no-repeat right 67px; }
 #round .entrant h4 { position:absolute; left:181px; bottom:90px; font-size:24px; width:167px; text-align:left; }
