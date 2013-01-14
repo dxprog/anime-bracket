@@ -32,7 +32,7 @@
 		</h2>
 		
 		<xsl:choose>
-			<xsl:when test="count(//round_item[roundCharacter2Id != '1']) = 0 and $tier &gt; -1">
+			<xsl:when test="count(//round_item[roundCharacter2Id != '1']) = 0 and $tier &gt; 0">
 				<h3>You may resurrect one girl to go on to the finals</h3>
 			</xsl:when>
 			<xsl:when test="$tier &gt; -1">
@@ -53,6 +53,10 @@
 			<xsl:when test="count(//round_item) &gt; 0">
 				<div class="rounds">
 					<xsl:choose>
+						<xsl:when test="$tier = 0">
+							<xsl:attribute name="class">rounds elimination</xsl:attribute>
+							<xsl:call-template name="wildcard_round" />
+						</xsl:when>
 						<xsl:when test="count(//round_item[roundCharacter2Id != '1']) = 0">
 							<xsl:attribute name="class">rounds wildcard</xsl:attribute>
 							<xsl:call-template name="wildcard_round" />
@@ -73,6 +77,9 @@
 
 	<xsl:template match="round_item">
 		<div class="round" data-id="{roundId}">
+			<xsl:if test="roundVoted = 'true'">
+				<xsl:attribute name="class">round voted</xsl:attribute>
+			</xsl:if>
 			<div class="entrant left" data-id="{roundCharacter1Id}">
 				<img src="http://cdn.awwni.me/bracket/{roundCharacter1/characterImage}" alt="{roundCharacter1/characterName}" />
 				<h4><xsl:value-of select="roundCharacter1/characterName" disable-output-escaping="yes" /></h4>
@@ -89,10 +96,23 @@
 	<xsl:template name="wildcard_round">
 		<xsl:for-each select="//round_item">
 			<div class="round" data-id="{roundId}">
+				<xsl:if test="roundVoted = 'true'">
+					<xsl:attribute name="class">round voted</xsl:attribute>
+				</xsl:if>
 				<div class="entrant" data-id="{roundCharacter1Id}">
 					<img src="http://cdn.awwni.me/bracket/{roundCharacter1/characterImage}" alt="{roundCharacter1/characterName}" />
 					<h4><xsl:value-of select="roundCharacter1/characterName" disable-output-escaping="yes" /></h4>
-					<h5><xsl:value-of select="roundCharacter1/characterSource" disable-output-escaping="yes" /></h5>
+					<h5>
+						<xsl:variable name="source"><xsl:value-of select="roundCharacter1/characterSource" /></xsl:variable>
+						<xsl:choose>
+							<xsl:when test="php:function('strpos', $source, 'tp://') = 2">
+								<a href="{$source}" target="_blank">See More Info <xsl:text disable-output-escaping="yes">&amp;raquo;</xsl:text></a>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="$source" disable-output-escaping="yes" />
+							</xsl:otherwise>
+						</xsl:choose>
+					</h5>
 				</div>
 			</div>
 		</xsl:for-each>
