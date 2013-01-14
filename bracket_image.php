@@ -136,9 +136,9 @@ $group = Lib\Url::GetInt('group', false);
 $startTier = $startTier ?: 1;
 if (false !== $group) {
 	$title .= ' - GROUP ' . chr(65 + $group);
-	$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = 3 AND round_tier = :tier AND round_group = :group', array( ':tier' => $startTier, ':group' => $group )));
+	$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_group = :group', array( ':bracketId' => BRACKET_ID, ':tier' => $startTier, ':group' => $group )));
 } else {
-	$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = 3 AND round_tier = :tier', array( ':tier' => $startTier )));
+	$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = :bracketId AND round_tier = :tier', array( ':bracketId' => BRACKET_ID, ':tier' => $startTier )));
 }
 
 $title = false === $group && $startTier === 1 ? 'FULL BRACKET' : $title;
@@ -181,9 +181,9 @@ for ($i = $startTier; $i < $end; $i++) {
 	echo '--', $i , ',', $end, '--', PHP_EOL;
 	
 	if (false !== $group) {
-		$rounds = Api\Round::getRoundsByGroup(3, $i, $group);
+		$rounds = Api\Round::getRoundsByGroup(BRACKET_ID, $i, $group);
 	} else {
-		$rounds = Api\Round::getRoundsByTier(3, $i);
+		$rounds = Api\Round::getRoundsByTier(BRACKET_ID, $i);
 	}
 	$count = round($roundCount / pow(2, $i - $startTier));
 	$order = 0;
@@ -198,14 +198,15 @@ for ($i = $startTier; $i < $end; $i++) {
 		}
 	}
 	
-	if ($order >= $count && $i + 1 >= $end) {
+	if ($order >= $count && $i + 1 >= $end && $round->roundCharacter1->votes > 0 && $round->roundCharacter2->votes) {
 		
+		// Draw the winner
 		$char = $round->roundCharacter1->votes > $round->roundCharacter2->votes ? $round->roundCharacter1 : $round->roundCharacter2;
 		$charImg = characterGetImage(base_convert($char->characterId, 10, 36));
 		$srcWidth = imagesx($charImg);
 		$srcHeight = imagesy($charImg);
 		$x = ($width - $srcWidth) / 2;
-		$y = ($height - $srcHeight) / 2 - $paddingTop;
+		$y = ($height - $paddingTop - $srcHeight) / 2 + $paddingTop;
 		imageline($out, $x - 100, $y + $srcHeight / 2 - 6, $x + $srcWidth + 100, $y + $srcHeight / 2 - 6, $bgGreen);
 		imagecopy($out, $highlightBox, $x - 5, $y + 5, 0, 0, 150, 150);
 		imagecopy($out, $charImg, $x, $y, 0, 0, $srcWidth, $srcHeight);
@@ -217,15 +218,17 @@ for ($i = $startTier; $i < $end; $i++) {
 			$order++;
 		}
 		
-		$charImg = characterGetImage('unknown');
-		$srcWidth = imagesx($charImg);
-		$srcHeight = imagesy($charImg);
-		$x = ($width - $srcWidth) / 2;
-		$y = ($height - $paddingTop - $srcHeight) / 2 + $paddingTop;
-		imageline($out, $x - 130, $y + $srcHeight / 2 - 6, $x + $srcWidth + 130, $y + $srcHeight / 2 - 6, $bgGreen);
-		imagecopy($out, $highlightBox, $x - 5, $y + 5, 0, 0, 150, 150);
-		imagecopy($out, $charImg, $x, $y, 0, 0, $srcWidth, $srcHeight);
-		
+		if ($i + 1 >= $end) {
+			$charImg = characterGetImage('unknown');
+			$srcWidth = imagesx($charImg);
+			$srcHeight = imagesy($charImg);
+			$x = ($width - $srcWidth) / 2;
+			$y = ($height - $paddingTop - $srcHeight) / 2 + $paddingTop;
+			imageline($out, $x - 130, $y + $srcHeight / 2 - 6, $x + $srcWidth + 130, $y + $srcHeight / 2 - 6, $bgGreen);
+			imagecopy($out, $highlightBox, $x - 5, $y + 5, 0, 0, 150, 150);
+			imagecopy($out, $charImg, $x, $y, 0, 0, $srcWidth, $srcHeight);
+		}
+	
 	}
 	
 }
