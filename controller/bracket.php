@@ -10,34 +10,53 @@ namespace Controller {
 		public static function render() {
 			
 			$action = Lib\Url::Get('action');
-			Lib\Display::setVariable('BRACKET_ID', BRACKET_ID);
-			
-			$bracket = Api\Bracket::getBracketById(BRACKET_ID);
-			if (null != $bracket) {
-				Lib\Display::setVariable('TITLE', $bracket->bracketName);
+			$perma = Lib\Url::Get('bracket');
+			$bracket = Api\Bracket::getBracketByPerma($perma);
+
+			if ($bracket) {
+				Lib\Display::setVariable('BRACKET_ID', $bracket->id);
+				Lib\Display::setVariable('TITLE', $bracket->name . ' - The Great Awwnime Bracket');
 				switch ($action) {
 					case 'nominate':
-						Lib\Display::setTemplate('nominate');
+						if ($bracket->state == BS_NOMINATIONS) {
+							self::_displayNominations($bracket);
+						} else {
+							// error
+						}
 						break;
 					case 'vote':
-						self::_displayCurrentRound(BRACKET_ID);
+						if ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING || $bracket->state == BS_WILDCARD) {
+							self::_displayCurrentRound($bracket->id);
+						}
 						break;
 					case 'tier':
 						$tier = Lib\Url::GetInt('tier');
-						self::_displayRound(BRACKET_ID, $tier);
+						self::_displayRound($bracket->id, $tier);
+						break;
+					case 'view':
+						self::_displayBracketView($bracket);
 						break;
 				}
+			} else {
+				Lib\Display::setVariable('title', 'The Great Awwnime Bracket');
+				self::_displayLanding();
 			}
 			
 		}
 		
-		public static function registerExtension($class, $method, $type) {
-		
+		public static function registerExtension($class, $method, $type) { }
+
+		private static function _checkLogin() {
+			$user = Api\User::getCurrentUser();
+			if (!$user) {
+				header('Location: /login/?redirect=' . urlencode($_GET['q']));
+			}
+			return $user;
 		}
 		
 		private static function _displayRound($bracket, $tier) {
-			
-			$cacheKey = 'BracketRound_' . $bracket . '_' . $tier . '_' . $_SERVER['REMOTE_ADDR'];
+			$user = self::_checkLogin();
+			$cacheKey = 'BracketRound_' . $bracket . '_' . $tier . '_' . $user->id;
 			$out = Lib\Cache::Get($cacheKey);
 			
 			if (false === $out) {
@@ -51,8 +70,8 @@ namespace Controller {
 		}
 		
 		private static function _displayCurrentRound($bracketId) {
-			
-			$cacheKey = 'CurrentRound_' . $bracketId . '_' . $_SERVER['REMOTE_ADDR'];
+			$user = self::_checkLogin();
+			$cacheKey = 'CurrentRound_' . $bracketId . '_' . $user->id;
 			$out = Lib\Cache::Get($cacheKey);
 			
 			if (false === $out) {
@@ -63,6 +82,31 @@ namespace Controller {
 			Lib\Display::setTemplate('round');
 			Lib\Display::setVariable('content', $out);
 			
+		}
+
+		private static function _displayLanding() {
+			$brackets = Api\Bracket::getAll();
+			$content = Lib\Display::compile($brackets, 'landing');
+			Lib\Display::setTemplate('default');
+			Lib\Display::setVariable('content', $content);
+		}
+
+		private static function _displayBracketView($bracket) {
+			$bracket->results = $bracket->getResults();
+			$user = Api\User::getCurrentUser();
+			if ($user) {
+				$bracket->userVotes = $bracket->getVotesForUser($user);
+			}
+			Lib\Display::setTemplate('results');
+			Lib\Display::setVariable('data', json_encode($bracket));
+			Lib\Display::setVariable('title', $bracket->name);
+		}
+
+		private static function _displayNominations($bracket) {
+			self::_checkLogin();
+			Lib\Display::setVariable('rules', Lib\Michelf\Markdown::defaultTransform($bracket->rules));
+			Lib\Display::setVariable('perma', $bracket->perma);
+			Lib\Display::setTemplate('nominate');
 		}
 	
 	}
