@@ -7,6 +7,7 @@
 namespace Lib {
  
 	use PDO;
+	use PDOException;
 	use stdClass;
  
 	class Db {
@@ -14,7 +15,7 @@ namespace Lib {
 		/**
 		 * The handle to the database connection
 		 */
-		private static $_conn = null;
+		public static $_conn = null;
 		
 		/**
 		 * The value of the last error message
@@ -29,11 +30,11 @@ namespace Lib {
 			$retVal = false;
 			
 			try {
-				self::$_conn = new PDO($dsn, $user, $pass);
+				self::$_conn = new PDO($dsn, $user, $pass, array( PDO::MYSQL_ATTR_FOUND_ROWS => true ));
 				self::$_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$retVal = true;
 			} catch (PDOException $e) {
-				self::$lastError = $e->Message();
+				self::$lastError = $e;
 			}
 			
 			return $retVal;
@@ -58,7 +59,9 @@ namespace Lib {
 						$retVal->comm = $comm;
 						break;
 					case 'insert':
-						$retVal = self::$_conn->lastInsertId();
+						$retVal = new stdClass;
+						$retVal->insertId = self::$_conn->lastInsertId();
+						$retVal->count = $comm->rowCount();
 						break;
 					case 'update':
 					case 'delete':
@@ -68,10 +71,9 @@ namespace Lib {
 				
 				self::$lastError = self::$_conn->errorInfo();
 				
-			} catch (Exception $e) {
-				echo $sql, PHP_EOL; exit;
-				self::$lastError = $e->Message();
-				throw $e;
+			} catch (PDOException $e) {
+				self::$lastError = $e;
+				$retVal = false;
 			}
 			
 			return $retVal;
