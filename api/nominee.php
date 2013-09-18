@@ -4,18 +4,19 @@ namespace Api {
 	
 	use Lib;
 	
-	class Nominee extends Dal {
+	class Nominee extends Lib\Dal {
 		
 		/**
 		 * Property to database column map
 		 */
 		protected $_dbMap = array( 
-			'_nomineeId' => 'nominee_id', 
-			'_bracketId' => 'bracket_id',
-			'_nomineeName' => 'nominee_name',
-			'_nomineeSource' => 'nominee_source',
-			'_nomineeCreated' => 'nominee_created',
-			'_nomineeProcessed' => 'nominee_processed'
+			'id' => 'nominee_id', 
+			'bracketId' => 'bracket_id',
+			'name' => 'nominee_name',
+			'source' => 'nominee_source',
+			'created' => 'nominee_created',
+			'processed' => 'nominee_processed',
+			'image' => 'nominee_image'
 		);
 		
 		/**
@@ -26,72 +27,43 @@ namespace Api {
 		/**
 		 * Primary key
 		 */
-		protected $_dbPrimaryKey = '_nomineeId';
+		protected $_dbPrimaryKey = 'id';
 		
 		/**
 		 * Record ID of the nominee
 		 */
-		protected $_nomineeId = 0;
-		public function getNomineeId() { return $this->_nomineeId; }
-		public function setNomineeId($value) { $this->_nomineeId = $value; }
+		public $id = 0;
 	
 		/**
 		 * ID of the bracket this nominee belongs to
 		 */
-		protected $_bracketId;
-		public function getBracketId() { return $this->_bracketId; }
-		public function setBracketId($value) { $this->_bracketId = $value; }
+		public $bracketId;
 		
 		/**
 		 * Name of nominee
 		 */
-		protected $_nomineeName;
-		public function getNomineeName() { return $this->_nomineeName; }
-		public function setNomineeName($value) { $this->_nomineeName = $value; }
+		public $name;
 		
 		/**
 		 * Nominee media source
 		 */
-		protected $_nomineeSource;
-		public function getNomineeSource() { return $this->_nomineeSource; }
-		public function setNomineeSource($value) { $this->_nomineeSource = $value; }
+		public $source;
 		
 		/**
 		 * Date the entry was created (unix time stamp)
 		 */
-		protected $_nomineeCreated;
-		public function getNomineeCreated() { return $this->_nomineeCreated; }
-		public function setNomineeCreated($value) { $this->_nomineeCreated = $value; }
+		public $created;
 		
 		/**
 		 * Date the entry was created (unix time stamp)
 		 */
-		protected $_nomineeProcessed;
-		public function getNomineeProcessed() { return $this->_nomineeProcessed; }
-		public function setNomineeProcessed($value) { $this->_nomineeProcessed = $value; }
+		public $processed;
 		
 		/**
-		 * Constructor
+		 * Link to nominee image
 		 */
-		public function __construct($nominee = null) {
-			if (is_object($nominee)) {
-				$this->copyFromDbRow($nominee);
-			}
-		}
-		
-		/**
-		 * 
-		 */
-		public static function getNomineeById($id) {
-			$retVal = false;
-			$params = array( ':nomineeId' => $id );
-			$result = Lib\Db::Query('SELECT * FROM `nominee` WHERE `nominee_id` = :nomineeId', $params);
-			if ($result && $result->count > 0) {
-				$row = Lib\Db::Fetch($result);
-				$retVal = new Nominee($row);
-			}
-			return $retVal;
-		}
+		public $image;
+
 		
 		/**
 		 * Returns all unprocessed 
@@ -105,6 +77,32 @@ namespace Api {
 				$retVal = array();
 				while ($row = Lib\Db::Fetch($result)) {
 					$retVal[] = new Nominee($row);
+				}
+			}
+			return $retVal;
+		}
+
+		public function getSimilar($bracket) {
+			$retVal = null;
+			if ($bracket instanceof Bracket) {
+				$query = 'SELECT * FROM `nominee` WHERE bracket_id = :bracketId AND nominee_id != :nomineeId AND nominee_processed IS NULL ';
+				$params = [ 'bracketId' => $bracket->id, ':nomineeId' => $this->id ];
+				$name = explode(' ', trim($this->name));
+				if (count($name) === 2) {
+					$params[':nameA'] = $name[0] . '%' . $name[1];
+					$params[':nameB'] = $name[1] . '%' . $name[0];
+					$query .= 'AND (nominee_name LIKE :nameA OR nominee_name LIKE :nameB)';
+				} else {
+					$params[':name'] = implode('%', $name);
+					$query .= 'AND nominee_name LIKE :name';
+				}
+
+				$result = Lib\Db::Query($query, $params);
+				if ($result && $result->count) {
+					$retVal = [];
+					while ($row = Lib\Db::Fetch($result)) {
+						$retVal[] = new Nominee($row);
+					}
 				}
 			}
 			return $retVal;
