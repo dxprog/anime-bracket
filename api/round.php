@@ -4,19 +4,19 @@ namespace Api {
 	
 	use Lib;
 	
-	class Round extends Dal {
+	class Round extends Lib\Dal {
 	
 		/**
 		 * Object property to table column map
 		 */
 		protected $_dbMap = array(
-			'roundId' => 'round_id',
+			'id' => 'round_id',
 			'bracketId' => 'bracket_id',
-			'roundOrder' => 'round_order',
-			'roundTier' => 'round_tier',
-			'roundGroup' => 'round_group',
-			'roundCharacter1Id' => 'round_character1_id',
-			'roundCharacter2Id' => 'round_character2_id'
+			'order' => 'round_order',
+			'tier' => 'round_tier',
+			'group' => 'round_group',
+			'character1Id' => 'round_character1_id',
+			'character2Id' => 'round_character2_id'
 		);
 		
 		/**
@@ -27,82 +27,68 @@ namespace Api {
 		/**
 		 * Primary key
 		 */
-		protected $_dbPrimaryKey = 'roundId';
+		protected $_dbPrimaryKey = 'id';
 	
 		/**
 		 * Round ID
 		 */
-		public $roundId = 0;
+		public $id = 0;
 	
 		/**
 		 * Bracket ID
 		 */
-		public $bracketId = 0;
+		public $bracketId;
 	
 		/**
 		 * Ordering for this round
 		 */
-		public $roundTier = 0;
+		public $tier;
 	
 		/**
 		 * Ordering for this round
 		 */
-		public $roundOrder = 0;
+		public $order;
 	
 		/**
 		 * Ordering for this round
 		 */
-		public $roundGroup = 0;
+		public $group;
 	
 		/**
 		 * Character 1 Id
 		 */
-		public $roundCharacter1Id = 0;
+		public $character1Id;
 		
 		/**
 		 * Character 1 object
 		 */
-		public $roundCharacter1;
+		public $character1;
 		
 		/**
 		 * Character 2 object
 		 */
-		public $roundCharacter2;
+		public $character2;
 		
 		/**
 		 * Character 2 Id
 		 */
-		public $roundCharacter2Id = 0;
+		public $character2Id;
 		
 		/**
 		 * Whether the user has voted on this round
 		 */
-		public $roundVoted = false;
+		public $voted = false;
 		
 		/**
 		 * Constructor
 		 */
 		public function __construct($round = null) {
 			if (is_object($round)) {
-				$this->copyFromDbRow($round);
+				parent::copyFromDbRow($round);
 				if (isset($round->user_vote)) {
-					$this->roundVoted = $round->user_vote > 0;
+					$this->voted = $round->user_vote > 0;
 				}
 			}
-		}
-		
-		/**
-		 * Gets a character by ID
-		 */
-		public static function getRoundById($id) {
-			$retVal = false;
-			$params = array( ':roundId' => $id );
-			$result = Lib\Db::Query('SELECT * FROM `round` WHERE `round_id` = :roundId', $params);
-			if ($result && $result->count > 0) {
-				$row = Lib\Db::Fetch($result);
-				$retVal = new Round($row);
-			}
-			return $retVal;
 		}
 		
 		/**
@@ -110,46 +96,49 @@ namespace Api {
 		 */
 		public static function getBracketRounds($bracketId, $tier, $group = false, $ignoreCache = false) {
 			
-			$ip = $_SERVER['REMOTE_ADDR'];
-			$cacheKey = 'GetBracketRounds_' . $bracketId . '_' . $tier . '_' . ($group !== false ? $group : 'all') . '_' . $ip;
-			$retVal = Lib\Cache::Get($cacheKey);
-			if (false === $retVal || $ignoreCache) {
-				$params = array( ':bracketId' => $bracketId, ':tier' => $tier, ':ip' => $ip );
-				
-				if (false !== $group) {
-					$params[':group'] = $group;
+			$user = User::getCurrentUser();
+			if ($user) {
+				$cacheKey = 'GetBracketRounds_' . $bracketId . '_' . $tier . '_' . ($group !== false ? $group : 'all') . '_' . $user->id;
+				$retVal = Lib\Cache::Get($cacheKey);
+				if (false === $retVal || $ignoreCache) {
+					$params = [ ':bracketId' => $bracketId, ':tier' => $tier, ':userId' => $user->id ];
 					
-					// Check to see how many rounds there are in the group total. If there's only one, come back and get them all
-					$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_group = :group', array( ':bracketId' => $bracketId, ':tier' => $tier, ':group' => $group)));
-					if ((int)$row->total == 1) {
-						$retVal = self::getBracketRounds($bracketId, $tier, false, $ignoreCache);
-						$result = null;
-					} else {
-						$result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE vote_ip = :ip AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier AND r.round_group = :group ORDER BY r.round_order', $params);
-					}
-				} else {
-					$result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE vote_ip = :ip AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier ORDER BY r.round_order', $params);
-				}
-				
-				if ($result && $result->count > 0) {
-					$retVal = [];
-					
-					while ($row = Lib\Db::Fetch($result)) {
-						$round = new Round($row);
+					if (false !== $group) {
+						$params[':group'] = $group;
 						
-						// If there tier is not 0, character2 is "nobody", and the number of items is not a power of two
-						// this is a wildcard round and the user has already voted
-						if ($row->round_tier != 0 && $row->round_character2_id == 1 && (($result->count + 1) & ($result->count)) != 0) {
-							return null;
+						// Check to see how many rounds there are in the group total. If there's only one, come back and get them all
+						$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_group = :group', [ ':bracketId' => $bracketId, ':tier' => $tier, ':group' => $group ]));
+						if ((int)$row->total == 1) {
+							$retVal = self::getBracketRounds($bracketId, $tier, false, $ignoreCache);
+							$result = null;
+						} else {
+							$result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE user_id = :userId AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier AND r.round_group = :group ORDER BY r.round_order', $params);
 						}
-						
-						$round->roundCharacter1 = Character::getCharacterById($row->round_character1_id);
-						$round->roundCharacter2 = Character::getCharacterById($row->round_character2_id);
-						$retVal[] = $round;
+					} else {
+						$result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE user_id = :userId AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier ORDER BY r.round_order', $params);
 					}
+					
+					if ($result && $result->count > 0) {
+						$retVal = [];
+						
+						while ($row = Lib\Db::Fetch($result)) {
+							$round = new Round($row);
+							
+							// If there tier is not 0, character2 is "nobody", and the number of items is not a power of two
+							// this is a wildcard round and the user has already voted
+							if ($row->round_tier != 0 && $row->round_character2_id == 1 && (($result->count + 1) & ($result->count)) != 0) {
+								return null;
+							}
+							
+							$round->character1 = Character::getById($row->round_character1_id);
+							$round->character2 = Character::getById($row->round_character2_id);
+							$retVal[] = $round;
+						}
+					}
+					Lib\Cache::Set($cacheKey, $retVal);
 				}
-				Lib\Cache::Set($cacheKey, $retVal);
 			}
+
 			return $retVal;
 			
 		}
@@ -162,8 +151,8 @@ namespace Api {
 				$retVal = [];
 				while ($row = Lib\Db::Fetch($result)) {
 					$round = new Round($row);
-					$round->roundCharacter1 = Character::getCharacterById($row->round_character1_id);
-					$round->roundCharacter2 = Character::getCharacterById($row->round_character2_id);
+					$round->character1 = Character::getById($row->round_character1_id);
+					$round->character2 = Character::getById($row->round_character2_id);
 					$retVal[] = $round;
 				}
 			}
@@ -178,8 +167,8 @@ namespace Api {
 				$retVal = [];
 				while ($row = Lib\Db::Fetch($result)) {
 					$round = new Round($row);
-					$round->roundCharacter1 = Character::getCharacterById($row->round_character1_id);
-					$round->roundCharacter2 = Character::getCharacterById($row->round_character2_id);
+					$round->character1 = Character::getById($row->round_character1_id);
+					$round->character2 = Character::getById($row->round_character2_id);
 					$retVal[] = $round;
 				}
 			}
