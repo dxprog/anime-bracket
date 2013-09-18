@@ -23,9 +23,11 @@ Lib\Display::setVariable('title', $_title);
 // Handle URL and templating things
 $found = Lib\Url::Rewrite('config/rewrites.json');
 $GLOBALS['_baseURI'] = current(explode('?', Lib\Url::getRawUrl()));
-Lib\Display::setTheme('awwnime');
+Lib\Display::setTheme('.');
 Lib\Display::setTemplate('default');
 Lib\Display::setVariable('baseuri', $GLOBALS['_baseURI']);
+
+session_start();
 
 // Handle URL rewrites
 if (!$found) {
