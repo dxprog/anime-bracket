@@ -94,7 +94,9 @@ namespace Lib {
 					// If the incoming data is an object, serialize it before continuing
 					if (!is_string($data)) {
 						$xs = new SerializeXML();
-						$parseXml = $xs->serialize($data, $template);
+						$root = explode('/', $template);
+						$root = end($root);
+						$parseXml = $xs->serialize($data, $root);
 					} else {
 						$parseXml = $data;
 					}
