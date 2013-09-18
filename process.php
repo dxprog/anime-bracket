@@ -1,6 +1,7 @@
 <?php
 
 require('lib/aal.php');
+session_start();
 
 $action = Lib\Url::Get('action');
 
@@ -14,87 +15,92 @@ $out->success = false;
 $cacheKey = 'AwwnimeBracket_' . $_SERVER['REMOTE_ADDR'];
 $time = Lib\Cache::Get($cacheKey);
 
-if ($time > 0 && time() - $time < 3) {
-	$out->message = 'You\'re doing that too fast';
-} else {
+$user = Api\User::getCurrentUser();
+if ($user) {
+	if ($time > 0 && time() - $time < 3) {
+		$out->message = 'You\'re doing that too fast';
+	} else {
 
-	switch ($action) {
+		switch ($action) {
 
-		case 'nominate':
-			
-			$bracketId = Lib\Url::Post('bracketId', true);
-			$nomineeName = Lib\Url::Post('nomineeName');
-			$nomineeSource = Lib\Url::Post('nomineeSource');
-			
-			if ($bracketId && $nomineeName && $nomineeSource) {
-				$nominee = new Api\Nominee();
-				$nominee->setBracketId($bracketId);
-				$nominee->setNomineeName($nomineeName);
-				$nominee->setNomineeSource($nomineeSource);
-				$nominee->setNomineeCreated(time());
-				if ($nominee->sync()) {
-					$out->success = true;
+			case 'nominate':
+				
+				$bracketId = Lib\Url::Post('bracketId', true); //Lib\Url::Post('bracketId', true);
+				$nomineeName = Lib\Url::Post('nomineeName');
+				$nomineeSource = Lib\Url::Post('nomineeSource');
+				$image = Lib\Url::Post('image');
+				
+				if ($bracketId && $nomineeName && $nomineeSource && $image) {
+					$nominee = new Api\Nominee();
+					$nominee->bracketId = $bracketId;
+					$nominee->name = $nomineeName;
+					$nominee->source = $nomineeSource;
+					$nominee->created = time();
+					$nominee->image = $image;
+					if ($nominee->sync()) {
+						$out->success = true;
+					} else {
+						$out->message = 'Unable to save to database';
+					}
 				} else {
-					$out->message = 'Unable to save to database';
+					$out->message = 'Missing fields';
+					$out->data = $_POST;
 				}
-			} else {
-				$out->message = 'Missing fields';
-				$out->data = $_POST;
-			}
-			
-			break;
-		case 'vote':
-			
-			$bracketId = Lib\Url::Post('bracketId', true);
-			$votes = Lib\Url::Post('votes');
-			
-			if ($bracketId && $votes) {
-				$votes = explode(',', $votes);
-				$count = count($votes);
-				if ($count > 0 && $count % 2 === 0) {
-					
-					$query = 'INSERT INTO `votes` (`vote_ip`, `vote_date`, `round_id`, `character_id`) VALUES ';
-					session_start();
-					$ip = $_SERVER['REMOTE_ADDR'];
-					$params = array( ':ip' => $ip, ':date' => time() );
-					$insertCount = 0;
-					for ($i = 0, $count = count($votes); $i < $count; $i += 2) {
-						$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM votes WHERE vote_ip = :ip AND round_id = :round', array( ':ip'=>$ip, ':round' => $votes[$i] )));
-						if ((int)$row->total == 0) {
-							$query .= '(:ip, :date, :round' . $i . ', :character' . $i . '),';
-							$params[':round' . $i] = $votes[$i];
-							$params[':character' . $i] = $votes[$i + 1];
-							$insertCount++;
+				
+				break;
+			case 'vote':
+				
+				$bracketId = Lib\Url::Post('bracketId', true);
+				$votes = Lib\Url::Post('votes');
+				
+				if ($bracketId && $votes) {
+					$votes = explode(',', $votes);
+					$count = count($votes);
+					if ($count > 0 && $count % 2 === 0) {
+						
+						$query = 'INSERT INTO `votes` (`user_id`, `vote_date`, `round_id`, `character_id`) VALUES ';
+						$params = [ ':userId' => $user->id, ':date' => time() ];
+						$insertCount = 0;
+						for ($i = 0, $count = count($votes); $i < $count; $i += 2) {
+							$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM votes WHERE user_id = :userId AND round_id = :round', [ ':userId' => $user->id, ':round' => $votes[$i] ]));
+							if ((int)$row->total == 0) {
+								$query .= '(:userId, :date, :round' . $i . ', :character' . $i . '),';
+								$params[':round' . $i] = $votes[$i];
+								$params[':character' . $i] = $votes[$i + 1];
+								$insertCount++;
+							}
 						}
+						
+						if ($insertCount > 0) {
+							$query = substr($query, 0, strlen($query) - 1);
+							Lib\Db::Query($query, $params);
+						}
+						$out->success = true;
+						
+						// Clear any user related caches
+						$round = Api\Round::getRoundById($votes[0]);
+						Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
+						Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
+						
+					} else {
+						$out->message = 'No votes were submitted';
 					}
-					
-					if ($insertCount > 0) {
-						$query = substr($query, 0, strlen($query) - 1);
-						Lib\Db::Query($query, $params);
-					}
-					$out->success = true;
-					
-					// Clear any user related caches
-					$round = Api\Round::getRoundById($votes[0]);
-					Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->roundTier . '_' . $round->roundGroup . '_' . $ip, false);
-					Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $_SERVER['REMOTE_ADDR'], false);
-					
 				} else {
-					$out->message = 'No votes were submitted';
+					$out->message = 'Invalid parameters';
 				}
-			} else {
-				$out->message = 'Invalid parameters';
-			}
-			
-			break;
-			
-		default:
-			$out->message = 'Invalid command';
-			break;
+				
+				break;
+				
+			default:
+				$out->message = 'Invalid command';
+				break;
 
-	}
-	
-	Lib\Cache::Set($cacheKey, time(), 5);
-	
+		}
+		
+		Lib\Cache::Set($cacheKey, time(), 5);
+	}		
+} else {
+	$out->message = 'Uh oh... it seems you\'re not logged in';
 }
+
 echo json_encode($out);
