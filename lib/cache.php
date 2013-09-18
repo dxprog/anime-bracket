@@ -6,10 +6,6 @@ namespace Lib {
 
 	Cache::Connect();
 
-	if (isset($_GET['flushCache'])) {
-		Cache::flush();
-	}
-
 	// memcache class
 	class Cache {
 
