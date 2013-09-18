@@ -1,12 +1,29 @@
 [
     {
-        "redirect": true,
-        "rule": "^nominate$",
-        "replace": "nominate/"
+        "rule": "^admin/$",
+        "replace": "page=admin"
     },
     {
-        "rule": "^nominate/$",
-        "replace": "page=bracket&action=nominate"
+        "rule": "^verify$",
+        "replace": "page=user&action=verify_oauth"
+    },
+    {
+        "rule": "^login$",
+        "replace": "login/",
+        "redirect": true
+    },
+    {
+        "rule": "^login/$",
+        "replace": "page=user"
+    },
+    {
+        "redirect": true,
+        "rule": "^([^/.]+)/nominate$",
+        "replace": "$1/nominate/"
+    },
+    {
+        "rule": "^([^/.]+)/nominate/$",
+        "replace": "page=bracket&action=nominate&bracket=$1"
     },
 	{
 		"rule": "^tier/([0-9]+)$",
@@ -15,15 +32,24 @@
 	},
 	{
 		"rule": "^tier/([0-9]+)/$",
-		"replace": "page=bracket&action=tier"	
+		"replace": "page=bracket&action=tier"
 	},
+    {
+        "rule": "^([^/.]+)/vote$",
+        "replace": "$1/vote/",
+        "redirect": true
+    },
+    {
+        "rule": "^([^/.]+)/vote/$",
+        "replace": "page=bracket&action=vote&bracket=$1"
+    },
 	{
-		"rule": "^vote$",
-		"replace": "vote/",
+		"rule": "^([^/.]+)/view$",
+		"replace": "$1/view/",
 		"redirect": true
 	},
 	{
-		"rule": "^vote/$",
-		"replace": "page=bracket&action=vote"
+		"rule": "^([^/.]+)/view/$",
+		"replace": "page=bracket&action=view&bracket=$1"
 	}
 ]
