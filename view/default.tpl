@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>The Great 2012 Awwnime Bracket</title>
-		<link rel="stylesheet" type="text/css" href="/view/awwnime/styles/awwnime.css?20121102" />
+		<title>{TITLE}</title>
+		<link rel="stylesheet" type="text/css" href="/view/css/styles.css" />
 	</head>
 	<body>
-		<h1>The Great 2012 Awwnime Bracket</h1>
-		<div id="intro">
-			<img src="/view/awwnime/styles/images/awwnime_chii.png" alt="How could you vote against these two!" />
-			<h2>The Time Has Come to Decide on the Cutest Anime Girl!</h2>
-			<p>r/awwnime, the time has come to choose which girl is the most moe!</p>
-			<p>The bracket has begun and there will be no mercy!</p>
-			<p>Vote today to keep your favorites from getting voted into the loser's bin.</p>
-			<a href="/vote/" class="vote">Vote for your favorites</a>
+		<a href="/">
+			<h1>The Great Awwnime Bracket</h1>
+		</a>
+		<div id="content">
+			{CONTENT}
 		</div>
 		<footer>
 			
