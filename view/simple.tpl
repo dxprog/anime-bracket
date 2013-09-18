@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>The Great 2012 Awwnime Bracket</title>
-		<link rel="stylesheet" type="text/css" href="/view/awwnime/styles/awwnime.css" />
+		<link rel="stylesheet" type="text/css" href="/view/css/styles.css" />
 	</head>
 	<body>
 		<h1>The Great 2012 Awwnime Bracket</h1>
