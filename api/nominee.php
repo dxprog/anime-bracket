@@ -82,6 +82,9 @@ namespace Api {
 			return $retVal;
 		}
 
+		/**
+		 * Gets other nominees in this bracket with similar names (checks for Japanese and Western naming order)
+		 */
 		public function getSimilar($bracket) {
 			$retVal = null;
 			if ($bracket instanceof Bracket) {
