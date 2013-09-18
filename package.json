@@ -1,0 +1,19 @@
+{
+  "name": "anime-bracket",
+  "version": "1.0.0",
+  "description": "The code behind much butthurt on /r/awwnime",
+  "repository": "https://github.com/dxprog/anime-bracket",
+  "author": "Matt (dxprog) Hackmann",
+  "license": "GPLv3",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "handlebars": "1.0.11",
+    "grunt-contrib-jshint": "~0.4.3",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-handlebars": "~0.5.10",
+    "grunt-contrib-watch": "~0.4.3",
+    "grunt-sass": "~0.6.0",
+    "sass": "~0.5.0"
+  }
+}

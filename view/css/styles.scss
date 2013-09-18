@@ -1,0 +1,519 @@
+@import "mixins";
+
+@font-face {
+    font-family: 'Helvetica Condensed Bold';
+    src: url('fonts/helveticaltstd-boldcond-webfont.eot');
+    src: url('fonts/helveticaltstd-boldcond-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/helveticaltstd-boldcond-webfont.woff') format('woff'),
+         url('fonts/helveticaltstd-boldcond-webfont.ttf') format('truetype'),
+         url('fonts/helveticaltstd-boldcond-webfont.svg#helvetica_lt_std_condbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Light';
+    src: url('fonts/helveticaltstd-light-webfont.eot');
+    src: url('fonts/helveticaltstd-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/helveticaltstd-light-webfont.woff') format('woff'),
+         url('fonts/helveticaltstd-light-webfont.ttf') format('truetype'),
+         url('fonts/helveticaltstd-light-webfont.svg#helvetica_lt_std_lightregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+$darkGrey: #494a4c;
+$medTurk: #96bcb1;
+$blue: #7b8fa8;
+$lightBlue: #e6fff7;
+
+* { margin:0; padding:0; }
+label { display:block; margin-bottom:5px; }
+a img { 
+    border: 0;
+}
+
+body { background:#c4e6dd url(images/grad_bg.png) repeat-x; width:900px; margin:0 auto; }
+h1 {
+    @include image-text(url(images/logo.png), 372px, 166px);
+    margin: 20px auto;
+}
+h2 { font:normal 36px 'Helvetica Condensed Bold', sans-serif; color:#494a4c; text-transform:uppercase; }
+p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px; }
+
+#intro { margin-left:60px; position:relative; }
+#intro h2 { width:520px; }
+#intro p { width:348px; }
+#intro img { position:absolute; right:-173px; top:-48px; }
+#intro a.nominate { display:block; width:354px; height:0; padding-top:80px; overflow:hidden; background:url(images/awwnime_nominate.png) no-repeat; margin:20px 0 0 5px; }
+#intro a.vote { display:block; width:354px; height:0; padding-top:80px; overflow:hidden; background:url(images/vote.png) no-repeat; margin:20px 0 0 5px; }
+#intro p a { color:#494a4c; font:normal 24px 'Helvetica Condensed Bold', sans-serif; }
+
+.login-form {
+    p {
+        font-size: 14px;
+        text-align: center;
+        width: 50%;
+        margin: 10px auto;
+    }
+    a {
+        @include image-text(url(images/reddit_login.png), 187px, 88px);
+        margin: 0 auto;
+    }
+}
+
+#nominate { 
+    margin-left: 60px;
+    position: relative;
+    .info {
+        h2 { 
+            width: 445px; 
+        }
+        p {
+            width: 400px;
+            line-height: 1.2;
+            margin-bottom: 20px; 
+        }
+    }
+    img {
+        position: absolute;
+        right: -28px;
+        top: -71px;
+    }
+
+    a {
+        display: block;
+        width: 354px;
+        height: 0;
+        padding-top: 80px;
+        overflow: hidden;
+        background: url(images/awwnime_agree.png) no-repeat;
+        margin: 20px 0 0 50px;
+    }
+    ul {
+        padding-left:32px;
+        li { 
+            width: 410px; 
+        }
+    }
+
+    .footnote {
+        font-size: 14px;
+        margin: 0 0 5px;
+        width: 500px;
+    }
+    .form {
+        margin-top: 20px;
+        display: none;
+    }
+    input {
+        border: 1px solid #494a4c;
+        height: 30px;
+        width: 404px;
+        padding: 4px;
+        font: normal 24px/1 'Helvetica Light', sans-serif;
+        margin-bottom: 10px;
+        &:focus {
+            background: #f2f3df;
+        }
+        &.error {
+            background:#fcc;
+        }
+    }
+
+    button { 
+        display: block;
+        width: 181px;
+        height: 0;
+        padding-top: 55px;
+        overflow: hidden;
+        background: url(images/awwnime_submit.png) no-repeat;
+        margin: 20px 0 0 104px;
+        border: 0;
+        cursor: pointer;
+    }
+
+}
+
+#message { position:absolute; opacity:0; right:-137px; width:230px; padding:20px; text-align:center; font:normal 36px 'Helvetica Condensed Bold', sans-serif; background:#fff; border-radius:10px; text-transform:uppercase; }
+#message:after { content:'.'; display:block; width:51px; height:0; padding-top:25px; overflow:hidden; background:url(images/awwnime_tail.png) no-repeat right center; position:absolute; bottom:-25px; left:0; }
+
+#round { width:830px; margin:0 auto; }
+#round h2 { font-size:48px; line-height:1; text-align:center; margin-top:5px; }
+#round h3, 
+#round h4, 
+#round h5, 
+#round .disclaimer, 
+#round .message { font:normal 30px/1 'Helvetica Condensed Bold', sans-serif; color:#494a4c; text-transform:uppercase; text-align:center; margin-top:5px; }
+#round .rounds { margin-top:40px; overflow:hidden; }
+#round .round { height:155px; background:url(images/round_bg.png) no-repeat 0 52px; margin-bottom:40px; }
+#round .wildcard .round,
+#round .elimination .round { background:url(images/wildcard_entrant.png) no-repeat center 52px; float:left; padding-right:10px; }
+
+#round .elimination .round { float:none; }
+
+#round .entrant { width:396px; float:left; position:relative; height:155px; }
+#round .wildcard .entrant, #round .elimination .entrant { margin:0 auto; float:none; }
+#round .entrant:hover,
+#round .entrant.selected,
+#round .voted .entrant { cursor:pointer; background:url(images/check.png) no-repeat right 67px; }
+#round .voted { opacity: 0.25; }
+#round .voted .entrant { cursor:default; }
+#round .entrant h4 { position:absolute; left:181px; bottom:90px; font-size:24px; width:167px; text-align:left; }
+#round .entrant h5 { position:absolute; left:181px; top:80px; font-size:14px; width:167px; text-align:left; }
+#round .entrant img { padding:0 0 5px 5px; background:url(images/round_entrant.png) no-repeat left bottom; display:block; margin-left:15px; }
+#round .entrant.right { float:right; background-position:left 67px; filter:gray; }
+#round .entrant.right h4, #round .entrant.right h5 { left:auto; right:187px; text-align:right; }
+#round .entrant.right img { position:absolute; right:20px; }
+#round .disclaimer { font-size:24px; padding:10px 150px; }
+#round button { display:block; width:181px; height:0; padding-top:55px; overflow:hidden; background:url(images/submit.png) no-repeat; margin:20px auto; border:0; cursor:pointer; }
+#round .message { background:#fff; margin:20px 40px; border-radius:5px; display:none; font-size:24px; padding:20px; }
+
+#survey { display:none; }
+
+.landing {
+    position: relative;
+    left: 50%;
+    float: left;
+
+    .wrapper {
+        overflow: hidden;
+        position: relative;
+        left: -50%;
+        float: left;
+    }
+
+    .bracket {
+        width: 360px;
+        min-height: 372px;
+        float: left;
+        @include border-box();
+        position: relative;
+        margin-left: 20px;
+        text-align: center;
+
+        &:first-child {
+            margin-left: 0;
+        };
+
+        h3 {
+            font: 24px/1 'Helvetica Condensed Bold', sans-serif;
+            color: $darkGrey;
+        }
+
+        h4 {
+            position: absolute;
+            top: 315px;
+            left: 0;
+            right: 0;
+            padding: 10px 0;
+            background: $medTurk;
+            font: 36px/1 'Helvetica Condensed Bold', sans-serif;
+            color: $darkGrey;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            top: -24px;
+        }
+
+        .button {
+            @include button();
+            margin: 20px auto 0;
+        }
+
+    }
+
+}
+
+.results {
+    margin: 20px;
+
+    header {
+        background: $medTurk;
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        overflow: hidden;
+        border-bottom: 1px solid $darkGrey;
+        z-index: 9001;
+
+        .title {
+            margin: 5px;
+            float: left;
+            text-transform: none;
+            font-size: 20px;
+        }
+
+        ul {
+            margin-left: 20px;
+            float: left;
+            list-style: none;
+            overflow: hidden;
+            li {
+                float: left;
+                cursor: pointer;
+                padding: 11px 20px;
+                font-size: 14px;
+                margin: 0;
+                &.selected {
+                    background: $darkGrey;
+                    color: $lightBlue;
+                }
+
+            }
+        }
+    }
+
+    #content {
+        overflow: hidden;
+        margin-top: 60px;
+    }
+
+    .tier {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        float: left;
+
+        .round {
+            margin-top: 0;
+            position: relative;
+
+            &:before {
+                display: block;
+                position: absolute;
+                content: '';
+                top: 50%;
+                height: 2px;
+                border-top: 1px solid $medTurk;
+                left: 289px;
+                right: 0;
+            }
+
+            &.highlighted:before {
+                border-color: $blue !important;
+            }
+
+            &.single-entrant {
+                &:before {
+                    left: 281px;
+                }
+
+                .entrant {
+                    &:before {
+                        border-width: 0 !important;
+                    }
+                }
+            }
+
+        }
+
+        dt {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+
+        .winner {
+            text-align: center;
+            width: 298px;
+            dl {
+                width: 298px;
+                position: absolute;
+                height: 200px;
+                top: 50%;
+                margin-top: -100px;
+                &:before {
+                    display: block;
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
+                    right: 0;
+                    border-top: 1px solid $medTurk;
+                    z-index: -9001;
+                }
+            }
+        }
+
+        .entrant {
+            width: 298px;
+            position: relative;
+            font-family: 'Helvetica Condensed Bold', sans-serif;
+            line-height: 1;
+            color: $darkGrey;
+            position: relative;
+
+            &:before {
+                display: block;
+                position: absolute;
+                border-right: 1px solid $medTurk;
+                content: '';
+                left: 280px;
+                right: 8px;
+            }
+
+            &.entrant-top:before {
+                top: 50%;
+                bottom: 0;
+                border-top: 1px solid $medTurk;
+            }
+
+            &.entrant-bottom:before {
+                top: 0;
+                bottom: 50%;
+                border-bottom: 1px solid $medTurk;
+            }
+
+            dl {
+                height: 100px;
+                width: 280px;
+                margin-top: -50px;
+                top: 50%;
+                position: absolute;
+                background: url(images/bracket_entrant.png) no-repeat;
+            }
+
+            dd {
+                position: absolute;
+                left: 86px;
+            }
+
+            .name {
+                font-size: 14px;
+                top: 20px;
+                text-transform: uppercase;
+            }
+
+            .image {
+                left: 5px;
+                top: 0;
+                img {
+                    width: 75px;
+                    height: 75px;
+                    display: block;
+                }
+            }
+
+            .source { 
+                display: none;
+            }
+
+            .votes {
+                top: 42px;
+                font-size: 20px;
+            }
+
+            &.highlighted {
+                dl {
+                    background-image: url(images/bracket_entrant_selected.png);
+                }
+                &:before {
+                    border-color: $blue !important;
+                }
+            }
+
+            &.user-voted {
+                background-color: #0f0;
+            }
+
+        }
+
+        &.right {
+
+            .round {
+                &:before {
+                    left: -18px;
+                    right: 306px;
+                }
+
+                &.single-entrant:before {
+                    left: -8;
+                    right: 298;
+                }
+            }
+
+            .entrant {
+
+                &:before {
+                    border-left: 1px solid $medTurk;
+                    border-right: 0;
+                    content: '';
+                    right: 298px;
+                    left: -8px;
+                }
+
+                dl {
+                    background-position: right 0;
+                }
+                .image {
+                    left: auto;
+                    right: 0;
+                }
+                dd {
+                    text-align: right;
+                    left: auto;
+                    right: 86px;
+                }
+            }
+        }
+
+    }
+}
+
+.admin {
+    .nominee {
+        dl {
+            overflow: hidden;
+            dt {
+                display: none;
+            }
+
+            .name input {
+                font: 20px/1 'Helvetica Condensed Bold';
+                color: $darkGrey;
+            }
+
+            input {
+                border: 1px solid transparent;
+                background: transparent;
+                padding: 5px;
+                width: 300px;
+                &:hover,
+                &:focus {
+                    border-color: #eee;
+                    background: #fff;
+                }
+            }
+
+            .source input {
+                font: 16px sans-serif;
+            }
+
+            .image {
+                float: left;
+                margin-right: 15px;
+                img {
+                    max-width: 200px;
+                }
+            }
+        }
+
+        table {
+            .thumb {
+                @include image-text(#eee, 75px, 75px);
+                background-size: cover;
+            }
+        }
+
+        button {
+            @include button();
+            margin: 15px 15px 0 0;
+        }
+
+    }
+}
