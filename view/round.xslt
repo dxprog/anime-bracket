@@ -2,11 +2,11 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
 	<xsl:output method="html" />
 	<xsl:template match="/">
-		<xsl:variable name="tier"><xsl:value-of select="//round_item[@index='0']/roundTier" /></xsl:variable>
+		<xsl:variable name="tier"><xsl:value-of select="//round_item[@index='0']/tier" /></xsl:variable>
 		<xsl:variable name="group">
 			<xsl:choose>
-				<xsl:when test="//round_item[@index='0']/roundGroup = //round_item[@index='1']/roundGroup">
-					<xsl:value-of select="//round_item[@index='0']/roundGroup" />
+				<xsl:when test="//round_item[@index='0']/group = //round_item[@index='1']/group">
+					<xsl:value-of select="//round_item[@index='0']/group" />
 				</xsl:when>
 				<xsl:otherwise>all</xsl:otherwise>
 			</xsl:choose>
@@ -16,7 +16,7 @@
 				<xsl:when test="$tier = '0'">Elimination Round - </xsl:when>
 				<xsl:when test="$tier &gt; 0">
 					<xsl:choose>
-						<xsl:when test="count(//round_item[roundCharacter2Id != '1']) = 0">Redemption Round - </xsl:when>
+						<xsl:when test="count(//round_item[character2Id != '1']) = 0">Redemption Round - </xsl:when>
 						<xsl:otherwise>Round <xsl:value-of select="$tier" /> - </xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
@@ -32,7 +32,7 @@
 		</h2>
 		
 		<xsl:choose>
-			<xsl:when test="count(//round_item[roundCharacter2Id != '1']) = 0 and $tier &gt; 0">
+			<xsl:when test="count(//round_item[character2Id != '1']) = 0 and $tier &gt; 0">
 				<h3>You may resurrect one girl to go on to the finals</h3>
 			</xsl:when>
 			<xsl:when test="$tier &gt; -1">
@@ -57,7 +57,7 @@
 							<xsl:attribute name="class">rounds elimination</xsl:attribute>
 							<xsl:call-template name="wildcard_round" />
 						</xsl:when>
-						<xsl:when test="count(//round_item[roundCharacter2Id != '1']) = 0">
+						<xsl:when test="count(//round_item[character2Id != '1']) = 0">
 							<xsl:attribute name="class">rounds wildcard</xsl:attribute>
 							<xsl:call-template name="wildcard_round" />
 						</xsl:when>
@@ -76,34 +76,34 @@
 	</xsl:template>
 
 	<xsl:template match="round_item">
-		<div class="round" data-id="{roundId}">
-			<xsl:if test="roundVoted = 'true'">
+		<div class="round" data-id="{id}">
+			<xsl:if test="voted = 'true'">
 				<xsl:attribute name="class">round voted</xsl:attribute>
 			</xsl:if>
-			<div class="entrant left" data-id="{roundCharacter1Id}">
-				<img src="http://cdn.awwni.me/bracket/{roundCharacter1/characterImage}" alt="{roundCharacter1/characterName}" />
-				<h4><xsl:value-of select="roundCharacter1/characterName" disable-output-escaping="yes" /></h4>
-				<h5><xsl:value-of select="roundCharacter1/characterSource" disable-output-escaping="yes" /></h5>
+			<div class="entrant left" data-id="{character1Id}">
+				<img src="http://cdn.awwni.me/bracket/{character1/image}" alt="{character1/name}" />
+				<h4><xsl:value-of select="character1/name" disable-output-escaping="yes" /></h4>
+				<h5><xsl:value-of select="character1/source" disable-output-escaping="yes" /></h5>
 			</div>
-			<div class="entrant right" data-id="{roundCharacter2Id}">
-				<img src="http://cdn.awwni.me/bracket/{roundCharacter2/characterImage}" alt="{roundCharacter2/characterName}" />
-				<h4><xsl:value-of select="roundCharacter2/characterName" disable-output-escaping="yes" /></h4>
-				<h5><xsl:value-of select="roundCharacter2/characterSource" disable-output-escaping="yes" /></h5>
+			<div class="entrant right" data-id="{character2Id}">
+				<img src="http://cdn.awwni.me/bracket/{character2/image}" alt="{character2/name}" />
+				<h4><xsl:value-of select="character2/name" disable-output-escaping="yes" /></h4>
+				<h5><xsl:value-of select="character2/source" disable-output-escaping="yes" /></h5>
 			</div>
 		</div>
 	</xsl:template>
 	
 	<xsl:template name="wildcard_round">
 		<xsl:for-each select="//round_item">
-			<div class="round" data-id="{roundId}">
-				<xsl:if test="roundVoted = 'true'">
+			<div class="round" data-id="{id}">
+				<xsl:if test="voted = 'true'">
 					<xsl:attribute name="class">round voted</xsl:attribute>
 				</xsl:if>
-				<div class="entrant" data-id="{roundCharacter1Id}">
-					<img src="http://cdn.awwni.me/bracket/{roundCharacter1/characterImage}" alt="{roundCharacter1/characterName}" />
-					<h4><xsl:value-of select="roundCharacter1/characterName" disable-output-escaping="yes" /></h4>
+				<div class="entrant" data-id="{character1}">
+					<img src="http://cdn.awwni.me/bracket/{character1/image}" alt="{character1/name}" />
+					<h4><xsl:value-of select="character1/name" disable-output-escaping="yes" /></h4>
 					<h5>
-						<xsl:variable name="source"><xsl:value-of select="roundCharacter1/characterSource" /></xsl:variable>
+						<xsl:variable name="source"><xsl:value-of select="character1/source" /></xsl:variable>
 						<xsl:choose>
 							<xsl:when test="php:function('strpos', $source, 'tp://') = 2">
 								<a href="{$source}" target="_blank">See More Info <xsl:text disable-output-escaping="yes">&amp;raquo;</xsl:text></a>
