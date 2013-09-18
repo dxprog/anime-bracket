@@ -70,7 +70,7 @@ namespace Api {
 		}
 
 		/**
-		 * Gets other nominees in this bracket with similar names (checks for Japanese and Western naming order)
+		 * Gets other characters in this bracket with similar names (checks for Japanese and Western naming order)
 		 */
 		public static function getBySimilarName($name, $bracket) {
 			$retVal = null;
