@@ -10,7 +10,7 @@ namespace Lib {
 			
 		}
 		
-		private function _serializeItem($item, $root, $attributes = '') {
+		private static function _serializeItem($item, $root, $attributes = '') {
 			
 			$retVal = '<' . $root . $attributes . '>';
 			
