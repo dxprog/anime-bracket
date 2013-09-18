@@ -1,39 +1,30 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>The Great 2012 Awwnime Bracket</title>
-		<link rel="stylesheet" type="text/css" href="/view/awwnime/styles/awwnime.css" />
+		<title>{TITLE}</title>
+		<link rel="stylesheet" type="text/css" href="/view/css/styles.css" />
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	</head>
 	<body>
-		<h1>The Great 2012 Awwnime Bracket</h1>
+		<a href="/">
+			<h1>The Great Awwnime Bracket</h1>
+		</a>
 		<div id="nominate">
-			<img src="/view/awwnime/styles/images/awwnime_madoka.png" alt="Her Magical Girl wish is for you to pick her" />
-			<h2>Nominate your favorite cute anime girls</h2>
+			<img src="/images/{PERMA}-nominations.png" alt="Her Magical Girl wish is for you to pick her" />
 			<div class="info">
-				<p>We are currently taking nominations for entrants into the bracket. You may nominate as many characters as you wish between now and October 22<sup>nd</sup> @ 12am CDT.</p>
-				<p>Before we get started, though, some ground rules must be laid out:</p>
-				<ul>
-					<li>Females only. No traps allowed!</li>
-					<li>Must originate from Japanese media. This includes, but is not limited to:
-						<ul>
-							<li>Anime</li>
-							<li>Manga</li>
-							<li>Light Novels</li>
-							<li>Visual Novels *</li>
-							<li>Games</li>
-							<li>Software</li>
-						</ul>
-					</li>
-				</ul>
+				{RULES}
 				<a href="/nominate/" class="nominate">This seems fair. Take me to the form</a>
-				<p class="footnote">* Western VNs are allowed. Looking at you, Katawa Shoujo.</p>
 			</div>
 			<div class="form">
-				<label for="txtName">Character Name (e.g. Nagisa Furukawa):</label>
+				<label for="txtName">Character Name:</label>
+				<p class="footnote">In Japanese order, please. <em>Example: Takanashi Rikka</em></p>
 				<input type="text" name="txtName" id="txtName" />
-				<label for="txtSource">Source (e.g. Clannad):</label>
+				<label for="txtSource">Source:</label>
+				<p class="footnote">Shortened where possible. <em>Example: Chuunibyou</em></p>
 				<input type="text" name="txtSource" id="txtSource" />
+				<label for="txtPic">Link to Character Picture:</label>
+				<p class="footnote">Hot linking is fine. We'll take care of rehosting.</p>
+				<input type="text" name="txtPic" id="txtPic" />
 				<button>Nominate</button>
 				<p id="message">Success!</p>
 			</div>
@@ -49,7 +40,9 @@
 				$nominate = $('#nominate'),
 				$txtName = $('#txtName'),
 				$txtSource = $('#txtSource'),
+				$txtPic = $('#txtPic'),
 				$message = $('#message'),
+				bracketId = {BRACKET_ID},
 				
 				isIE = (/MSIE/).test(window.navigator.userAgent),
 				
@@ -66,6 +59,7 @@
 				nomineeCallback = function(data) {
 					displayMessage(data.success ? 'Success!' : data.message);
 					$txtName.focus().val(data.success ? '' : $txtName.val());
+					$txtPic.val(data.success ? '' : $txtPic.val());
 				},
 				
 				nomineeKeypress = function(e) {
@@ -76,7 +70,7 @@
 				
 				nomineeSubmit = function(e) {
 					
-					var submit = $txtName.val().length && $txtSource.val().length;
+					var submit = $txtName.val().length && $txtSource.val().length && $txtPic.val().length;
 					
 					if (null != e) {
 						e.preventDefault();
@@ -91,15 +85,18 @@
 						if (!$txtSource.val().length) {
 							$txtSource.addClass('error');
 						}
+						if (!$txtPic.val().length) {
+							$txtPic.addClass('error');
+						}
 					} else {
 					
-						$.ajax({
-							url:'/process.php?action=nominate',
-							dataType:'json',
-							type:'POST',
-							data:{ bracketId:3, nomineeName:$txtName.val(), nomineeSource:$txtSource.val() },
-							success:nomineeCallback
-						});
+					$.ajax({
+						url:'/process.php?action=nominate',
+						dataType:'json',
+						type:'POST',
+						data:{ bracketId:bracketId, nomineeName:$txtName.val(), nomineeSource:$txtSource.val(), image:$txtPic.val() },
+						success:nomineeCallback
+					});
 					
 					}
 				},
