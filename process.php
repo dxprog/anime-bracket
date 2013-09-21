@@ -78,7 +78,7 @@ if ($user) {
 						$out->success = true;
 						
 						// Clear any user related caches
-						$round = Api\Round::getRoundById($votes[0]);
+						$round = Api\Round::getById($votes[0]);
 						Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
 						Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
 						
