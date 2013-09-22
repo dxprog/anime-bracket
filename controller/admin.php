@@ -24,6 +24,9 @@ namespace Controller {
                     case 'eliminations':
                         $content = self::_beginEliminations();
                         break;
+                    case 'advance':
+                        $content = self::_advanceBracket();
+                        break;
                     case 'setState':
                         $id = Lib\Url::GetInt('bracket', null);
                         $state = Lib\Url::GetInt('state', null);
@@ -47,6 +50,17 @@ namespace Controller {
         public static function _main() {
             $brackets = Api\Bracket::getAll();
             return Lib\Display::compile($brackets, 'admin/brackets_overview');
+        }
+
+        public static function _advanceBracket() {
+            $id = Lib\Url::GetInt('bracket');
+            if ($id) {
+                $bracket = Api\Bracket::getById($id);
+                if ($bracket) {
+                    $bracket->advance();
+                }
+            }
+            return self::_main();
         }
 
         public static function _beginEliminations() {

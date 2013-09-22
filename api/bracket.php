@@ -187,6 +187,33 @@ namespace Api {
 			}
 			return $retVal;
 		}
+
+		/**
+		 * Advances the bracket eliminations
+		 */
+		public function advance() {
+
+			switch ($this->state) {
+				case BS_ELIMINATIONS:
+					$this->_advanceEliminations();
+					break;
+			}
+
+		}
+
+		/**
+		 * Advances the elmination round to the next group or the bracket proper
+		 */
+		private function _advanceEliminations() {
+
+			// Get a list of rounds not yet completed
+			$result = Lib\Db::Query('SELECT MIN(round_group) AS current_group FROM `round` WHERE bracket_id = :bracketId AND round_final != 1 ORDER BY round_group', [ ':bracketId' => $this->id ]);
+			if ($result && $result->count) {
+				$row = Lib\Db::Fetch($result);
+				Lib\Db::Query('UPDATE `round` SET round_final = 1 WHERE bracket_id = :bracketId AND round_group = :group', [ ':bracketId' => $this->id, ':group' => $row->current_group ]);
+			}
+
+		}
 	
 	}
 

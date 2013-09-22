@@ -17,6 +17,7 @@
                                 <li><a href="/admin/?action=eliminations&amp;bracket={id}">Start Eliminations</a></li>
                             </xsl:if>
                             <xsl:if test="state = '2'">
+                                <li><a href="/admin/?action=advance&amp;bracket={id}">Advance Eliminations</a></li>
                                 <li><a href="/admin/?action=setState&amp;state=3&amp;bracket={id}">Start Voting</a></li>
                             </xsl:if>
                             <xsl:if test="state = '3'">
