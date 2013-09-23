@@ -23,6 +23,7 @@ namespace Controller {
             } else {
                 $obj = new stdClass;
                 $obj->loginUrl = Api\User::getLoginUrl(Lib\Url::Get('redirect'));
+                $obj->originalUrl = Lib\Url::Get('redirect');
                 Lib\Display::setVariable('content', Lib\Display::compile($obj, 'login'));
             }
 

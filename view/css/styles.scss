@@ -62,6 +62,15 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
     }
 }
 
+.read-only {
+    @include button();
+    display: block;
+    font-size: 14px;
+    margin: 25px auto 0;
+    width: 340px;
+    text-align: center;
+}
+
 #nominate { 
     margin-left: 60px;
     position: relative;

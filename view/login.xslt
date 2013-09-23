@@ -6,5 +6,6 @@
             <a href="{//loginUrl}">Login</a>
             <p>To help maintain integrity of voting, we require that you authenticate with your reddit account. We just want to make sure you're a unique person  and don't have any access to your password or browsing information. We do require that your account be at least on month old.</p>
         </div>
+        <a href="{//originalUrl}?readonly=true" class="read-only">I just want to see the entrants and not vote</a>
     </xsl:template>
 </xsl:stylesheet>

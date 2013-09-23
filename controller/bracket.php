@@ -4,6 +4,7 @@ namespace Controller {
 	
 	use Lib;
 	use Api;
+	use stdClass;
 	
 	class Bracket implements Page {
 	
@@ -48,9 +49,18 @@ namespace Controller {
 
 		private static function _checkLogin() {
 			$user = Api\User::getCurrentUser();
-			if (!$user) {
+			$readonly = Lib\Url::GetBool('readonly', null);
+			if (!$user && !$readonly) {
 				header('Location: /login/?redirect=' . urlencode($_GET['q']));
+				exit;
 			}
+
+			// Setup a default user if we're in readonly
+			if (!$user) {
+				$user = new stdClass;
+				$user->id = 0;
+			}
+
 			return $user;
 		}
 		
@@ -75,8 +85,10 @@ namespace Controller {
 			$out = Lib\Cache::Get($cacheKey);
 			
 			if (false === $out) {
-				$rounds = Api\Round::getCurrentRounds($bracketId);
-				$out = Lib\Display::compile($rounds, 'round', $cacheKey);
+				$out = new stdClass;
+				$out->userId = $user->id;
+				$out->round = Api\Round::getCurrentRounds($bracketId);
+				$out = Lib\Display::compile($out, 'round', $cacheKey);
 			}
 			
 			Lib\Display::setTemplate('round');
