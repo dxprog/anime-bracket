@@ -16,7 +16,8 @@ namespace Api {
 			'tier' => 'round_tier',
 			'group' => 'round_group',
 			'character1Id' => 'round_character1_id',
-			'character2Id' => 'round_character2_id'
+			'character2Id' => 'round_character2_id',
+			'final' => 'round_final'
 		);
 		
 		/**
@@ -78,6 +79,11 @@ namespace Api {
 		 * Whether the user has voted on this round
 		 */
 		public $voted = false;
+
+		/**
+		 * Whether the round voting has been finalized
+		 */
+		public $final = false;
 		
 		/**
 		 * Constructor
@@ -85,6 +91,7 @@ namespace Api {
 		public function __construct($round = null) {
 			if (is_object($round)) {
 				parent::copyFromDbRow($round);
+				$this->final = (bool) ord($this->final); // Because PHP is retarded about return BIT types from MySQL
 				if (isset($round->user_vote)) {
 					$this->voted = $round->user_vote > 0;
 				}

@@ -125,15 +125,20 @@ namespace Api {
 				$retVal = [];
 				
 				// Calculate the number of tiers in the bracket
-				$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT round_tier) AS total FROM round WHERE bracket_id = :bracketId AND round_tier > 0', [ ':bracketId' => $this->id ]));
-				$count = (int) $row->total + 1;
+				$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total, MAX(round_group) AS max_group FROM round WHERE bracket_id = :bracketId AND round_tier = 1', [ ':bracketId' => $this->id ]));
+				$groups = 1 + (int) $row->max_group;
+				$baseRounds = (int) $row->total;
+				$i = $baseRounds;
+				$tiers = 0;
+				while ($i > 1) {
+					$i /= 2;
+					$tiers++;
+				}
 
-				for ($i = 1; $i < $count; $i++) {
-					$rounds = Round::getRoundsByTier($this->id, $i);
+				for ($i = 0; $i < $tiers; $i++) {
+					$rounds = Round::getRoundsByTier($this->id, $i + 1);
 					if ($rounds) {
 						foreach ($rounds as $round) {
-							$char1 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', array( ':id' => $round->character1Id, ':round' => $round->id)));
-							$char2 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', array( ':id' => $round->character2Id, ':round' => $round->id)));
 
 							// Numericize where needed
 							$round->id = (int) $round->id;
@@ -142,8 +147,13 @@ namespace Api {
 							$round->tier = (int) $round->tier;
 							$round->character1->id = (int) $round->character1->id;
 							$round->character2->id = (int) $round->character2->id;
-							$round->character1->votes = (int) $char1->total;
-							$round->character2->votes = (int) $char2->total;
+							
+							if ($round->final) {
+								$char1 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', array( ':id' => $round->character1Id, ':round' => $round->id)));
+								$char2 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', array( ':id' => $round->character2Id, ':round' => $round->id)));
+								$round->character1->votes = (int) $char1->total;
+								$round->character2->votes = (int) $char2->total;
+							}
 
 							// Toss out some extraneous data
 							unset($round->bracketId);
@@ -154,8 +164,21 @@ namespace Api {
 							unset($round->voted);
 
 						}
+					} else {
+
+						// Generate a bunch of empty data
+						$rounds = [];
+						for ($j = 0; $j < $baseRounds; $j++) {
+							$round = new Round();
+							$round->tier = $i + 1;
+							$round->order = $j;
+							$round->group = $j % $groups;
+							$rounds[] = $round;
+						}
+
 					}
 					$retVal[] = $rounds;
+					$baseRounds /= 2;
 				}
 
 				// Do a super long cache for finalized brackets

@@ -378,6 +378,10 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                 border-bottom: 1px solid $medTurk;
             }
 
+            &.nobody {
+                opacity: 0.25;
+            }
+
             dl {
                 height: 100px;
                 width: 280px;

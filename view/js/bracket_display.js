@@ -86,10 +86,13 @@
     renderBracket(0, null);
 
     $body.on('mouseover', '.entrant', function(e) {
-        $('.highlighted').removeClass('highlighted');
-        $('.entrant[data-id="' + e.currentTarget.getAttribute('data-id') + '"]')
-            .addClass('highlighted')
-            .parent().addClass('highlighted');
+        var id = e.currentTarget.getAttribute('data-id');
+        if ('1' !== id) {
+            $('.highlighted').removeClass('highlighted');
+            $('.entrant[data-id="' + e.currentTarget.getAttribute('data-id') + '"]')
+                .addClass('highlighted')
+                .parent().addClass('highlighted');
+        }
     });
 
     $header.on('click', 'li', handleGroupChange);
