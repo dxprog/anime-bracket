@@ -15,7 +15,6 @@
             this.id = 1;
             this.nobody = true;
         }
-        console.log(this);
     };
 
 }());

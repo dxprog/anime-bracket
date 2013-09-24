@@ -10,6 +10,7 @@
         wildCardRound = 0,
         tier = null,
         lastEntrantCount = 9999,
+        groups = 0,
 
         renderBracket = function(group, tier) {
             var left = '',
@@ -64,6 +65,22 @@
                 group = parseInt(group, 10);
             }
             renderBracket(group, tier);
+        },
+
+        populateGroups = function() {
+            var out = [],
+                i = 0;
+
+            for (; i < groups + 1; i++) {
+                out.push({ name:String.fromCharCode(i + 65), index:i });
+            }
+
+            $header
+                .find('ul')
+                .prepend(Templates.groupPicker({ groups:out }))
+                .on('click', 'li', handleGroupChange)
+                .find('[data-group="0"]')
+                .addClass('selected');
         };
 
     Handlebars.registerHelper('userVoted', function(entrant, options) {
@@ -76,6 +93,7 @@
 
     for (; i < count; i++) {
         tier = new Tier(bracketData.results[i]);
+        groups = tier.groups > groups ? tier.groups : groups;
         if (tier.entrants > lastEntrantCount) {
             wildCardRound = i;
         }
@@ -95,7 +113,7 @@
         }
     });
 
-    $header.on('click', 'li', handleGroupChange);
+    populateGroups();
     $header.find('.title').text(window.bracketData.name);
 
 }());
