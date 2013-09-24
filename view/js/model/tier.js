@@ -8,16 +8,19 @@
             i = 0,
             count = data.length,
             round = null,
-            entrants = 0;
+            entrants = 0,
+            maxGroup = 0;
 
         for (; i < count; i++) {
             round = new Round(data[i]);
             entrants += round.entrants;
+            maxGroup = round.group > maxGroup ? round.group : maxGroup;
             rounds.push(round);
         }
 
         this._rounds = rounds;
         this.entrants = entrants;
+        this.groups = maxGroup;
 
     };
 
