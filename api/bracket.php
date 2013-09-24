@@ -168,7 +168,7 @@ namespace Api {
 
 		}
 
-		public function getVotesForUser($user) {
+		public function getVotesForUser(User $user) {
 			$retVal = null;
 			if ($user instanceof User) {
 				$cacheKey = 'Api:Bracket:getVotesForUser_' . $user->id;
@@ -213,6 +213,54 @@ namespace Api {
 				Lib\Db::Query('UPDATE `round` SET round_final = 1 WHERE bracket_id = :bracketId AND round_group = :group', [ ':bracketId' => $this->id, ':group' => $row->current_group ]);
 			}
 
+		}
+
+		/**
+		 * Takes the results from the elimination rounds and creates a seeded bracket
+		 */
+		public function createBracketFromEliminations($entrants, $groups) {
+
+			if (is_numeric($entrants)) {
+				
+				// Generate the bracket template
+				$seeding = self::generateSeededBracket($entrants);
+				
+				// Get the entrants sorted by their votes in descending order
+				$characters = [];
+				$result = Lib\Db::Query('SELECT COUNT(1) AS total, v.character_id FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE r.bracket_id = :bracketId GROUP BY v.character_id ORDER BY total DESC LIMIT ' . $entrants, [ ':bracketId' => $this->id ]);
+				while ($row = Lib\Db::Fetch($result)) {
+					$characters[] = (int) $row->character_id;
+				}
+
+				// Set up the rounds
+				$groupSplit = $entrants / $groups;
+				for ($i = 0; $i < $entrants; $i += 2) {
+					$round = new Round();
+					$round->bracketId = $this->id;
+					$round->tier = 1;
+					$round->order = ($i + 1) % $groupSplit;
+					$round->group = floor($i / $groupSplit);
+					$round->character1Id = $characters[$seeding[$i] - 1];
+					$round->character2Id = $characters[$seeding[$i + 1] - 1];
+					$round->sync();
+				}
+
+			}
+
+		}
+
+		/**
+		 * Generates the ordering for the first tier of a seeded bracket
+		 */
+		public static function generateSeededBracket($entrants, array $buildFrom = null) {
+		    $entrants = (int) $entrants;
+		    $buildFrom = is_array($buildFrom) ? $buildFrom : [ 1, 2 ];
+		    $retVal = [];
+		    for ($i = 0, $count = count($buildFrom); $i < $count; $i++) {
+		        $retVal[] = $buildFrom[$i];
+		        $retVal[] = $count * 2 - ($buildFrom[$i] - 1);
+		    }
+		    return count($retVal) === $entrants ? $retVal : self::generateSeededBracket($entrants, $retVal);
 		}
 	
 	}

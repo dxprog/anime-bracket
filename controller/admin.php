@@ -27,6 +27,9 @@ namespace Controller {
                     case 'advance':
                         $content = self::_advanceBracket();
                         break;
+                    case 'createBracket':
+                        $content = self::_createBracket();
+                        break;
                     case 'setState':
                         $id = Lib\Url::GetInt('bracket', null);
                         $state = Lib\Url::GetInt('state', null);
@@ -52,21 +55,43 @@ namespace Controller {
             return Lib\Display::compile($brackets, 'admin/brackets_overview');
         }
 
-        public static function _advanceBracket() {
-            $id = Lib\Url::GetInt('bracket');
-            if ($id) {
-                $bracket = Api\Bracket::getById($id);
-                if ($bracket) {
-                    $bracket->advance();
+        public static function _createBracket() {
+            $retVal = null;
+            $bracket = self::_getBracket();
+            if ($bracket) {
+                if (count($_POST) > 0) {
+                    $entrants = Lib\Url::Post('entrants', true);
+                    $groups = Lib\Url::Post('groups', true);
+                    if ($entrants && $groups) {
+                        $bracket->createBracketFromEliminations($entrants, $groups);
+                        $retVal = self::_main();
+                    }
+                } else {
+                    $count = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE round_tier = 0 AND bracket_id = :bracketId', [ ':bracketId' => $bracket->id ]));
+                    $i = 2;
+                    $entrants = [];
+                    $count = (int) $count->total;
+                    while ($i < $count) {
+                        $entrants[] = $i;
+                        $i *= 2;
+                    }
+                    $retVal = Lib\Display::compile($entrants, 'admin/create_bracket');
                 }
+            }
+            return $retVal;
+        }
+
+        public static function _advanceBracket() {
+            $bracket = self::_getBracket();
+            if ($bracket) {
+                $bracket->advance();
             }
             return self::_main();
         }
 
         public static function _beginEliminations() {
             $days = Lib\Url::GetInt('days', null);
-            $id = Lib\Url::GetInt('bracket', null);
-            $bracket = Api\Bracket::getById($id);
+            $bracket = self::_getBracket();
             $retVal = null;
             if ($bracket && $bracket->state == BS_NOMINATIONS) {
                 if (!$days) {
@@ -188,6 +213,11 @@ namespace Controller {
 
             return $retVal;
 
+        }
+
+        private static function _getBracket() {
+            $id = Lib\Url::GetInt('bracket', 0);
+            return Api\Bracket::getById($id);
         }
 
     }
