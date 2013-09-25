@@ -194,7 +194,7 @@ namespace Api {
 		public function getVotesForUser(User $user) {
 			$retVal = null;
 			if ($user instanceof User) {
-				$cacheKey = 'Api:Bracket:getVotesForUser_' . $user->id;
+				$cacheKey = 'Api:Bracket:getVotesForUser_' . $this->id . '_' . $user->id;
 				$retVal = Lib\Cache::Get($cacheKey);
 				if (false === $retVal) {
 					$params = [ ':userId' => $user->id, ':bracketId' => $this->id ];
