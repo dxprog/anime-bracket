@@ -398,7 +398,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 
             .name {
                 font-size: 14px;
-                top: 20px;
+                bottom: 68px;
                 text-transform: uppercase;
             }
 
@@ -430,8 +430,15 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                 }
             }
 
-            &.user-voted {
-                background-color: #0f0;
+            &.user-voted .image:after {
+                content: '';
+                position: absolute;
+                bottom: -15px;
+                right: -15px;
+                display: block;
+                width: 60px;
+                height: 61px;
+                background: url(images/bracket_check.png) no-repeat;
             }
 
         }

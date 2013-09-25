@@ -84,9 +84,10 @@
         };
 
     Handlebars.registerHelper('userVoted', function(entrant, options) {
-        var retVal = '';
-        if (window.bracketData.userVotes && bracketData.userVotes.hasOwnProperty(this.id)) {
-            retVal = bracketData.userVotes[this.id] == entrant.id ? options.fn(this) : '';
+        var retVal = '',
+            id = '' + this.id;
+        if (window.bracketData.userVotes && bracketData.userVotes.hasOwnProperty(id)) {
+            retVal = bracketData.userVotes[id] == entrant.id ? options.fn(this) : '';
         }
         return retVal;
     });

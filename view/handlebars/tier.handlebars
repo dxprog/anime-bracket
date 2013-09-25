@@ -1,7 +1,7 @@
 <ol class="tier {{side}}">
     {{#each rounds}}
-        <li class="round{{#unless entrant2}} single-entrant{{/unless}} {{#userVoted entrant1}}user-voted{{/userVoted}}" data-tier="{{tier}}">
-            <div data-id="{{entrant1.id}}" class="entrant entrant-{{entrant1.position}}{{#if entrant1.nobody}} nobody{{/if}}" style="height:{{../height}}px;">
+        <li class="round{{#unless entrant2}} single-entrant{{/unless}}" data-tier="{{tier}}" data-round="{{id}}">
+            <div data-id="{{entrant1.id}}" class="entrant entrant-{{entrant1.position}}{{#if entrant1.nobody}} nobody{{/if}}{{#userVoted entrant1}} user-voted{{/userVoted}}" style="height:{{../height}}px;">
                 {{> entrant entrant1}}
             </div>
             {{#if entrant2}}
