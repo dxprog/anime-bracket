@@ -81,6 +81,11 @@ namespace Api {
 		public $voted = false;
 
 		/**
+		 * ID of the character the user voted for
+		 */
+		public $votedCharacterId;
+
+		/**
 		 * Whether the round voting has been finalized
 		 */
 		public $final = false;
@@ -94,6 +99,7 @@ namespace Api {
 				$this->final = (bool) ord($this->final); // Because PHP is retarded about return BIT types from MySQL
 				if (isset($round->user_vote)) {
 					$this->voted = $round->user_vote > 0;
+					$this->votedCharacterId = (int) $round->user_vote;
 				}
 			}
 		}

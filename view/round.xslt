@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
 	<xsl:output method="html" />
 	<xsl:template match="/">
+		<xsl:variable name="guest"><xsl:if test="//userId = '0'">yes</xsl:if></xsl:variable>
 		<xsl:variable name="tier"><xsl:value-of select="//round_item[@index='0']/tier" /></xsl:variable>
 		<xsl:variable name="group">
 			<xsl:choose>
@@ -31,17 +32,19 @@
 			</xsl:choose>
 		</h2>
 		
-		<xsl:choose>
-			<xsl:when test="count(//round_item[character2Id != '1']) = 0 and $tier &gt; 0">
-				<h3>You may resurrect one girl to go on to the finals</h3>
-			</xsl:when>
-			<xsl:when test="$tier &gt; -1">
-				<h3>Place your votes below</h3>
-			</xsl:when>
-			<xsl:otherwise>
-				<h3>You have made the catgirls purr</h3>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:if test="$guest != 'yes'">
+			<xsl:choose>
+				<xsl:when test="count(//round_item[character2Id != '1']) = 0 and $tier &gt; 0">
+					<h3>You may resurrect one girl to go on to the finals</h3>
+				</xsl:when>
+				<xsl:when test="$tier &gt; -1">
+					<h3>Place your votes below</h3>
+				</xsl:when>
+				<xsl:otherwise>
+					<h3>You have made the catgirls purr</h3>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 		<p class="message"></p>
 		<!--
 		<div id="survey">
@@ -66,13 +69,23 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</div>
-				<p class="disclaimer">Remember, once your vote for an entrant is cast, you can't take it back. Be sure your selections are where you want them.</p>
-				<button>Submit Vote</button>
+				<xsl:if test="$guest != 'yes'">
+					<p class="disclaimer">Remember, once your vote for an entrant is cast, you can't take it back. Be sure your selections are where you want them.</p>
+					<button>Submit Vote</button>
+				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
 				<p class="disclaimer">You have voted on all the entrants today. Come back tomorrow to cast your votes again.</p>
 			</xsl:otherwise>
 		</xsl:choose>
+
+		<xsl:if test="$guest != 'yes'">
+			<script type="text/javascript">
+				window.bracketId = <xsl:value-of select="//round_item[@index = '0']/bracketId" />;
+			</script>
+			<script type="text/javascript" src="/view/js/voting.js"></script>
+		</xsl:if>
+
 	</xsl:template>
 
 	<xsl:template match="round_item">
@@ -81,11 +94,17 @@
 				<xsl:attribute name="class">round voted</xsl:attribute>
 			</xsl:if>
 			<div class="entrant left" data-id="{character1Id}">
+				<xsl:if test="votedCharacterId = character1Id">
+					<xsl:attribute name="class">entrant left selected</xsl:attribute>
+				</xsl:if>
 				<img src="http://cdn.awwni.me/bracket/{character1/image}" alt="{character1/name}" />
 				<h4><xsl:value-of select="character1/name" disable-output-escaping="yes" /></h4>
 				<h5><xsl:value-of select="character1/source" disable-output-escaping="yes" /></h5>
 			</div>
 			<div class="entrant right" data-id="{character2Id}">
+				<xsl:if test="votedCharacterId = character2Id">
+					<xsl:attribute name="class">entrant right selected</xsl:attribute>
+				</xsl:if>
 				<img src="http://cdn.awwni.me/bracket/{character2/image}" alt="{character2/name}" />
 				<h4><xsl:value-of select="character2/name" disable-output-escaping="yes" /></h4>
 				<h5><xsl:value-of select="character2/source" disable-output-escaping="yes" /></h5>
