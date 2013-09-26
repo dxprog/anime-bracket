@@ -119,6 +119,9 @@
 					<xsl:attribute name="class">round voted</xsl:attribute>
 				</xsl:if>
 				<div class="entrant" data-id="{character1Id}">
+					<xsl:if test="voted ='true'">
+						<xsl:attribute name="class">entrant selected</xsl:attribute>
+					</xsl:if>
 					<img src="http://cdn.awwni.me/bracket/{character1/image}" alt="{character1/name}" />
 					<h4><xsl:value-of select="character1/name" disable-output-escaping="yes" /></h4>
 					<h5>
