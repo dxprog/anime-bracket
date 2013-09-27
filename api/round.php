@@ -214,6 +214,37 @@ namespace Api {
 			return $retVal;
 			
 		}
+
+		/**
+		 * Returns the group currently being voted on
+		 */
+		public static function getCurrentGroup($bracketId) {
+
+		}
+
+		/**
+		 * Returns the character object for the winner of the current round
+		 */
+		public function getWinner() {
+
+			$retVal = null;
+
+			$result = Lib\Db::Query('SELECT COUNT(1) AS votes, character_id FROM votes WHERE round_id = :roundId GROUP BY character_id', [ ':roundId' => $this->id ]);
+			if ($result && $result->count) {
+				$highestVotes = 0;
+				$winner = 0;
+				while ($row = Lib\Db::Fetch($result)) {
+					if ((int) $row->votes > $highestVotes) {
+						$highestVotes = (int) $row->votes;
+						$winner = (int) $row->character_id;
+					}
+				}
+				$retVal = Character::getById($winner);
+			}
+
+			return $retVal;
+
+		}
 	
 	}
 

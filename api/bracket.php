@@ -212,13 +212,16 @@ namespace Api {
 		}
 
 		/**
-		 * Advances the bracket eliminations
+		 * Advances the bracket to the next tier/group
 		 */
 		public function advance() {
 
 			switch ($this->state) {
 				case BS_ELIMINATIONS:
 					$this->_advanceEliminations();
+					break;
+				case BS_VOTING:
+					$this->_advanceBracket();
 					break;
 			}
 
@@ -234,6 +237,38 @@ namespace Api {
 			if ($result && $result->count) {
 				$row = Lib\Db::Fetch($result);
 				Lib\Db::Query('UPDATE `round` SET round_final = 1 WHERE bracket_id = :bracketId AND round_group = :group', [ ':bracketId' => $this->id, ':group' => $row->current_group ]);
+			}
+
+		}
+
+		/**
+		 * Advances a standard bracket tier
+		 */
+		private function _advanceBracket() {
+
+			$rounds = Round::getCurrentRounds($this->id, true);
+			for ($i = 0, $count = count($rounds); $i < $count; $i += 2) {
+
+				// Get the round winners
+				$winner1 = $rounds[$i]->getWinner();
+				$winner2 = $rounds[$i + 1]->getWinner();
+
+				// Create the round for the next tier
+				$newRound = new Round();
+				$newRound->bracketId = $this->id;
+				$newRound->tier = $rounds[$i]->tier + 1;
+				$newRound->group = $rounds[$i]->group;
+				$newRound->order = $i / 2;
+				$newRound->character1Id = $winner1->id;
+				$newRound->character2Id = $winner2->id;
+				$newRound->sync();
+
+				// Finalize the current tier
+				$rounds[$i]->final = true;
+				$rounds[$i]->sync();
+				$rounds[$i + 1]->final = true;
+				$rounds[$i + 1]->sync();
+
 			}
 
 		}

@@ -26,7 +26,7 @@ namespace Lib {
 		 */
 		public function sync() {
 			
-			$retVal = 0;
+			$retVal = false;
 
 			if (property_exists($this, '_dbTable') && property_exists($this, '_dbMap')) {
 				
@@ -82,14 +82,16 @@ namespace Lib {
 				$retVal = Db::Query($query, $params);
 
 				// Save the ID for insert
-				if ('INSERT' === $method && $retVal->count > 0) {
+				if ('INSERT' === $method && $retVal && $retVal->count > 0) {
                     $this->$primaryKey = $retVal->insertId;
 					$retVal = $retVal->count;
-				}
+				} else if ('UPDATE' === $method && $retVal) {
+                    $retVal = true;
+                }
 				
 			}
 			
-			return $retVal > 0;
+			return $retVal;
 		
 		}
 		
