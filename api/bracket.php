@@ -128,6 +128,7 @@ namespace Api {
 				$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total, MAX(round_group) AS max_group FROM round WHERE bracket_id = :bracketId AND round_tier = 1', [ ':bracketId' => $this->id ]));
 				$groups = 1 + (int) $row->max_group;
 				$baseRounds = (int) $row->total;
+				
 				$i = $baseRounds;
 				$tiers = 0;
 				while ($i > 1) {
@@ -136,11 +137,16 @@ namespace Api {
 				}
 
 				for ($i = 0; $i < $tiers; $i++) {
+					
 					$rounds = Round::getRoundsByTier($this->id, $i + 1);
-					if ($rounds) {
-						foreach ($rounds as $round) {
+					$roundCount = count($rounds);
+					$groupRoundCount = $baseRounds / $groups;
+
+					for ($j = 0; $j < $baseRounds; $j++) {
+						if ($j < $roundCount) {
 
 							// Numericize where needed
+							$round = $rounds[$j];
 							$round->id = (int) $round->id;
 							$round->order = (int) $round->order;
 							$round->group = (int) $round->group;
@@ -163,20 +169,17 @@ namespace Api {
 							unset($round->character2->bracketId);
 							unset($round->voted);
 
-						}
-					} else {
-
-						// Generate a bunch of empty data
-						$rounds = [];
-						for ($j = 0; $j < $baseRounds; $j++) {
-							$round = new Round();
+						} else {
+							$round = new stdClass;
 							$round->tier = $i + 1;
 							$round->order = $j;
-							$round->group = $j % $groups;
+							$round->group = floor($j / $groupRoundCount);
+							$round->filler = true;
 							$rounds[] = $round;
 						}
 
 					}
+
 					$retVal[] = $rounds;
 					$baseRounds /= 2;
 				}
