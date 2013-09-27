@@ -12,6 +12,30 @@
         lastEntrantCount = 9999,
         groups = 0,
 
+        parseQueryString = function(qs) {
+        
+            var
+                retVal = {},
+                i = null,
+                count = 0,
+                kvp = null;
+
+            if (!qs) {
+                qs = location.href.indexOf('?') !== -1 ? location.href.split('?')[1] : null;
+            }
+            
+            if (qs) {
+                qs = qs.split('&');
+                for (i = 0, count = qs.length; i < count; i++) {
+                    kvp = qs[i].split('=');
+                    retVal[kvp[0]] = kvp.length === 1 ? true : decodeURIComponent(kvp[1]);
+                }
+            }
+
+            return retVal;
+        
+        },
+
         renderBracket = function(group, tier) {
             var left = '',
                 right = '',
@@ -79,9 +103,12 @@
                 .find('ul')
                 .prepend(Templates.groupPicker({ groups:out }))
                 .on('click', 'li', handleGroupChange)
-                .find('[data-group="0"]')
+                .find('[data-group="' + (group - 1) + '"]')
                 .addClass('selected');
-        };
+        },
+
+        qs = parseQueryString(),
+        group = qs.hasOwnProperty('group') ? parseInt(qs.group, 10) : 1;
 
     Handlebars.registerHelper('userVoted', function(entrant, options) {
         var retVal = '',
@@ -102,7 +129,7 @@
         tiers.push(tier);
     }
 
-    renderBracket(0, null);
+    renderBracket(group - 1, null);
 
     $body.on('mouseover', '.entrant', function(e) {
         var id = e.currentTarget.getAttribute('data-id');
