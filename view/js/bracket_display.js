@@ -43,7 +43,8 @@
                 columns = 0,
                 max = tier < wildCardRound ? wildCardRound : count,
                 lastRound = null,
-                bracketHeight = 0;
+                bracketHeight = 0,
+                winner = {};
 
             tier = tier || 0;
             bracketHeight = Math.pow(2, max - tier) * 100 / 2;
@@ -58,11 +59,17 @@
             // Render the winner
             lastRound = tiers[i - 1].getRound(0, group);
             if (null !== lastRound && null !== lastRound.entrant1 && null != lastRound.entrant2) {
-                if (lastRound.entrant1.votes > lastRound.entrant2.votes) {
-                    left += Templates.winner({ entrant: lastRound.entrant1, height: bracketHeight });
+                if (!lastRound.entrant1.votes && !lastRound.entrant2.votes) {
+                    winner = { entrant:new Entrant(null, 0) };
                 } else {
-                    left += Templates.winner({ entrant: lastRound.entrant2, height: bracketHeight });
+                    if (lastRound.entrant1.votes > lastRound.entrant2.votes) {
+                        winner = { entrant: lastRound.entrant1 };
+                    } else {
+                        winner = { entrant: lastRound.entrant2 };
+                    }
                 }
+                winner.height = bracketHeight;
+                left += Templates.winner(winner);
             }
 
             // Add an additional column for the winner
@@ -89,6 +96,11 @@
                 group = parseInt(group, 10);
             }
             renderBracket(group, tier);
+
+            if (typeof window.history.pushState === 'function') {
+                history.pushState(null, window.title, '/' + window.bracketData.perma + '/view/?group=' + (group + 1));
+            }
+
         },
 
         populateGroups = function() {
