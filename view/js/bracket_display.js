@@ -48,8 +48,8 @@
                 winner = {};
 
             tier = tier || 0;
-            visibleTiers = null === group ? max - tier : max - tier - 1;
-            bracketHeight = Math.pow(2, visibleTiers) * 100;
+            max = null != group && !wildCardRound ? max - 1 : max;
+            bracketHeight = Math.pow(2, max - tier - 1) * 100;
 
             for (i = tier; i < max; i++) {
                 temp = tiers[i].render(i - tier, group, true);
@@ -95,7 +95,7 @@
                 group = null;
                 
                 // If there were no wild card rounds detected, display everything from the quarter finals up
-                tier = wildCardRound ? wildCardRound + 1 : count - 2;
+                tier = wildCardRound ? wildCardRound + 1 : count - 3;
             } else {
                 group = parseInt(group, 10);
             }

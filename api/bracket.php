@@ -129,7 +129,7 @@ namespace Api {
 				$groups = 1 + (int) $row->max_group;
 				$baseRounds = (int) $row->total;
 				
-				$i = $baseRounds;
+				$i = $baseRounds * 2;
 				$tiers = 0;
 				while ($i > 1) {
 					$i /= 2;
