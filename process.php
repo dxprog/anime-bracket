@@ -54,37 +54,42 @@ if ($user) {
 				$votes = Lib\Url::Post('votes');
 
 				if ($bracketId && $votes) {
-					$votes = explode(',', $votes);
-					$count = count($votes);
-					if ($count > 0 && $count % 2 === 0) {
+					$bracket = Api\Bracket::getById($bracket);
+					if ($bracket && ($bracket->state === BS_ELIMINATIONS || $bracket->state === BS_NOMINATIONS || $bracket->state === BS_VOTING)) {
+						$votes = explode(',', $votes);
+						$count = count($votes);
+						if ($count > 0 && $count % 2 === 0) {
 
-						$query = 'INSERT INTO `votes` (`user_id`, `vote_date`, `round_id`, `character_id`, `bracket_id`) VALUES ';
-						$params = [ ':userId' => $user->id, ':date' => time(), ':bracketId' => $bracketId ];
+							$query = 'INSERT INTO `votes` (`user_id`, `vote_date`, `round_id`, `character_id`, `bracket_id`) VALUES ';
+							$params = [ ':userId' => $user->id, ':date' => time(), ':bracketId' => $bracketId ];
 
-						$insertCount = 0;
-						for ($i = 0, $count = count($votes); $i < $count; $i += 2) {
-							$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM votes WHERE user_id = :userId AND round_id = :round', [ ':userId' => $user->id, ':round' => $votes[$i] ]));
-							if ((int) $row->total === 0) {
-								$query .= '(:userId, :date, :round' . $i . ', :character' . $i . ', :bracketId),';
-								$params[':round' . $i] = $votes[$i];
-								$params[':character' . $i] = $votes[$i + 1];
-								$insertCount++;
+							$insertCount = 0;
+							for ($i = 0, $count = count($votes); $i < $count; $i += 2) {
+								$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM votes WHERE user_id = :userId AND round_id = :round', [ ':userId' => $user->id, ':round' => $votes[$i] ]));
+								if ((int) $row->total === 0) {
+									$query .= '(:userId, :date, :round' . $i . ', :character' . $i . ', :bracketId),';
+									$params[':round' . $i] = $votes[$i];
+									$params[':character' . $i] = $votes[$i + 1];
+									$insertCount++;
+								}
 							}
+
+							if ($insertCount > 0) {
+								$query = substr($query, 0, strlen($query) - 1);
+								Lib\Db::Query($query, $params);
+							}
+							$out->success = true;
+
+							// Clear any user related caches
+							$round = Api\Round::getById($votes[0]);
+							Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
+							Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
+
+						} else {
+							$out->message = 'No votes were submitted';
 						}
-
-						if ($insertCount > 0) {
-							$query = substr($query, 0, strlen($query) - 1);
-							Lib\Db::Query($query, $params);
-						}
-						$out->success = true;
-
-						// Clear any user related caches
-						$round = Api\Round::getById($votes[0]);
-						Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
-						Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
-
 					} else {
-						$out->message = 'No votes were submitted';
+						$out->message = 'Voting is closed on this bracket';
 					}
 				} else {
 					$out->message = 'Invalid parameters';
