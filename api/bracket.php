@@ -1,10 +1,10 @@
 <?php
 
 namespace Api {
-	
+
 	use Lib;
 	use stdClass;
-	
+
 	define('BS_NOMINATIONS', 1);
 	define('BS_ELIMINATIONS', 2);
 	define('BS_VOTING', 3);
@@ -13,7 +13,7 @@ namespace Api {
 	define('BS_HIDDEN', 6);
 
 	class Bracket extends Lib\Dal {
-	
+
 		/**
 		 * Object property to table column map
 		 */
@@ -27,22 +27,22 @@ namespace Api {
 			'winnerCharacterId' => 'winner_character_id',
 			'rules' => 'bracket_rules'
 		);
-		
+
 		/**
 		 * Database table
 		 */
 		protected $_dbTable = 'bracket';
-		
+
 		/**
 		 * Primary key
 		 */
 		protected $_dbPrimaryKey = 'id';
-	
+
 		/**
 		 * Bracket ID
 		 */
 		public $id = 0;
-	
+
 		/**
 		 * Bracket name
 		 */
@@ -123,12 +123,12 @@ namespace Api {
 			if (false === $retVal) {
 
 				$retVal = [];
-				
+
 				// Calculate the number of tiers in the bracket
 				$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total, MAX(round_group) AS max_group FROM round WHERE bracket_id = :bracketId AND round_tier = 1', [ ':bracketId' => $this->id ]));
 				$groups = 1 + (int) $row->max_group;
 				$baseRounds = (int) $row->total;
-				
+
 				$i = $baseRounds * 2;
 				$tiers = 0;
 				while ($i > 1) {
@@ -137,7 +137,7 @@ namespace Api {
 				}
 
 				for ($i = 0; $i < $tiers; $i++) {
-					
+
 					$rounds = Round::getRoundsByTier($this->id, $i + 1);
 					$roundCount = count($rounds);
 					$groupRoundCount = $baseRounds / $groups;
@@ -153,10 +153,10 @@ namespace Api {
 							$round->tier = (int) $round->tier;
 							$round->character1->id = (int) $round->character1->id;
 							$round->character2->id = (int) $round->character2->id;
-							
+
 							if ($round->final) {
-								$char1 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', array( ':id' => $round->character1Id, ':round' => $round->id)));
-								$char2 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', array( ':id' => $round->character2Id, ':round' => $round->id)));
+								$char1 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', [ ':id' => $round->character1Id, ':round' => $round->id ]));
+								$char2 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', [ ':id' => $round->character2Id, ':round' => $round->id ]));
 								$round->character1->votes = (int) $char1->total;
 								$round->character2->votes = (int) $char2->total;
 							}
@@ -201,7 +201,7 @@ namespace Api {
 				$retVal = Lib\Cache::Get($cacheKey);
 				if (false === $retVal) {
 					$params = [ ':userId' => $user->id, ':bracketId' => $this->id ];
-					$result = Lib\Db::Query('SELECT v.round_id, v.character_id FROM votes v INNER JOIN `round` r ON r.round_id = v.round_id WHERE v.user_id = :userId AND r.bracket_id = :bracketId', $params);
+					$result = Lib\Db::Query('SELECT round_id, character_id FROM votes WHERE user_id = :userId AND bracket_id = :bracketId', $params);
 					$retVal = [];
 					if ($result && $result->count) {
 						while ($row = Lib\Db::Fetch($result)) {
@@ -282,10 +282,10 @@ namespace Api {
 		public function createBracketFromEliminations($entrants, $groups) {
 
 			if (is_numeric($entrants)) {
-				
+
 				// Generate the bracket template
 				$seeding = self::generateSeededBracket($entrants);
-				
+
 				// Get the entrants sorted by their votes in descending order
 				$characters = [];
 				$result = Lib\Db::Query('SELECT COUNT(1) AS total, v.character_id FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE r.bracket_id = :bracketId GROUP BY v.character_id ORDER BY total DESC LIMIT ' . $entrants, [ ':bracketId' => $this->id ]);
@@ -323,7 +323,7 @@ namespace Api {
 		    }
 		    return count($retVal) === $entrants ? $retVal : self::generateSeededBracket($entrants, $retVal);
 		}
-	
+
 	}
 
 }
