@@ -250,28 +250,40 @@ namespace Api {
 		private function _advanceBracket() {
 
 			$rounds = Round::getCurrentRounds($this->id, true);
-			for ($i = 0, $count = count($rounds); $i < $count; $i += 2) {
+			if (count($rounds) > 1) {
+				for ($i = 0, $count = count($rounds); $i < $count; $i += 2) {
 
-				// Get the round winners
-				$winner1 = $rounds[$i]->getWinner();
-				$winner2 = $rounds[$i + 1]->getWinner();
+					// Get the round winners
+					$winner1 = $rounds[$i]->getWinner();
+					$winner2 = $rounds[$i + 1]->getWinner();
 
-				// Create the round for the next tier
-				$newRound = new Round();
-				$newRound->bracketId = $this->id;
-				$newRound->tier = $rounds[$i]->tier + 1;
-				$newRound->group = $rounds[$i]->group;
-				$newRound->order = $i / 2;
-				$newRound->character1Id = $winner1->id;
-				$newRound->character2Id = $winner2->id;
-				$newRound->sync();
+					// Create the round for the next tier
+					$newRound = new Round();
+					$newRound->bracketId = $this->id;
+					$newRound->tier = $rounds[$i]->tier + 1;
+					$newRound->group = $rounds[$i]->group;
+					$newRound->order = $i / 2;
+					$newRound->character1Id = $winner1->id;
+					$newRound->character2Id = $winner2->id;
+					$newRound->sync();
 
-				// Finalize the current tier
-				$rounds[$i]->final = true;
-				$rounds[$i]->sync();
-				$rounds[$i + 1]->final = true;
-				$rounds[$i + 1]->sync();
+					// Finalize the current tier
+					$rounds[$i]->final = true;
+					$rounds[$i]->sync();
+					$rounds[$i + 1]->final = true;
+					$rounds[$i + 1]->sync();
 
+				}
+			} else if (count($rounds) === 1) {
+				$round = $rounds[0];
+				$round->final = true;
+				$round->sync();
+
+				$this->winner = $round->getWinner();
+				$this->winnerCharacterId = $this->winner->id;
+				$this->state = BS_FINAL;
+				$this->sync();
+				
 			}
 
 		}
