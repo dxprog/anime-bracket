@@ -1,9 +1,9 @@
-@mixin image-text($background, $width, $height) {
+@mixin image-text($background, $width, $height, $display: block) {
   overflow: hidden;
   width: $width;
   height: 0;
   padding-top: $height;
-  display: block;
+  display: $display;
   background: $background no-repeat;
 }
 
@@ -23,16 +23,16 @@
 @mixin gradient($from, $to) {
   /* fallback/image non-cover color */
   background-color: $from;
- 
+
   /* Firefox 3.6+ */
   background-image: -moz-linear-gradient($from, $to);
- 
+
   /* Safari 4+, Chrome 1+ */
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
- 
+
   /* Safari 5.1+, Chrome 10+ */
   background-image: -webkit-linear-gradient($from, $to);
- 
+
   /* Opera 11.10+ */
   background-image: -o-linear-gradient($from, $to);
 
@@ -52,4 +52,5 @@
     color: #fff;
     text-decoration: none;
     border: 0;
+    box-shadow: 0 3px 1px rgba(0, 0, 0, .25);
 }
