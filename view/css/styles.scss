@@ -641,3 +641,17 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
     }
 
 }
+
+footer {
+    clear: both;
+    padding-top: 100px;
+    p {
+        font-size: 14px;
+        text-align: right;
+        color: $darkGrey;
+        a {
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+}
