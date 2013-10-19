@@ -2,33 +2,25 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
     <xsl:output method="html" />
     <xsl:template match="/">
-        <div class="landing">
-            <div class="wrapper">
-                <xsl:for-each select="//landing_item[state != 6]">
-                    <div class="bracket">
-                        <h3><xsl:value-of select="name" /></h3>
-                        <img src="{pic}" alt="{name}" />
-                        <xsl:choose>
-                            <xsl:when test="state = 5">
-                                <h4><xsl:value-of select="winner/name" /></h4>
-                                <a href="/{perma}/view/" class="button">View Bracket Results</a>
-                            </xsl:when>
-                            <xsl:when test="state = 1">
-                                <h4>Accepting Nominations</h4>
-                                <a href="/{perma}/nominate/" class="button">Nominate Characters</a>
-                            </xsl:when>
-                            <xsl:when test="state = 2">
-                                <h4>Elimination Round</h4>
-                                <a href="/{perma}/vote/" class="button">Begin Voting</a>
-                            </xsl:when>
-                            <xsl:when test="state = 0">
-                                <xsl:variable name="date"><xsl:value-of select="start" /></xsl:variable>
-                                <h4>Begins <xsl:value-of select="php:function('date', 'M. jS', $date)" /></h4>
-                            </xsl:when>
-                        </xsl:choose>
-                    </div>
-                </xsl:for-each>
-            </div>
+        <div class="intro landing-section">
+            <h2>Which Girl is the Most Moe?</h2>
+            <p>The time has come once again to crown the Queen of Moe.</p>
+            <p>Join us starting October 26th in a battle of cuteness as the most moe girls of the last two years are pitted against each other for the title of Queen.</p>
+            <xsl:for-each select="//landing[id = 6]">
+                <xsl:choose>
+                    <xsl:when test="state = 1">
+                        <a href="/{perma}/nominate/" class="button">Nominate Characters</a>
+                    </xsl:when>
+                    <xsl:when test="state = 2">
+                        <a href="/{perma}/vote/" class="button">Vote In Eliminations</a>
+                    </xsl:when>
+                    <xsl:when test="state = 3">
+                        <a href="/{perma}/vote/" class="button">Cast Your Vote</a>
+                        <a href="/{perma}/view/" class="arrow-button">See Results</a>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:for-each>
+            <a href="/brackets/" class="arrow-button old-brackets-button">Previous Brackets</a>
         </div>
     </xsl:template>
 </xsl:stylesheet>

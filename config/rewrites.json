@@ -17,6 +17,15 @@
         "replace": "page=user"
     },
     {
+        "rule": "^brackets$",
+        "redirect": true,
+        "replace": "/brackets/"
+    },
+    {
+        "rule": "^brackets/$",
+        "replace": "page=bracket&action=all"
+    },
+    {
         "redirect": true,
         "rule": "^([^/.]+)/nominate$",
         "replace": "$1/nominate/"

@@ -1,15 +1,15 @@
 <?php
 
 namespace Controller {
-	
+
 	use Lib;
 	use Api;
 	use stdClass;
-	
+
 	class Bracket implements Page {
-	
+
 		public static function render() {
-			
+
 			$action = Lib\Url::Get('action');
 			$perma = Lib\Url::Get('bracket');
 			$bracket = Api\Bracket::getBracketByPerma($perma);
@@ -40,11 +40,15 @@ namespace Controller {
 				}
 			} else {
 				Lib\Display::setVariable('title', 'The Great Awwnime Bracket');
-				self::_displayLanding();
+				if ($action === 'all') {
+					self::_displayBrackets();
+				} else {
+					self::_displayLanding();
+				}
 			}
-			
+
 		}
-		
+
 		public static function registerExtension($class, $method, $type) { }
 
 		private static function _checkLogin() {
@@ -63,42 +67,50 @@ namespace Controller {
 
 			return $user;
 		}
-		
+
 		private static function _displayRound($bracket, $tier) {
 			$user = self::_checkLogin();
 			$cacheKey = 'BracketRound_' . $bracket . '_' . $tier . '_' . $user->id;
 			$out = Lib\Cache::Get($cacheKey);
-			
+
 			if (false === $out) {
 				$rounds = Api\Round::getBracketRounds($bracket, $tier);
 				$out = Lib\Display::compile($rounds, 'round', $cacheKey);
 			}
-			
+
 			Lib\Display::setTemplate('round');
 			Lib\Display::setVariable('content', $out);
-			
+
 		}
-		
+
 		private static function _displayCurrentRound($bracketId) {
 			$user = self::_checkLogin();
 			$cacheKey = 'CurrentRound_' . $bracketId . '_' . $user->id;
 			$out = Lib\Cache::Get($cacheKey);
-			
+
 			if (false === $out) {
 				$out = new stdClass;
 				$out->userId = $user->id;
 				$out->round = Api\Round::getCurrentRounds($bracketId);
 				$out = Lib\Display::compile($out, 'round', $cacheKey);
 			}
-			
+
 			Lib\Display::setTemplate('round');
 			Lib\Display::setVariable('content', $out);
-			
+
 		}
 
 		private static function _displayLanding() {
 			$brackets = Api\Bracket::getAll();
-			$content = Lib\Display::compile($brackets, 'landing');
+			$content = Lib\Display::compile(end($brackets), 'landing');
+			Lib\Display::setVariable('page', 'landing');
+			Lib\Display::setTemplate('default');
+			Lib\Display::setVariable('content', $content);
+		}
+
+		private static function _displayBrackets() {
+			$brackets = Api\Bracket::getAll();
+			$content = Lib\Display::compile($brackets, 'brackets');
 			Lib\Display::setTemplate('default');
 			Lib\Display::setVariable('content', $content);
 		}
@@ -120,7 +132,7 @@ namespace Controller {
 			Lib\Display::setVariable('perma', $bracket->perma);
 			Lib\Display::setTemplate('nominate');
 		}
-	
+
 	}
 
 }

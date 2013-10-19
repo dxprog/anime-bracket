@@ -29,11 +29,11 @@ $lightBlue: #e6fff7;
 
 * { margin:0; padding:0; }
 label { display:block; margin-bottom:5px; }
-a img { 
+a img {
     border: 0;
 }
 
-body { background:#c4e6dd url(images/grad_bg.png) repeat-x; width:900px; margin:0 auto; }
+body { background:#c4e6dd url(images/grad_bg.png) repeat-x; width:1140px; margin:0 auto; }
 h1 {
     @include image-text(url(images/logo.png), 372px, 166px);
     margin: 20px auto;
@@ -71,17 +71,17 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
     text-align: center;
 }
 
-#nominate { 
+#nominate {
     margin-left: 60px;
     position: relative;
     .info {
-        h2 { 
-            width: 445px; 
+        h2 {
+            width: 445px;
         }
         p {
             width: 400px;
             line-height: 1.2;
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
         }
     }
     img {
@@ -101,8 +101,8 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
     }
     ul {
         padding-left:32px;
-        li { 
-            width: 410px; 
+        li {
+            width: 410px;
         }
     }
 
@@ -130,7 +130,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
         }
     }
 
-    button { 
+    button {
         display: block;
         width: 181px;
         height: 0;
@@ -149,10 +149,10 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 
 #round { width:830px; margin:0 auto; }
 #round h2 { font-size:48px; line-height:1; text-align:center; margin-top:5px; }
-#round h3, 
-#round h4, 
-#round h5, 
-#round .disclaimer, 
+#round h3,
+#round h4,
+#round h5,
+#round .disclaimer,
 #round .message { font:normal 30px/1 'Helvetica Condensed Bold', sans-serif; color:#494a4c; text-transform:uppercase; text-align:center; margin-top:5px; }
 #round .rounds { margin-top:40px; overflow:hidden; }
 #round .round { height:155px; background:url(images/round_bg.png) no-repeat 0 52px; margin-bottom:40px; }
@@ -180,56 +180,104 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 #survey { display:none; }
 
 .landing {
+    margin: 0 auto;
+    padding: 0 50px;
+    min-width: 960px;
+    max-width: 1140px;
+    background: #83cdb9 url(images/2013_landing.png) repeat-x;
+    overflow: hidden;
     position: relative;
-    left: 50%;
-    float: left;
 
-    .wrapper {
-        overflow: hidden;
-        position: relative;
-        left: -50%;
-        float: left;
+    h1 {
+        background-size: contain;
+        width: 278px;
+        padding-top: 106px;
+        margin-bottom: 50px;
     }
 
-    .bracket {
-        width: 360px;
-        min-height: 372px;
-        float: left;
-        @include border-box();
+    &:after {
+        content: '';
+        display: block;
+        background: url(images/rikka_landing_2013.png) no-repeat;
+        width: 195px;
+        height: 705px;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .landing-section {
+        margin-left: 165px;
+    }
+
+    .button {
+        @include button();
+        margin: 20px auto 0;
+    }
+
+    .arrow-button {
+        @include button();
+        color: $darkGrey;
+        background: none;
+        text-transform: none;
         position: relative;
-        margin-left: 20px;
-        text-align: center;
-
-        &:first-child {
-            margin-left: 0;
-        };
-
-        h3 {
-            font: 24px/1 'Helvetica Condensed Bold', sans-serif;
-            color: $darkGrey;
-        }
-
-        h4 {
-            position: absolute;
-            top: 315px;
-            left: 0;
-            right: 0;
-            padding: 10px 0;
-            background: $medTurk;
-            font: 36px/1 'Helvetica Condensed Bold', sans-serif;
-            color: $darkGrey;
-        }
-
-        img {
+        box-shadow: none;
+        &:after {
+            content: '';
             display: block;
-            margin: 0 auto;
-            position: relative;
-            top: -24px;
+            height: 0;
+            width: 0;
+            border: 10px solid transparent;
+            border-left-color: $darkGrey;
+            position: absolute;
+            right: -10px;
+            top: (56px - 10px) / 2 - 4px;
         }
+    }
 
-        .button {
-            @include button();
-            margin: 20px auto 0;
+    .old-brackets-button {
+        float: right;
+        margin-top: 170px;
+    }
+
+    .old-brackets {
+        overflow: hidden;
+        display: none;
+        .bracket {
+            width: 360px;
+            min-height: 372px;
+            float: left;
+            @include border-box();
+            position: relative;
+            margin-left: 20px;
+            text-align: center;
+
+            &:first-child {
+                margin-left: 0;
+            };
+
+            h3 {
+                font: 24px/1 'Helvetica Condensed Bold', sans-serif;
+                color: $darkGrey;
+            }
+
+            h4 {
+                position: absolute;
+                top: 315px;
+                left: 0;
+                right: 0;
+                padding: 10px 0;
+                background: $medTurk;
+                font: 36px/1 'Helvetica Condensed Bold', sans-serif;
+                color: $darkGrey;
+            }
+
+            img {
+                display: block;
+                margin: 0 auto;
+                position: relative;
+                top: -24px;
+            }
         }
 
     }
@@ -411,7 +459,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                 }
             }
 
-            .source { 
+            .source {
                 display: none;
             }
 
@@ -535,4 +583,61 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
         }
 
     }
+}
+
+.brackets {
+    position: relative;
+    left: 50%;
+    float: left;
+
+    .wrapper {
+        overflow: hidden;
+        position: relative;
+        left: -50%;
+        float: left;
+    }
+
+    .bracket {
+        width: 360px;
+        min-height: 372px;
+        float: left;
+        @include border-box();
+        position: relative;
+        margin-left: 20px;
+        text-align: center;
+
+        &:first-child {
+            margin-left: 0;
+        };
+
+        h3 {
+            font: 24px/1 'Helvetica Condensed Bold', sans-serif;
+            color: $darkGrey;
+        }
+
+        h4 {
+            position: absolute;
+            top: 315px;
+            left: 0;
+            right: 0;
+            padding: 10px 0;
+            background: $medTurk;
+            font: 36px/1 'Helvetica Condensed Bold', sans-serif;
+            color: $darkGrey;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            top: -24px;
+        }
+
+        .button {
+            @include button();
+            margin: 20px auto 0;
+        }
+
+    }
+
 }
