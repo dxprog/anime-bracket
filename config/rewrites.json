@@ -8,6 +8,10 @@
         "replace": "page=user&action=verify_oauth"
     },
     {
+        "rule": "^typeahead/$",
+        "replace": "page=typeahead"
+    },
+    {
         "rule": "^login$",
         "replace": "login/",
         "redirect": true
@@ -52,13 +56,22 @@
         "rule": "^([^/.]+)/vote/$",
         "replace": "page=bracket&action=vote&bracket=$1"
     },
+    {
+        "rule": "^([^/.]+)/view$",
+        "replace": "$1/view/",
+        "redirect": true
+    },
+    {
+        "rule": "^([^/.]+)/view/$",
+        "replace": "page=bracket&action=view&bracket=$1"
+    },
 	{
-		"rule": "^([^/.]+)/view$",
-		"replace": "$1/view/",
+		"rule": "^([^/.]+)/characters$",
+		"replace": "$1/characters/",
 		"redirect": true
 	},
 	{
-		"rule": "^([^/.]+)/view/$",
-		"replace": "page=bracket&action=view&bracket=$1"
+		"rule": "^([^/.]+)/characters/$",
+		"replace": "page=bracket&action=characters&bracket=$1"
 	}
 ]

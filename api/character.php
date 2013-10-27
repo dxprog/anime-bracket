@@ -1,11 +1,11 @@
 <?php
 
 namespace Api {
-	
+
 	use Lib;
-	
+
 	class Character extends Lib\Dal {
-	
+
 		/**
 		 * Object property to table column map
 		 */
@@ -15,42 +15,42 @@ namespace Api {
 			'name' => 'character_name',
 			'source' => 'character_source'
 		);
-		
+
 		/**
 		 * Database table
 		 */
 		protected $_dbTable = 'character';
-		
+
 		/**
 		 * Primary key
 		 */
 		protected $_dbPrimaryKey = 'id';
-	
+
 		/**
 		 * Character record ID
 		 */
 		public $id = 0;
-	
+
 		/**
 		 * Bracket ID
 		 */
 		public $bracketId = 0;
-	
+
 		/**
 		 * Character name
 		 */
 		public $name = 0;
-	
+
 		/**
 		 * Character source
 		 */
 		public $source = 0;
-		
+
 		/**
 		 * Image path for this character
 		 */
 		public $image = '';
-		
+
 		/**
 		 * Constructor
 		 */
@@ -67,6 +67,30 @@ namespace Api {
 		public function copyFromDbRow($row) {
 			parent::copyFromDbRow($row);
 			$this->image = base_convert($this->id, 10, 36) . '.jpg';
+		}
+
+		/**
+		 * Gets all characters for a bracket
+		 */
+		public static function getByBracketId($bracketId) {
+			$retVal = null;
+			if (is_numeric($bracketId)) {
+				$cacheKey = 'Character_getByBracketId_' . $bracketId;
+				$retVal = Lib\Cache::Get($cacheKey);
+				if (false === $retVal) {
+					$retVal = null;
+					// TODO - make order by column configurable
+					$result = Lib\Db::Query('SELECT * FROM `character` WHERE bracket_id = :id ORDER BY character_source', [ ':id' => $bracketId ]);
+					if ($result && $result->count) {
+						$retVal = [];
+						while ($row = Lib\Db::Fetch($result)) {
+							$retVal[] = new Character($row);
+						}
+					}
+					Lib\Cache::Set($cacheKey, $retVal);
+				}
+			}
+			return $retVal;
 		}
 
 		/**

@@ -37,6 +37,9 @@ namespace Controller {
 					case 'view':
 						self::_displayBracketView($bracket);
 						break;
+					case 'characters':
+						self::_displayBracketCharacters($bracket)	;
+						break;
 				}
 			} else {
 				Lib\Display::setVariable('title', 'The Great Awwnime Bracket');
@@ -131,6 +134,15 @@ namespace Controller {
 			Lib\Display::setVariable('rules', Lib\Michelf\Markdown::defaultTransform($bracket->rules));
 			Lib\Display::setVariable('perma', $bracket->perma);
 			Lib\Display::setTemplate('nominate');
+		}
+
+		private static function _displayBracketCharacters($bracket) {
+			$out = new stdClass;
+			$out->characters = Api\Character::getByBracketId($bracket->id);
+			$out->bracket = $bracket;
+			$content = Lib\Display::compile($out, 'characters', 'Controller_displayBracketCharacters_' . $bracket->id);
+			Lib\Display::setVariable('content', $content);
+			Lib\Display::setVariable('title', $bracket->name . ' - Character Pool');
 		}
 
 	}
