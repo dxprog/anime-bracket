@@ -1,9 +1,9 @@
 (function(undefined) {
-   
+
     var COLUMN_WIDTH = 298,
         tiers = [],
         i = 0,
-        count = bracketData.results.length,
+        count = null,
         $content = $('#content'),
         $body = $('body'),
         $header = $('header'),
@@ -13,7 +13,7 @@
         groups = 0,
 
         parseQueryString = function(qs) {
-        
+
             var
                 retVal = {},
                 i = null,
@@ -23,7 +23,7 @@
             if (!qs) {
                 qs = location.href.indexOf('?') !== -1 ? location.href.split('?')[1] : null;
             }
-            
+
             if (qs) {
                 qs = qs.split('&');
                 for (i = 0, count = qs.length; i < count; i++) {
@@ -33,7 +33,7 @@
             }
 
             return retVal;
-        
+
         },
 
         renderBracket = function(group, tier) {
@@ -41,7 +41,7 @@
                 right = '',
                 temp = [],
                 columns = 0,
-                max = tier < wildCardRound ? wildCardRound : count,
+                max = tier < wildCardRound ? wildCardRound : roundsPerGroup(),
                 lastRound = null,
                 bracketHeight = 0,
                 visibleTiers = 0,
@@ -80,8 +80,21 @@
 
             $body.width(width);
             $content.width(width).html(left + right);
-            
+
         },
+
+        /**
+         * Returns the number of rounds that will be in a group
+         */
+        roundsPerGroup = function() {
+            var entrantsPerGroup = tiers[0]._rounds.length,
+                retVal = 0;
+            while (entrantsPerGroup % groups === 0) {
+                entrantsPerGroup /= 2;
+                retVal++;
+            }
+            return retVal + 1;
+        }
 
         handleGroupChange = function(e) {
             var $target = $(e.currentTarget),
@@ -93,7 +106,7 @@
 
             if (group === 'finals') {
                 group = null;
-                
+
                 // If there were no wild card rounds detected, display everything from the quarter finals up
                 tier = wildCardRound ? wildCardRound + 1 : count - 3;
             } else {
@@ -109,9 +122,12 @@
 
         populateGroups = function() {
             var out = [],
-                i = 0;
+                i = 0,
+                selectedGroup = group;
 
-            for (; i < groups + 1; i++) {
+            selectedGroup = isNaN(selectedGroup - 1) ? selectedGroup : selectedGroup - 1;
+
+            for (; i < groups; i++) {
                 out.push({ name:String.fromCharCode(i + 65), index:i });
             }
 
@@ -119,45 +135,60 @@
                 .find('ul')
                 .prepend(Templates.groupPicker({ groups:out }))
                 .on('click', 'li', handleGroupChange)
-                .find('[data-group="' + (group - 1) + '"]')
+                .find('[data-group="' + selectedGroup + '"]')
                 .addClass('selected');
         },
 
         qs = parseQueryString(),
-        group = qs.hasOwnProperty('group') ? parseInt(qs.group, 10) : 1;
+        group = qs.hasOwnProperty('group') ? qs.group : 1;
 
-    Handlebars.registerHelper('userVoted', function(entrant, options) {
-        var retVal = '',
-            id = '' + this.id;
-        if (window.bracketData.userVotes && bracketData.userVotes.hasOwnProperty(id)) {
-            retVal = bracketData.userVotes[id] == entrant.id ? options.fn(this) : '';
-        }
-        return retVal;
-    });
+    if (window.hasOwnProperty('bracketData')) {
 
-    for (; i < count; i++) {
-        tier = new Tier(bracketData.results[i]);
-        groups = tier.groups > groups ? tier.groups : groups;
-        if (tier.entrants > lastEntrantCount) {
-            wildCardRound = i;
+        count = bracketData.results.length;
+
+        Handlebars.registerHelper('userVoted', function(entrant, options) {
+            var retVal = '',
+                id = '' + this.id;
+            if (window.bracketData.userVotes && bracketData.userVotes.hasOwnProperty(id)) {
+                retVal = bracketData.userVotes[id] == entrant.id ? options.fn(this) : '';
+            }
+            return retVal;
+        });
+
+        for (; i < count; i++) {
+            tier = new Tier(bracketData.results[i]);
+            groups = tier.groups > groups ? tier.groups : groups;
+            if (tier.entrants > lastEntrantCount) {
+                wildCardRound = i;
+            }
+            lastEntrantCount = tier.entrants;
+            tiers.push(tier);
         }
-        lastEntrantCount = tier.entrants;
-        tiers.push(tier);
+
+        // Increment by 1 because group IDs are 0 based
+        groups = groups + 1;
+
+        if (group) {
+            if (group === 'finals') {
+                renderBracket(null, wildCardRound ? wildCardRound + 1 : count - 3);
+            } else {
+                renderBracket(parseInt(group, 10) - 1, null);
+            }
+        }
+
+        $body.on('mouseover', '.entrant', function(e) {
+            var id = e.currentTarget.getAttribute('data-id');
+            if ('1' !== id) {
+                $('.highlighted').removeClass('highlighted');
+                $('.entrant[data-id="' + e.currentTarget.getAttribute('data-id') + '"]')
+                    .addClass('highlighted')
+                    .parent().addClass('highlighted');
+            }
+        });
+
+        populateGroups();
+        $header.find('.title').text(window.bracketData.name);
+
     }
-
-    renderBracket(group - 1, null);
-
-    $body.on('mouseover', '.entrant', function(e) {
-        var id = e.currentTarget.getAttribute('data-id');
-        if ('1' !== id) {
-            $('.highlighted').removeClass('highlighted');
-            $('.entrant[data-id="' + e.currentTarget.getAttribute('data-id') + '"]')
-                .addClass('highlighted')
-                .parent().addClass('highlighted');
-        }
-    });
-
-    populateGroups();
-    $header.find('.title').text(window.bracketData.name);
 
 }());
