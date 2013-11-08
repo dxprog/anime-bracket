@@ -298,12 +298,32 @@ namespace Api {
 				// Generate the bracket template
 				$seeding = self::generateSeededBracket($entrants);
 
-				// Get the entrants sorted by their votes in descending order
-				$characters = [];
-				$result = Lib\Db::Query('SELECT COUNT(1) AS total, v.character_id FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE r.bracket_id = :bracketId GROUP BY v.character_id ORDER BY total DESC LIMIT ' . $entrants, [ ':bracketId' => $this->id ]);
+				// Get the max vote counts for each day
+				$result = Lib\Db::Query('SELECT COUNT(1) AS total, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_group', [ ':bracketId' => $this->id ]);
+				$groupCounts = [];
+				$max = 0;
 				while ($row = Lib\Db::Fetch($result)) {
-					$characters[] = (int) $row->character_id;
+					$votes = (int) $row->total;
+					$groupCounts[(int) $row->round_group] = $votes;
+					$max = $votes > $max ? $votes : $max;
 				}
+
+				$characters = [];
+				$result = Lib\Db::Query('SELECT COUNT(1) AS total, v.character_id, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE r.bracket_id = :bracketId GROUP BY v.character_id', [ ':bracketId' => $this->id ]);
+				while ($row = Lib\Db::Fetch($result)) {
+					$obj = new stdClass;
+					$obj->id = $row->character_id;
+
+					// Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
+					$obj->adjustedVotes = round(((int) $row->total / $groupCounts[(int) $row->round_group]) * $max);
+
+					$characters[] = $obj;
+				}
+
+				// Reorder by adjusted votes
+				usort($characters, function($a, $b) {
+					return $a->adjustedVotes < $b->adjustedVotes ? 1 : -1;
+				});
 
 				// Set up the rounds
 				$groupSplit = $entrants / $groups;
@@ -313,10 +333,14 @@ namespace Api {
 					$round->tier = 1;
 					$round->order = ($i + 1) % $groupSplit;
 					$round->group = floor($i / $groupSplit);
-					$round->character1Id = $characters[$seeding[$i] - 1];
-					$round->character2Id = $characters[$seeding[$i + 1] - 1];
+					$round->character1Id = $characters[$seeding[$i] - 1]->id;
+					$round->character2Id = $characters[$seeding[$i + 1] - 1]->id;
 					$round->sync();
 				}
+
+				// Change the state to standard bracket voting
+				$this->state = BS_VOTING;
+				$this->sync();
 
 			}
 
