@@ -52,10 +52,12 @@ if ($user) {
 
 				$bracketId = Lib\Url::Post('bracketId', true);
 				$votes = Lib\Url::Post('votes');
+				$prizes = Lib\Url::Post('prizes') === 'true';
 
 				if ($bracketId && $votes) {
-					$bracket = Api\Bracket::getById($bracket);
-					if ($bracket && ($bracket->state === BS_ELIMINATIONS || $bracket->state === BS_NOMINATIONS || $bracket->state === BS_VOTING)) {
+					$bracket = Api\Bracket::getById($bracketId);
+					$state = $bracket ? (int) $bracket->state : null;
+					if ($state === BS_ELIMINATIONS || $state === BS_NOMINATIONS || $state === BS_VOTING) {
 						$votes = explode(',', $votes);
 						$count = count($votes);
 						if ($count > 0 && $count % 2 === 0) {
@@ -84,6 +86,12 @@ if ($user) {
 							$round = Api\Round::getById($votes[0]);
 							Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
 							Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
+
+							// Save the user's prize preference (if it's changed)
+							if ((bool) $user->prizes !== $prizes) {
+								$user->prizes = $prizes;
+								$user->sync();
+							}
 
 						} else {
 							$out->message = 'No votes were submitted';

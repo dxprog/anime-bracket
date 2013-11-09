@@ -77,6 +77,13 @@
 						</xsl:otherwise>
 					</xsl:choose>
 					<xsl:if test="$guest != 'yes'">
+						<label for="prizes" class="prizes">
+							<input id="prizes" type="checkbox" />
+							<xsl:if test="//user/prizes = '1'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+							I'd like to be entered to win fabulous prizes. I understand that I'll have to tell the mods where I live so they can send me said fabulous prizes.
+						</label>
 						<p class="disclaimer">Remember, once your vote for an entrant is cast, you can't take it back. Be sure your selections are where you want them.</p>
 						<button>Submit Vote</button>
 					</xsl:if>

@@ -12,13 +12,15 @@ namespace Api {
             'id' => 'user_id',
             'name' => 'user_name',
             'admin' => 'user_admin',
-            'ip' => 'user_ip'
+            'ip' => 'user_ip',
+            'prizes' => 'user_prizes'
         ];
 
         public $id = 0;
         public $name;
         public $admin = false;
         public $ip;
+        public $prizes;
 
         public static function getByName($userName) {
             $retVal = null;
