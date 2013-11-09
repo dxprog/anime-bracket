@@ -10,19 +10,8 @@
         var message = '';
 
         if (data.success) {
-            for (var i = 0, count = $votes.length; i < count; i++) {
-                $votes[i].addClass('voted');
-            }
-            $('.wildcard .round').remove();
-            $(window).scrollTop(0);
-            if ($('.round').length > 0) {
-                message = 'You can still vote on the remaining entrants or wait until tomorrow to vote again.';
-            } else {
-                message = 'You will have the opportunity to vote again tomorrow.';
-                $('#round button,#round .disclaimer').hide();
-            }
-            $('#round .message').html('Your vote has been saved! ' + message).fadeIn();
-
+            $('#round .rounds').remove();
+            $('#round .vote-success').fadeIn();
         }
 
     },

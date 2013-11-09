@@ -150,11 +150,6 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 
 #round { width:830px; margin:0 auto; }
 #round h2 { font-size:48px; line-height:1; text-align:center; margin-top:5px; }
-#round h3,
-#round h4,
-#round h5,
-#round .disclaimer,
-#round .message { font:normal 30px/1 'Helvetica Condensed Bold', sans-serif; color:#494a4c; text-transform:uppercase; text-align:center; margin-top:5px; }
 #round .rounds { margin-top:40px; overflow:hidden; }
 #round .round { height:155px; background:url(images/round_bg.png) no-repeat 0 52px; margin-bottom:40px; }
 #round .wildcard .round,
@@ -176,7 +171,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 #round .entrant.right img { position:absolute; right:20px; }
 #round .disclaimer { font-size:24px; padding:10px 150px; }
 #round button { display:block; width:181px; height:0; padding-top:55px; overflow:hidden; background:url(images/submit.png) no-repeat; margin:20px auto; border:0; cursor:pointer; }
-#round .message { background:#fff; margin:20px 40px; border-radius:5px; display:none; font-size:24px; padding:20px; }
+
 
 #survey { display:none; }
 
@@ -192,6 +187,53 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
             }
         }
     }
+}
+
+#round {
+
+    h3,
+    h4,
+    h5,
+    .disclaimer {
+        font: normal 30px/1 'Helvetica Condensed Bold', sans-serif;
+        color: $darkGrey;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .vote-success p,
+    .message {
+        font: normal 24px/1 'Helvetica Condensed Bold', sans-serif;
+        color: $darkGrey;
+        text-transform: uppercase;
+        text-align: center;
+        background: #fff;
+        margin: 20px 40px;
+        border-radius: 5px;
+        padding: 20px;
+    }
+
+    .vote-success,
+    .message {
+        display: none;
+    }
+
+    .vote-success {
+        text-align: center;
+        .button {
+            @include button();
+        }
+        img {
+            display: block;
+            margin: 15px auto;
+            width: 461px;
+        }
+        a {
+            color: $medTurk;
+        }
+    }
+
+
 }
 
 .landing {

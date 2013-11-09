@@ -28,6 +28,9 @@
 				<xsl:when test="$group = '1'">Group B</xsl:when>
 				<xsl:when test="$group = '2'">Group C</xsl:when>
 				<xsl:when test="$group = '3'">Group D</xsl:when>
+				<xsl:when test="$group = '4'">Group E</xsl:when>
+				<xsl:when test="$group = '5'">Group F</xsl:when>
+				<xsl:when test="$group = '6'">Group G</xsl:when>
 				<xsl:when test="$group = 'all' and count(//round_item) &gt; 0">All Groups</xsl:when>
 			</xsl:choose>
 		</h2>
@@ -46,6 +49,11 @@
 			</xsl:choose>
 		</xsl:if>
 		<p class="message"></p>
+		<div class="vote-success">
+			<p>Thanks for voting! Now go and grab yourself a nice cup of tea and some cake and relax a bit. Alternatively, you can <a href="http://www.reddit.com/r/awwnime/about/sticky/" target="_blank">checkout the discussion</a></p>
+			<a href="/{//bracket/perma}/vote/" class="button">Vote on remaining rounds</a>
+			<img src="/images/{//bracket/perma}-post-voting.png" alt="Thanks for voting!" />
+		</div>
 		<!--
 		<div id="survey">
 			<h4>If you have a moment, please be a peach and fill out this survey =). If you've already filled it out, proceed to ignore.</h4>
@@ -68,11 +76,11 @@
 							<xsl:apply-templates select="//round_item" />
 						</xsl:otherwise>
 					</xsl:choose>
+					<xsl:if test="$guest != 'yes'">
+						<p class="disclaimer">Remember, once your vote for an entrant is cast, you can't take it back. Be sure your selections are where you want them.</p>
+						<button>Submit Vote</button>
+					</xsl:if>
 				</div>
-				<xsl:if test="$guest != 'yes'">
-					<p class="disclaimer">Remember, once your vote for an entrant is cast, you can't take it back. Be sure your selections are where you want them.</p>
-					<button>Submit Vote</button>
-				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
 				<p class="disclaimer">You have voted on all the entrants today. Come back tomorrow to cast your votes again.</p>
@@ -83,7 +91,7 @@
 			<script type="text/javascript">
 				window.bracketId = <xsl:value-of select="//round_item[@index = '0']/bracketId" />;
 			</script>
-			<script type="text/javascript" src="/view/js/voting.js"></script>
+			<script type="text/javascript" src="/view/anime-bracket.min.js?20131102"></script>
 		</xsl:if>
 
 	</xsl:template>
