@@ -170,26 +170,38 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 #round .entrant.right h4, #round .entrant.right h5 { left:auto; right:187px; text-align:right; }
 #round .entrant.right img { position:absolute; right:20px; }
 #round .disclaimer { font-size:24px; padding:10px 150px; }
-#round button { display:block; width:181px; height:0; padding-top:55px; overflow:hidden; background:url(images/submit.png) no-repeat; margin:20px auto; border:0; cursor:pointer; }
+#round #vote { display:block; width:181px; height:0; padding-top:55px; overflow:hidden; background:url(images/submit.png) no-repeat; margin:20px auto; border:0; cursor:pointer; }
 
 
 #survey { display:none; }
 
-#round.characters {
-    ul {
-        list-style: none;
-        .entrant {
-            background: url(images/wildcard_entrant.png) no-repeat center 52px;
-            margin-right: 15px;
-            &:hover {
-                background-position: center 52px;
-                cursor: default;
+#round {
+
+    &.characters {
+        ul {
+            list-style: none;
+            .entrant {
+                background: url(images/wildcard_entrant.png) no-repeat center 52px;
+                margin-right: 15px;
+                &:hover {
+                    background-position: center 52px;
+                    cursor: default;
+                }
             }
         }
     }
-}
 
-#round {
+    #formatVotes {
+        background: transparent;
+        border: 0;
+        display: block;
+        padding: 20px;
+        width: 400px;
+        text-align: center;
+        margin: 0 auto;
+        cursor: pointer;
+        font-size: 16px;
+    }
 
     h3,
     h4,
