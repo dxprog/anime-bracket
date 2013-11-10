@@ -48,6 +48,11 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
+
+		<xsl:if test="count(//round_item[voted = 'true']) &gt; 0">
+			<button id="formatVotes">Get copy/paste friendly version of my votes</button>
+		</xsl:if>
+
 		<p class="message"></p>
 		<div class="vote-success">
 			<p>Thanks for voting! Now go and grab yourself a nice cup of tea and some cake and relax a bit. Alternatively, you can <a href="http://www.reddit.com/r/awwnime/about/sticky/" target="_blank">checkout the discussion</a></p>
@@ -86,7 +91,7 @@
 							I'd like to be entered to win fabulous prizes. I understand that I'll have to tell the mods where I live so they can send me said fabulous prizes.
 						</label>
 						<p class="disclaimer">Remember, once your vote for an entrant is cast, you can't take it back. Be sure your selections are where you want them.</p>
-						<button>Submit Vote</button>
+						<button id="vote">Submit Vote</button>
 					</xsl:if>
 				</div>
 			</xsl:when>
