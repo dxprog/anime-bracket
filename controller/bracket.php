@@ -14,6 +14,9 @@ namespace Controller {
 			$perma = Lib\Url::Get('bracket');
 			$bracket = Api\Bracket::getBracketByPerma($perma);
 
+			Lib\Display::setVariable('CSS_VERSION', CSS_VERSION);
+			Lib\Display::setVariable('JS_VERSION', JS_VERSION);
+
 			if ($bracket) {
 				Lib\Display::setVariable('BRACKET_ID', $bracket->id);
 				Lib\Display::setVariable('TITLE', $bracket->name . ' - The Great Awwnime Bracket');
@@ -94,6 +97,8 @@ namespace Controller {
 			if (false === $out) {
 				$out = new stdClass;
 				$out->userId = $user->id;
+				$out->prizes = $user->prizes ? 1 : 0;
+				$out->bracket = Api\Bracket::getById($bracketId);
 				$out->round = Api\Round::getCurrentRounds($bracketId);
 				$out = Lib\Display::compile($out, 'round', $cacheKey);
 			}
