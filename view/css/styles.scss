@@ -194,7 +194,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
     #formatVotes {
         background: transparent;
         border: 0;
-        display: block;
+        display: none;
         padding: 20px;
         width: 400px;
         text-align: center;
@@ -448,12 +448,6 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 
         }
 
-        dt {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-        }
-
         .winner {
             text-align: center;
             width: 298px;
@@ -509,47 +503,114 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                 opacity: 0.25;
             }
 
-            dl {
+            .entrant-info {
                 height: 100px;
                 width: 280px;
                 margin-top: -50px;
                 top: 50%;
                 position: absolute;
                 background: url(images/bracket_entrant.png) no-repeat;
-            }
 
-            dd {
-                position: absolute;
-                left: 86px;
-            }
-
-            .name {
-                font-size: 14px;
-                bottom: 68px;
-                text-transform: uppercase;
-            }
-
-            .image {
-                left: 5px;
-                top: 0;
-                img {
-                    width: 75px;
-                    height: 75px;
-                    display: block;
+                dd {
+                    position: absolute;
+                    left: 86px;
                 }
+
+                dt {
+                    position: absolute;
+                    left: -9999px;
+                    top: -9999px;
+                }
+
+                .name {
+                    font-size: 14px;
+                    bottom: 68px;
+                    text-transform: uppercase;
+                }
+
+                .image {
+                    left: 5px;
+                    top: 0;
+                    img {
+                        width: 75px;
+                        height: 75px;
+                        display: block;
+                    }
+                }
+
+                .source {
+                    display: none;
+                }
+
+                .votes {
+                    top: 42px;
+                    font-size: 20px;
+                }
+
             }
 
-            .source {
-                display: none;
-            }
+            .stats-popup {
+                position: absolute;
+                background: #fff;
+                width: 300px;
+                padding: 20px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+                top: 50%;
+                margin-top: -138px;
+                left: 320px;
+                z-index: 9000;
 
-            .votes {
-                top: 42px;
-                font-size: 20px;
+                &:after {
+                    content: '';
+                    display: block;
+                    border: 20px solid transparent;
+                    border-right-color: #fff;
+                    position: absolute;
+                    left: -40px;
+                    top: 118px;
+                }
+
+                dt {
+                    font-size: 16px;
+                    margin-top: 10px;
+                    &:first-child {
+                        margin-top: 0;
+                    }
+                }
+
+                dd {
+                    background: none;
+                    font: 14px sans-serif;
+                    color: #000;
+                }
+
+                .also-voted-for {
+                    overflow: hidden;
+                    list-style: none;
+                    li {
+                        float: left;
+                        position: relative;
+                        margin-right: 10px;
+                        img {
+                            width: 50px;
+                            height: 50px;
+                            display: block;
+                        }
+                        .percent {
+                            display: block;
+                            background: #000;
+                            color: #fff;
+                            padding: 2px;
+                            text-align: center;
+                            font-size: 12px;
+                        }
+                    }
+                }
+
             }
 
             &.highlighted {
-                dl {
+                .entrant-info {
                     background-image: url(images/bracket_entrant_selected.png);
                 }
                 &:before {
@@ -606,6 +667,20 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                     left: auto;
                     right: 86px;
                 }
+
+                .stats-popup {
+                    left: -380px;
+                    &:after {
+                        border-right-color: transparent;
+                        border-left-color: #fff;
+                        left: auto;
+                        right: -40px;
+                    }
+                    dd {
+                        text-align: left;
+                    }
+                }
+                
             }
         }
 

@@ -3,6 +3,7 @@
 namespace Api {
 
 	use Lib;
+	use stdClass;
 
 	class Character extends Lib\Dal {
 
@@ -119,6 +120,108 @@ namespace Api {
 					}
 				}
 			}
+			return $retVal;
+		}
+
+		/**
+		 * Given the passed character, returns the characters that users also voted for
+		 * @param $sameSource bool Return only characters that are from the same source
+		 * @param $excludeEliminations bool Ignore votes cast in the elimination round
+		 * @return array Character objects and the percentage of users that also voted for them
+		 */
+		public function getCharactersAlsoVotedFor($sameSource = false, $excludeEliminations = false, $limit = 5) {
+
+			$voterCount = $this->getVoterCount();
+			$retVal = null;
+
+			if ($voterCount > 0) {
+
+				$params = [ ':bracketId' => $this->bracketId, ':characterId' => $this->id ];
+
+				$query = 'SELECT COUNT(DISTINCT v.user_id) AS total, c.* FROM votes v ';
+				$query .= 'INNER JOIN `character` c ON c.character_id = v.character_id ';
+				$query .= 'INNER JOIN `round` r ON r.round_id = v.round_id ';
+
+				$query .= 'WHERE v.bracket_id = :bracketId ';
+				$query .= 'AND v.character_id != :characterId ';
+				$query .= 'AND r.round_final = 1 ';
+				$query .= 'AND v.user_id IN (SELECT DISTINCT user_id FROM votes WHERE character_id = :characterId) ';
+
+				if ($sameSource) {
+					$query .= 'AND v.character_id IN (SELECT character_id FROM `character` WHERE character_source = :source) ';
+					$params[':source'] = $this->source;
+				}
+
+				if ($excludeEliminations) {
+					$query .= 'AND r.round_tier > 0 ';
+				}
+
+				$query .= 'GROUP BY v.character_id ORDER BY total DESC';
+
+				if (is_numeric($limit)) {
+					$query .= ' LIMIT ' . $limit;
+				}
+
+				$result = Lib\Db::Query($query, $params);
+				if ($result && $result->count > 0) {
+
+					$retVal = [];
+					while ($row = Lib\Db::Fetch($result)) {
+						$obj = new stdClass;
+						$obj->character = new Character($row);
+						$obj->percent = round($row->total / $voterCount * 100);
+						$retVal[] = $obj;
+					}
+
+				}
+
+			}
+
+			return $retVal;
+
+		}
+
+		/**
+		 * Returns the average percentage of votes a character receives each round
+		 */
+		public function getAverageRoundPerformance($excludeEliminations = false) {
+			$retVal = null;
+
+			if ($this->bracketId && $this->id) {
+				$query = 'SELECT COUNT(1) AS total, ' . 
+						 'SUM(CASE WHEN v.character_id = :characterId THEN 1 ELSE 0 END) AS character_votes ' .
+						 'FROM votes v INNER JOIN round r ON r.round_id = v.round_id ' .
+						 'WHERE v.bracket_id = :bracketId ' .
+						 ($excludeEliminations ? 'AND r.round_tier > 0 ' : '') .
+						 'AND v.round_id IN (SELECT round_id FROM round WHERE (round_character1_id = :characterId ' .
+						 'OR round_character2_id = :characterId)' .
+						 'AND round_final = 1)';
+				$result = Lib\Db::Query($query, [ ':characterId' => $this->id, ':bracketId' => $this->bracketId ]);
+
+				if ($result && $result->count === 1) {
+					$row = Lib\Db::Fetch($result);
+					$retVal = (int) $row->character_votes / (int) $row->total;
+				}
+			}
+
+			return $retVal;
+		}
+
+		/**
+		 * Gets the number of unique users who has voted for this character
+		 */
+		public function getVoterCount() {
+			$retVal = null;
+
+			if ($this->id > 0 AND $this->bracketId > 0) {
+				$retVal = 0;
+				$result = Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :characterId', [ ':characterId' => $this->id ]);
+				if ($result && $result->count === 1) {
+					$row = Lib\Db::Fetch($result);
+					$retVal = (int) $row->total;
+				}
+			}
+
 			return $retVal;
 		}
 

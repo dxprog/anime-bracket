@@ -1,0 +1,28 @@
+<div class="stats-popup">
+    <dl>
+        <dt>Performance</dt>
+        <dd>Averages {{performance}}% of votes per round</dd>
+        <dt>Users Also Voted For</dt>
+        <dd>
+            <ul class="also-voted-for">
+                {{#each alsoVotedFor}}
+                    <li>
+                        <img src="http://cdn.awwni.me/bracket/{{character.image}}" alt="{{character.name}}" />
+                        <span class="percent">{{percent}}%</span>
+                    </li>
+                {{/each}}
+            </ul>
+        </dd>
+        <dt>Also Voted for In Same Series</dt>
+        <dd>
+            <ul class="also-voted-for">
+                {{#each sameSourceVotes}}
+                    <li>
+                        <img src="http://cdn.awwni.me/bracket/{{character.image}}" alt="{{character.name}}" />
+                        <span class="percent">{{percent}}%</span>
+                    </li>
+                {{/each}}
+            </ul>
+        </dd>
+    </dl>
+</div>
