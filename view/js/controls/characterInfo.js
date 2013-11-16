@@ -2,6 +2,8 @@
     
     var infoCache = {},
 
+        VERTICAL_PADDING = 50,
+
         CharacterInfo = function($el, id) {
 
             var self = this,
@@ -35,6 +37,17 @@
         if (!(this._$popup instanceof $)) {
             this._$popup = $(Templates.statsPopup(this._data));
             this._$popup.appendTo($el);
+            
+            // Make sure the dialog doesn't go off the screen
+            var position = this._$popup.offset(),
+                height = 276,
+                docHeight = $(document).height();
+
+            if (position.top < VERTICAL_PADDING) {
+                this._$popup.addClass('out-bounds-top');
+            } else if (position.top + height > docHeight) {
+                this._$popup.addClass('out-bounds-bottom');
+            }
         }
     };
 

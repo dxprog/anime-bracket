@@ -607,6 +607,23 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                     }
                 }
 
+                &.out-bounds-top {
+                    margin-top: -59px;
+                    &:after {
+                        top: 39px;
+                    }
+                }
+
+                &.out-bounds-bottom {
+                    margin-top: 0;
+                    top: auto;
+                    bottom: 5px;
+                    &:after {
+                        top: auto;
+                        bottom: 29px;
+                    }
+                }
+
             }
 
             &.highlighted {
@@ -680,7 +697,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                         text-align: left;
                     }
                 }
-                
+
             }
         }
 
