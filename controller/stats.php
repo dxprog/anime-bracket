@@ -41,9 +41,14 @@ namespace Controller {
         private static function _getCharacterStats($id) {
             $retVal = null;
             if ($id) {
-                $db = Lib\Mongo::getDatabase();
-                $retVal = $db->characterRankingInfo->findOne([ 'characterId' => $id ]);
-                unset($retVal['_id']);
+                $cacheKey = 'Stats::_getCharacterStats_' . $id;
+                $retVal = Lib\Cache::Get($cacheKey);
+                if (false === $retVal) {
+                    $db = Lib\Mongo::getDatabase();
+                    $retVal = $db->characterRankingInfo->findOne([ 'characterId' => $id ]);
+                    unset($retVal['_id']);
+                    Lib\Cache::Set($cacheKey, $retVal);
+                }
             }
             return $retVal;
         }
