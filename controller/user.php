@@ -19,6 +19,8 @@ namespace Controller {
                     $redirect = Lib\Url::Get('state', '/');
                     header('Location: ' . $redirect);
                     exit;
+                } else {
+                    Lib\Display::setVariable('content', 'We were unable to verify your account at this time or your account age does not meet the requirements.');
                 }
             } else {
                 $obj = new stdClass;

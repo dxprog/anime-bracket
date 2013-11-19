@@ -32,7 +32,7 @@ namespace Api {
         }
 
         public static function getCurrentUser() {
-            return isset($_SESSION['user']) ? $_SESSION['user'] : null;
+            return isset($_SESSION['user']) && null !== $_SESSION['user'] ? $_SESSION['user'] : null;
         }
 
         public static function getLoginUrl($redirect = '') {
@@ -50,21 +50,25 @@ namespace Api {
                 $response = $client->fetch('https://oauth.reddit.com/api/v1/me.json');
                 if (isset($response['result']['name'])) {
                     $result = $response['result'];
-                    $user = self::getByName($result['name']);
-                    if (!$user && $result['created'] - REDDIT_MINAGE > 0) {
-                        $user = new User;
-                        $user->name = $result['name'];
-                        $user->ip = $_SERVER['REMOTE_ADDR'];
-                        if ($user->sync()) {
+                    // Block out new user accounts
+                    if ((int) $result['created'] > time() - REDDIT_MINAGE) {
+                        $retVal = false;
+                    } else {
+                        $user = self::getByName($result['name']);
+                        if (!$user) {
+                            $user = new User;
+                            $user->name = $result['name'];
+                            $user->ip = $_SERVER['REMOTE_ADDR'];
+                            if ($user->sync()) {
+                                $retVal = true;
+                            }
+                        } else {
                             $retVal = true;
                         }
-                    } else if ($user) {
-                        $retVal = true;
-                    }
-                }
 
-                if ($retVal) {
-                    $_SESSION['user'] = $user;
+                        $_SESSION['user'] = $retVal ? $user : null;
+
+                    }
                 }
             }
             return $retVal;
