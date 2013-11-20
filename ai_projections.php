@@ -68,6 +68,7 @@ function getSourceRounds($source) {
 
 }
 
+// Get the total amount of votes for a source
 function getSourceTotalVotes($char, $rounds) {
     $rounds = implode(',', getSourceRounds($char->source));
     $result = Lib\Db::Query('SELECT COUNT(1) AS total FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.round_id IN (' . $rounds . ')');
@@ -100,6 +101,7 @@ function getSourceStrength($char, $users) {
 
 }
 
+// Gets the percentage of times loyalists voted for a particular character in a matchup
 function getPercentTimesVotedFor($char, $users) {
 
     $retVal = 0;
@@ -114,15 +116,13 @@ function getPercentTimesVotedFor($char, $users) {
 
 }
 
-// The voter sample
-$sampleSize = 10000;
-
 $projections = [];
 
 // Get the current voting round
-$rounds = Api\Round::getRoundsByGroup(AI_BRACKET_ID, 4, 1);
+$rounds = Api\Round::getCurrentRounds(AI_BRACKET_ID);
 foreach ($rounds as $round) {
 
+    // Data gathering
     $char1 = Api\Character::getById($round->character1Id);
     $char2 = Api\Character::getById($round->character2Id);
 
@@ -137,26 +137,34 @@ foreach ($rounds as $round) {
     $char1->percentOfTimesVotedFor = getPercentTimesVotedFor($char1, $nonLoyalists);
     $char2->percentOfTimesVotedFor = getPercentTimesVotedFor($char2, $nonLoyalists);
 
+    // Below is the scientific explanation as penned by Chris Hackmann
+
+    // The percentage of voters who are not loyal to one character or the other
     $nonLoyalistPercentage = 1 - ($char1->loyalists->percent + $char2->loyalists->percent);
+
+    // Determine which character is voted for more often overall
     $bestCharacter = $char1->percentOfTimesVotedFor > $char2->percentOfTimesVotedFor ? $char1 : $char2;
     $worstCharacter = $char1->percentOfTimesVotedFor > $char2->percentOfTimesVotedFor ? $char2 : $char1;
 
+    // The popularity ration represents how many votes the best character gets for each vote for the worst character
     $popularityRatio = $bestCharacter->percentOfTimesVotedFor / $worstCharacter->percentOfTimesVotedFor;
+
+    // The best character recieves a percentage of the non loyalist votes equal to the percentage received by the worst character multiplied by the popularity ration
     $worstCharacterNonAdjusted = $nonLoyalistPercentage / ($popularityRatio + 1);
     $worstCharacter->projectedPercentage = $worstCharacterNonAdjusted + $worstCharacter->loyalists->percent;
     $bestCharacter->projectedPercentage = $nonLoyalistPercentage - $worstCharacterNonAdjusted + $bestCharacter->loyalists->percent;
 
-    $numbers = new stdClass;
-    $numbers->nonLoyalistPercentage = $nonLoyalistPercentage;
-    $numbers->popularityRatio = $popularityRatio;
-
-    $char1 = json_decode(json_encode($char1));
-    $char2 = json_decode(json_encode($char2));
-
     $diff = abs($char1->projectedPercentage - $char2->projectedPercentage);
 
+    // 4% and below is considered too close to call
     if ($diff < 0.04) {
-        $projections[] = '- ' . $char1->name . ' vs ' . $char2->name . ' - Too close to call (' . $bestCharacter->name . ' - ' . $bestCharacter->projectedPercentage . ')';
+        $projection = '- ' . $char1->name . ' vs ' . $char2->name . ' - Too close to call (';
+        if ($char1->projectedPercentage < $char2->projectedPercentage) {
+            $projection .= $char2->name . ' favored by ' . round(($char2->projectedPercentage - 0.5) * 100, 2) . '%)';
+        } else {
+            $projection .= $char1->name . ' favored by ' . round(($char1->projectedPercentage - 0.5) * 100, 2) . '%)';
+        }
+        $projections[] = $projection;
     } else {
         if ($char1->projectedPercentage < $char2->projectedPercentage) {
             $projections[] = '- ' . $char1->name . ' vs **' . $char2->name . '** - With ' . round($char2->projectedPercentage * 100) . '% of the votes';
