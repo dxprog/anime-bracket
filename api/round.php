@@ -225,25 +225,60 @@ namespace Api {
 		/**
 		 * Returns the character object for the winner of the current round
 		 */
-		public function getWinner() {
+		public function getWinner($useEliminations = false) {
 
 			$retVal = null;
 
-			$result = Lib\Db::Query('SELECT COUNT(1) AS votes, character_id FROM votes WHERE round_id = :roundId GROUP BY character_id', [ ':roundId' => $this->id ]);
-			if ($result && $result->count) {
+			$params = [];
+			if (!$useEliminations) {
+				$query = 'SELECT COUNT(1) AS votes, character_id FROM votes WHERE round_id = :roundId GROUP BY character_id';
+				$params[':roundId'] = $this->id;
+			} else {
+				$query = 'SELECT COUNT(1) AS votes, character_id FROM votes WHERE round_id IN (SELECT round_id FROM round WHERE bracket_id = :bracketId AND round_tier = 0 AND round_character1_id IN (:char1, :char2)) GROUP BY character_id';
+				$params[':char1'] = $this->character1Id;
+				$params[':char2'] = $this->character2Id;
+				$params[':bracketId'] = $this->bracketId;
+			}
+			$result = Lib\Db::Query($query, $params);
+
+			if ($result && $result->count === 2) {
 				$highestVotes = 0;
 				$winner = 0;
 				while ($row = Lib\Db::Fetch($result)) {
 					if ((int) $row->votes > $highestVotes) {
 						$highestVotes = (int) $row->votes;
 						$winner = (int) $row->character_id;
+					// Tie breakers are determined by the number of votes they received in the eliminations round
+					// If we're already checking against eliminations, first person to have received a vote wins
+					} else if ((int) $row->votes === $highestVotes && !$useEliminations) {
+						$winner = $this->getWinner(true);
+
+						// This results in an extra call to the database to fetch the character information again,
+						// but I'm feeling particularly lazy this evening
+						$winner = $winner->id;
+
 					}
 				}
 				$retVal = Character::getById($winner);
+			} else {
+
+				// Somehow, one person managed to get no votes, so fallback on tie breaker rules (technically that's what it is after all)
+				$retVal = $this->getWinner(true);
+
 			}
 
 			return $retVal;
 
+		}
+
+		public function getVoteCount() {
+			$retVal = 0;
+			$result = Lib\Db::Query('SELECT COUNT(1) AS total FROM votes WHERE round_id = :id', [ ':id' => $this->id ]);
+			if ($result && $result->count === 1) {
+				$row = Lib\Db::Fetch($result);
+				$retVal = (int) $row->total;
+			}
+			return $retVal;
 		}
 	
 	}
