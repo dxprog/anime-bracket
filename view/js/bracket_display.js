@@ -11,6 +11,7 @@
         tier = null,
         lastEntrantCount = 9999,
         groups = 0,
+        popup = null,
 
         parseQueryString = function(qs) {
 
@@ -41,7 +42,7 @@
                 right = '',
                 temp = [],
                 columns = 0,
-                max = tier < wildCardRound ? wildCardRound : roundsPerGroup(),
+                max = tier < wildCardRound ? wildCardRound : tier > wildCardRound ? count : roundsPerGroup(),
                 lastRound = null,
                 bracketHeight = 0,
                 visibleTiers = 0,
@@ -94,7 +95,7 @@
                 retVal++;
             }
             return retVal + 1;
-        }
+        },
 
         handleGroupChange = function(e) {
             var $target = $(e.currentTarget),
@@ -118,6 +119,29 @@
                 history.pushState(null, window.title, '/' + window.bracketData.perma + '/view/?group=' + (group + 1));
             }
 
+        },
+
+        hidePopups = function() {
+            popup = null;
+            $('.stats-popup').remove();
+        },
+
+        handleMouseOver = function(evt) {
+            var id = evt.currentTarget.getAttribute('data-id');
+            if ('1' !== id) {
+                if (popup) {
+                    hidePopups();
+                }
+                popup = new CharacterInfo($(evt.currentTarget).parent(), id);
+                $('.highlighted').removeClass('highlighted');
+                $('.entrant[data-id="' + id + '"]')
+                    .addClass('highlighted')
+                    .parent().addClass('highlighted');
+            }
+        },
+
+        handleMouseOut = function(evt) {
+            hidePopups();
         },
 
         populateGroups = function() {
@@ -176,15 +200,9 @@
             }
         }
 
-        $body.on('mouseover', '.entrant', function(e) {
-            var id = e.currentTarget.getAttribute('data-id');
-            if ('1' !== id) {
-                $('.highlighted').removeClass('highlighted');
-                $('.entrant[data-id="' + e.currentTarget.getAttribute('data-id') + '"]')
-                    .addClass('highlighted')
-                    .parent().addClass('highlighted');
-            }
-        });
+        $body
+            .on('mouseover', '.entrant-info', handleMouseOver)
+            .on('mouseout', '.entrant-info', handleMouseOut);
 
         populateGroups();
         $header.find('.title').text(window.bracketData.name);

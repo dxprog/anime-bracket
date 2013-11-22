@@ -125,7 +125,7 @@ namespace Api {
 				$retVal = [];
 
 				// Calculate the number of tiers in the bracket
-				$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total, MAX(round_group) AS max_group FROM round WHERE bracket_id = :bracketId AND round_tier = 1', [ ':bracketId' => $this->id ]));
+				$row = Lib\Db::Fetch(Lib\Db::Query('SELECT SUM(CASE WHEN round_tier = 1 THEN 1 ELSE 0 END) AS total, MAX(round_tier) AS max_tier, MAX(round_group) AS max_group FROM round WHERE bracket_id = :bracketId AND round_tier > 0', [ ':bracketId' => $this->id ]));
 				$groups = 1 + (int) $row->max_group;
 				$baseRounds = (int) $row->total;
 
@@ -135,6 +135,10 @@ namespace Api {
 					$i /= 2;
 					$tiers++;
 				}
+
+				// More bullshit that needs to be done to support that ONE BRACKET that had wildcards
+				$dbTiers = (int) $row->max_tier;
+				$tiers = $dbTiers > $tiers ? $dbTiers : $tiers;
 
 				for ($i = 0; $i < $tiers; $i++) {
 
@@ -309,12 +313,13 @@ namespace Api {
 				}
 
 				$characters = [];
-				$result = Lib\Db::Query('SELECT COUNT(1) AS total, v.character_id, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE r.bracket_id = :bracketId GROUP BY v.character_id', [ ':bracketId' => $this->id ]);
+				$result = Lib\Db::Query('SELECT COUNT(1) AS total, v.character_id, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId GROUP BY v.character_id', [ ':bracketId' => $this->id ]);
 				while ($row = Lib\Db::Fetch($result)) {
 					$obj = new stdClass;
 					$obj->id = $row->character_id;
 
 					// Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
+					// $obj->adjustedVotes = round(($obj->votes / $groups[$obj->group]) * $max);
 					$obj->adjustedVotes = round(((int) $row->total / $groupCounts[(int) $row->round_group]) * $max);
 
 					$characters[] = $obj;
