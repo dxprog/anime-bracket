@@ -467,6 +467,11 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                     border-top: 1px solid $medTurk;
                     z-index: -9001;
                 }
+                dt {
+                    position: absolute;
+                    left: -9999px;
+                    top: -9999px;
+                }
             }
         }
 
