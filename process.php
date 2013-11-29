@@ -85,6 +85,7 @@ if ($user) {
 							// Clear any user related caches
 							$round = Api\Round::getById($votes[0]);
 							Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
+							Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_all_' . $user->id, false);
 							Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
 
 							// Save the user's prize preference (if it's changed)
