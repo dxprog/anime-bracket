@@ -17,6 +17,7 @@
                             <dt>Headshot</dt>
                             <dd><input type="file" name="headshot" /></dd>
                         </dl>
+                        <button type="submit" class="button" name="form_action" value="create">Enter Character in Bracket</button>
                         <xsl:if test="count(//similar/similar_item) &gt; 0">
                             <h2>Similar Nominees</h2>
                             <table>
@@ -40,16 +41,14 @@
                                 </xsl:for-each>
                             </table>
                         </xsl:if>
-                        <xsl:if test="count(//character/character_item) &gt; 0">
-                            <h2>Similar Characters</h2>
+                        <xsl:variable name="bracketId" select="//bracket/id" />
+                        <xsl:if test="count(//character/character_item[bracketId = $bracketId]) &gt; 0">
+                            <h2>Similar Characters in this Bracket</h2>
                             <table>
-                                <xsl:for-each select="//character/character_item">
+                                <xsl:for-each select="//character/character_item[bracketId = $bracketId]">
                                     <tr>
                                         <td rowspan="2">
-                                            <input type="checkbox" name="chkProcess[]" value="{id}" />
-                                        </td>
-                                        <td rowspan="2">
-                                            <a class="thumb" style="background-image:url({image})" href="{image}" target="_blank">Thumbnail</a>
+                                            <a class="thumb" style="background-image:url(//cdn.awwni.me/bracket/{image})" href="{image}" target="_blank">Thumbnail</a>
                                         </td>
                                         <td>
                                             <xsl:value-of select="name" disable-output-escaping="yes" />
@@ -63,9 +62,34 @@
                                 </xsl:for-each>
                             </table>
                         </xsl:if>
+
+                        <xsl:if test="count(//character/character_item[bracketId != $bracketId]) &gt; 0">
+                            <h2>Similar Characters From Other Brackets</h2>
+                            <table>
+                                <xsl:for-each select="//character/character_item[bracketId != $bracketId]">
+                                    <tr>
+                                        <td rowspan="2">
+                                            <a class="thumb" style="background-image:url(//cdn.awwni.me/bracket/{image})" href="{image}" target="_blank">Thumbnail</a>
+                                        </td>
+                                        <td>
+                                            <xsl:value-of select="name" disable-output-escaping="yes" />
+                                        </td>
+                                        <td rowspan="2">
+                                            <button type="submit" class="button" name="form_action" value="clone|{id}">Use Character</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <xsl:value-of select="source" disable-output-escaping="yes" />
+                                        </td>
+                                    </tr>
+                                </xsl:for-each>
+                            </table>
+                        </xsl:if>
+
                         <input type="hidden" name="id" value="{//nominee/id}" />
-                        <button type="submit" class="button" name="form_action" value="skip">Skip</button>
-                        <button type="submit" class="button" name="form_action" value="create">Submit</button>
+                        <button type="submit" class="button" name="form_action" value="ignore">Ignore for Now</button>
+                        <button type="submit" class="button" name="form_action" value="skip">Delete Checked Nominees</button>
                     </div>
                 </form>
             </xsl:when>

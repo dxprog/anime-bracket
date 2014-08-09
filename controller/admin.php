@@ -1,7 +1,7 @@
 <?php
 
 namespace Controller {
-    
+
     use Api;
     use Lib;
     use stdClass;
@@ -38,7 +38,7 @@ namespace Controller {
                         $content = self::_main();
                         break;
                 }
-                
+
             }
 
             Lib\Display::setTemplate('admin');
@@ -51,7 +51,7 @@ namespace Controller {
         public static function registerExtension($class, $method, $type) { }
 
         public static function _main() {
-            $brackets = Api\Bracket::getAll();
+            $brackets = Api\Bracket::getAll(true);
             return Lib\Display::compile($brackets, 'admin/brackets_overview');
         }
 
@@ -109,7 +109,7 @@ namespace Controller {
                         $order = 0;
                         while ($row = Lib\Db::Fetch($result)) {
                             $round = new Api\Round();
-                            $round->bracketId = 5;
+                            $round->bracketId = $bracket->id;
                             $round->tier = 0;
                             $round->group = $group;
                             $round->order = $order;
@@ -174,6 +174,22 @@ namespace Controller {
                             }
                         }
 
+                        if (strpos($action, 'clone') === 0) {
+                            $pieces = explode('|', $action);
+                            $characterId = end($pieces);
+                            if (is_numeric($characterId)) {
+                                $character = Api\Character::getById($characterId);
+                                if ($character) {
+                                    $character->id = 0;
+                                    $character->bracketId = $bracketId;
+                                    if ($character->sync()) {
+                                        copy(IMAGE_LOCATION . '/' . base_convert($characterId, 10, 36) . '.jpg', IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
+                                        $create = true;
+                                    }
+                                }
+                            }
+                        }
+
                         if ($create || $action === 'skip') {
                             $params = [ ':id0' => $id ];
                             $similar = Lib\Url::Post('chkProcess');
@@ -196,7 +212,7 @@ namespace Controller {
 
                     }
                 }
-                
+
                 $bracket = Api\Bracket::getById($bracketId);
                 $nominee = Api\Nominee::getUnprocessed($bracket->id, 1);
 
