@@ -86,14 +86,19 @@ namespace Api {
 		/**
 		 * Override for getAll to include the winner character object
 		 */
-		public static function getAll() {
-			$cacheKey = 'Api:Bracket:getAll';
+		public static function getAll($force = false) {
+			$cacheKey = 'Api:Bracket:getAll_' . ($force ? 'true' : 'false');
 			$retVal = Lib\Cache::Get($cacheKey);
 			if (false === $retVal) {
-				$retVal = parent::getAll();
-				foreach ($retVal as $bracket) {
+				$brackets = parent::getAll();
+				$retVal = [];
+				foreach ($brackets as $bracket) {
 					if ($bracket->winnerCharacterId) {
 						$bracket->winner = Character::getById($bracket->winnerCharacterId);
+					}
+
+					if ($bracket->start <= time() || $force) {
+						$retVal[] = $bracket;
 					}
 				}
 				Lib\Cache::Set($cacheKey, $retVal, 3600);

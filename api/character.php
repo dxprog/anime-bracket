@@ -99,28 +99,30 @@ namespace Api {
 		 */
 		public static function getBySimilarName($name, $bracket) {
 			$retVal = null;
-			if ($bracket instanceof Bracket) {
-				$query = 'SELECT * FROM `character` WHERE bracket_id = :bracketId ';
-				$params = [ ':bracketId' => $bracket->id ];
-				$name = explode(' ', $name);
-				if (count($name) === 2) {
-					$params[':nameA'] = $name[0] . '%' . $name[1];
-					$params[':nameB'] = $name[1] . '%' . $name[0];
-					$query .= 'AND (character_name LIKE :nameA OR character_name LIKE :nameB)';
-				} else {
-					$params[':name'] = implode('%', $name);
-					$query .= 'AND character_name LIKE :name';
-				}
 
-				$result = Lib\Db::Query($query, $params);
-				if ($result && $result->count) {
-					$retVal = [];
-					while ($row = Lib\Db::Fetch($result)) {
-						$retVal[] = new Character($row);
-					}
+			$query = 'SELECT * FROM `character` WHERE ';
+			$params = [];
+			$name = explode(' ', $name);
+			if (count($name) === 2) {
+				$params[':nameA'] = $name[0] . '%' . $name[1];
+				$params[':nameB'] = $name[1] . '%' . $name[0];
+				$query .= '(character_name LIKE :nameA OR character_name LIKE :nameB)';
+			} else {
+				$params[':name'] = implode('%', $name);
+				$query .= 'character_name LIKE :name';
+			}
+
+			$result = Lib\Db::Query($query, $params);
+
+			if ($result && $result->count) {
+				$retVal = [];
+				while ($row = Lib\Db::Fetch($result)) {
+					$retVal[] = new Character($row);
 				}
 			}
+
 			return $retVal;
+
 		}
 
 		/**
