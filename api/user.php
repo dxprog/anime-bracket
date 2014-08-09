@@ -1,7 +1,7 @@
 <?php
 
 namespace Api {
-    
+
     use Lib;
 
     class User extends Lib\Dal {
@@ -32,7 +32,7 @@ namespace Api {
         }
 
         public static function getCurrentUser() {
-            return isset($_SESSION['user']) && null !== $_SESSION['user'] ? $_SESSION['user'] : null;
+            return Lib\Session::get('user');
         }
 
         public static function getLoginUrl($redirect = '') {
@@ -66,7 +66,7 @@ namespace Api {
                             $retVal = true;
                         }
 
-                        $_SESSION['user'] = $retVal ? $user : null;
+                        Lib\Session::set('user', $user);
 
                     }
                 }

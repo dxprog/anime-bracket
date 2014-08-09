@@ -17,7 +17,7 @@ date_default_timezone_set('America/Chicago');
 $GLOBALS['_content'] = null;
 $GLOBALS['_sidebars'] = null;
 $GLOBALS['_api'] = 'http://api.dxprog.com/';
-$GLOBALS['_title'] = 'The Great 2012 Awwnime Bracket';
+$GLOBALS['_title'] = 'The Great Awwnime Bracket';
 Lib\Display::setVariable('title', $_title);
 
 // Handle URL and templating things
@@ -27,7 +27,7 @@ Lib\Display::setTheme('.');
 Lib\Display::setTemplate('default');
 Lib\Display::setVariable('baseuri', $GLOBALS['_baseURI']);
 
-session_start();
+Lib\Session::start();
 
 // Handle URL rewrites
 if (!$found) {
@@ -46,7 +46,7 @@ if (!$found) {
 		header('HTTP/1.1 404 Content Not Found');
 		Lib\Display::showError(404, 'Sorry, but we couldn\'t find what you were looking for.');
 	} else {
-
+		header('Content-Type: text/html; charset=utf8');
 		// Turn control over to the requested page
 		call_user_func(array('Controller\\' . $_page, 'render'));
 		
