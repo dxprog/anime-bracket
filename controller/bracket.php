@@ -22,14 +22,14 @@ namespace Controller {
 				Lib\Display::setVariable('TITLE', $bracket->name . ' - The Great Awwnime Bracket');
 				switch ($action) {
 					case 'nominate':
-						if ($bracket->state == BS_NOMINATIONS) {
+						if ($bracket->state == BS_NOMINATIONS && $bracket->start < time()) {
 							self::_displayNominations($bracket);
 						} else {
 							// error
 						}
 						break;
 					case 'vote':
-						if ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING || $bracket->state == BS_WILDCARD) {
+						if ($bracket->start <=  time() && ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING || $bracket->state == BS_WILDCARD)) {
 							self::_displayCurrentRound($bracket->id);
 						}
 						break;
