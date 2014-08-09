@@ -49,8 +49,13 @@
 			</xsl:choose>
 		</xsl:if>
 
-		<xsl:if test="count(//round_item[voted = 'true']) &gt; 0">
-			<button id="formatVotes">Get copy/paste friendly version of my votes</button>
+		<xsl:if test="$tier &gt; 0">
+			<button id="formatVotes">
+				<xsl:if test="count(//round_item[voted = 'true']) &gt; 0">
+					<xsl:attribute name="style">display: block;</xsl:attribute>
+				</xsl:if>
+				Get copy/paste friendly version of my votes
+			</button>
 		</xsl:if>
 
 		<p class="message"></p>
@@ -104,7 +109,7 @@
 			<script type="text/javascript">
 				window.bracketId = <xsl:value-of select="//round_item[@index = '0']/bracketId" />;
 			</script>
-			<script type="text/javascript" src="/view/anime-bracket.min.js?20131109"></script>
+			<script type="text/javascript" src="/view/anime-bracket.min.js?20131110"></script>
 		</xsl:if>
 
 	</xsl:template>
@@ -118,7 +123,9 @@
 				<xsl:if test="votedCharacterId = character1Id">
 					<xsl:attribute name="class">entrant left selected</xsl:attribute>
 				</xsl:if>
-				<img src="http://cdn.awwni.me/bracket/{character1/image}" alt="{character1/name}" />
+                                <span class="imgContainer">
+				    <span class="image" style="background-image:url(http://cdn.awwni.me/bracket/{character1/image})"><xsl:value-of select="character1/name" /></span>
+                                </span>
 				<h4><xsl:value-of select="character1/name" disable-output-escaping="yes" /></h4>
 				<h5><xsl:value-of select="character1/source" disable-output-escaping="yes" /></h5>
 			</div>
@@ -126,7 +133,9 @@
 				<xsl:if test="votedCharacterId = character2Id">
 					<xsl:attribute name="class">entrant right selected</xsl:attribute>
 				</xsl:if>
-				<img src="http://cdn.awwni.me/bracket/{character2/image}" alt="{character2/name}" />
+                                <span class="imgContainer">
+				    <span class="image" style="background-image:url(http://cdn.awwni.me/bracket/{character2/image})"><xsl:value-of select="character2/name" /></span>
+                                </span>
 				<h4><xsl:value-of select="character2/name" disable-output-escaping="yes" /></h4>
 				<h5><xsl:value-of select="character2/source" disable-output-escaping="yes" /></h5>
 			</div>
@@ -143,7 +152,9 @@
 					<xsl:if test="voted ='true'">
 						<xsl:attribute name="class">entrant selected</xsl:attribute>
 					</xsl:if>
-					<img src="http://cdn.awwni.me/bracket/{character1/image}" alt="{character1/name}" />
+                                        <span class="imgContainer">
+					    <span class="image" style="background-image:url(http://cdn.awwni.me/bracket/{character1/image})"><xsl:value-of select="character1/name" /></span>
+                                        </span>
 					<h4><xsl:value-of select="character1/name" disable-output-escaping="yes" /></h4>
 					<h5>
 						<xsl:variable name="source"><xsl:value-of select="character1/source" /></xsl:variable>

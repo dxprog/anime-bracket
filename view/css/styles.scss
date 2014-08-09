@@ -165,7 +165,8 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 #round .voted .entrant { cursor:default; }
 #round .entrant h4 { position:absolute; left:181px; bottom:90px; font-size:24px; width:167px; text-align:left; }
 #round .entrant h5 { position:absolute; left:181px; top:80px; font-size:14px; width:167px; text-align:left; }
-#round .entrant img { padding:0 0 5px 5px; background:url(images/round_entrant.png) no-repeat left bottom; display:block; margin-left:15px; }
+#round .entrant .imgContainer { padding:0 0 5px 5px; background:url(images/round_entrant.png) no-repeat left bottom; display:block; margin-left:15px; }
+#round .entrant .image { display: block; width: 150px; height: 0; padding-top: 150px; overflow: hidden; background-size: cover; }
 #round .entrant.right { float:right; background-position:left 67px; filter:gray; }
 #round .entrant.right h4, #round .entrant.right h5 { left:auto; right:187px; text-align:right; }
 #round .entrant.right img { position:absolute; right:20px; }
