@@ -169,7 +169,7 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
 #round .entrant .image { display: block; width: 150px; height: 0; padding-top: 150px; overflow: hidden; background-size: cover; }
 #round .entrant.right { float:right; background-position:left 67px; filter:gray; }
 #round .entrant.right h4, #round .entrant.right h5 { left:auto; right:187px; text-align:right; }
-#round .entrant.right img { position:absolute; right:20px; }
+#round .entrant.right .imgContainer { position:absolute; right:20px; }
 #round .disclaimer { font-size:24px; padding:10px 150px; }
 #round #vote { display:block; width:181px; height:0; padding-top:55px; overflow:hidden; background:url(images/submit.png) no-repeat; margin:20px auto; border:0; cursor:pointer; }
 
@@ -537,9 +537,12 @@ p, li, label { font:normal 24px/1 'Helvetica Light', sans-serif; margin-top:10px
                 .image {
                     left: 5px;
                     top: 0;
+                    width: 75px;
+                    height: 75px;
+                    overflow: hidden;
+
                     img {
-                        width: 75px;
-                        height: 75px;
+                        max-width: 75px;
                         display: block;
                     }
                 }
