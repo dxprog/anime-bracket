@@ -30,6 +30,10 @@
         "replace": "page=bracket&action=all"
     },
     {
+        "rule": "^stats/$",
+        "replace": "page=stats"
+    },
+    {
         "redirect": true,
         "rule": "^([^/.]+)/nominate$",
         "replace": "$1/nominate/"
@@ -73,5 +77,9 @@
 	{
 		"rule": "^([^/.]+)/characters/$",
 		"replace": "page=bracket&action=characters&bracket=$1"
-	}
+	},
+    {
+        "rule": "^api/([^/.]+)/$",
+        "replace": "page=jsonapi&action=$1"
+    }
 ]
