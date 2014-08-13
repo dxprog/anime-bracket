@@ -12,6 +12,8 @@ namespace Controller {
 
             $content = null;
 
+            $_GET['flushCache'] = true;
+
             $user = Api\User::getCurrentUser();
             if (!$user || !$user->admin) {
                 header('Location: /login/?redirect=' . urlencode('/admin/'));
