@@ -60,7 +60,7 @@ namespace Controller {
 		private static function _checkLogin() {
 			$user = Api\User::getCurrentUser();
 			$readonly = Lib\Url::GetBool('readonly', null);
-			if (!$user && !$readonly) {
+			if (!$user && !$readonly && stripos($_SERVER['HTTP_USER_AGENT'], 'google') === false) {
 				header('Location: /login/?redirect=' . urlencode($_GET['q']));
 				exit;
 			}
@@ -97,7 +97,7 @@ namespace Controller {
 			if (false === $out) {
 				$out = new stdClass;
 				$out->userId = $user->id;
-				$out->prizes = $user->prizes ? 1 : 0;
+				$out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
 				$out->bracket = Api\Bracket::getById($bracketId);
 				$out->round = Api\Round::getCurrentRounds($bracketId);
 				$out = Lib\Display::compile($out, 'round', $cacheKey);
