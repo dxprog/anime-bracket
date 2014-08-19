@@ -3,6 +3,7 @@
 namespace Api {
 
     use Lib;
+    use OAuth2;
 
     class User extends Lib\Dal {
 
@@ -35,43 +36,68 @@ namespace Api {
             return Lib\Session::get('user');
         }
 
+        /**
+         * Returns the login URL for OAuth2 authentication
+         */
         public static function getLoginUrl($redirect = '') {
-            $client = new Lib\OAuth2\Client(REDDIT_TOKEN, REDDIT_SECRET, Lib\OAuth2\Client::AUTH_TYPE_AUTHORIZATION_BASIC);
-            return $client->getAuthenticationUrl('https://ssl.reddit.com/api/v1/authorize', REDDIT_HANDLER, [ 'scope' => 'identity', 'state' => $redirect ]);
+            $client = self::_createOAuth2();
+            $auth = new OAuth2\Strategy\AuthCode($client);
+            return $auth->authorizeUrl([
+                'scope' => 'identity',
+                'state' => $redirect,
+                'redirect_uri' => REDDIT_HANDLER
+            ]);
         }
 
+       /**
+         * OAuth2 response handler
+         */
         public static function authenticateUser($code) {
             $retVal = false;
-            $client = new Lib\OAuth2\Client(REDDIT_TOKEN, REDDIT_SECRET, Lib\OAuth2\Client::AUTH_TYPE_AUTHORIZATION_BASIC);
-            $response = $client->getAccessToken('https://ssl.reddit.com/api/v1/access_token', 'authorization_code', [ 'code' => $code, 'redirect_uri' => REDDIT_HANDLER ]);
-            if (isset($response['result']['access_token'])) {
-                $client->setAccessToken($response['result']['access_token']);
-                $client->setAccessTokenType(Lib\OAuth2\CLient::ACCESS_TOKEN_BEARER);
-                $response = $client->fetch('https://oauth.reddit.com/api/v1/me.json');
-                if (isset($response['result']['name'])) {
-                    $result = $response['result'];
-                    // Block out new user accounts
-                    if ((int) $result['created'] > time() - REDDIT_MINAGE) {
-                        $retVal = false;
-                    } else {
-                        $user = self::getByName($result['name']);
-                        if (!$user) {
-                            $user = new User;
-                            $user->name = $result['name'];
-                            $user->ip = $_SERVER['REMOTE_ADDR'];
-                            if ($user->sync()) {
+            $client = self::_createOAuth2();
+            $auth = new OAuth2\Strategy\AuthCode($client);
+
+            try {
+                $token = $auth->getToken($code, [ 'redirect_uri' => REDDIT_HANDLER ]);
+                if ($token) {
+                    $response = $token->get('https://oauth.reddit.com/api/v1/me.json');
+                    $data = json_decode($response->body());
+                    if ($data) {
+
+                        // Block out new user accounts
+                        if ((int) $data->created > time() - REDDIT_MINAGE) {
+                            $retVal = false;
+                        } else {
+                            $user = self::getByName($data->name);
+                            if (!$user) {
+                                $user = new User;
+                                $user->name = $data->name;
+                                $user->ip = $_SERVER['REMOTE_ADDR'];
+                                if ($user->sync()) {
+                                    $retVal = true;
+                                }
+                            } else {
                                 $retVal = true;
                             }
-                        } else {
-                            $retVal = true;
+
+                            Lib\Session::set('user', $user);
+
                         }
-
-                        Lib\Session::set('user', $user);
-
                     }
                 }
+            } catch (Exception $e) {
+
             }
+
             return $retVal;
+        }
+
+        private static function _createOAuth2() {
+            return new OAuth2\Client(REDDIT_TOKEN, REDDIT_SECRET, [
+                'site' => 'https://ssl.reddit.com/api/v1',
+                'authorize_url' => '/authorize',
+                'token_url' => '/access_token'
+            ]);
         }
 
     }

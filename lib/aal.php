@@ -28,6 +28,7 @@ namespace Lib {
 
 	// Include the DX API libraries
 	require_once('./lib/dxapi.php');
+	require_once('./vendor/autoload.php');
 	Api\DxApi::initialize();
 
 	class Dx {
