@@ -11,8 +11,11 @@
 
         if (data.success) {
             $(window).scrollTop(0);
-            $('#round .rounds').remove();
+            $('#round .rounds').hide();
             $('#round .vote-success').fadeIn();
+            $('#formatVotes').show();
+        } else {
+            alert(data.message);
         }
 
     },
@@ -40,7 +43,7 @@
     },
 
     formatVotesClick = function(evt) {
-        var votesWindow = window.open('', '', 'width=400,height=300'),
+        var votesWindow = window.open('', '', 'width=420,height=350'),
             doc = votesWindow.document.open(),
             text = [];
 
@@ -51,7 +54,7 @@
             text.push(formatEntrant($entrant1) + ' - ' + formatEntrant($entrant2));
         });
 
-        doc.write('Here\'s your reddit formatted votes:<br /><textarea style="width:380px; height: 350px;">' + text.join('\n') + '</textarea>');
+        doc.write('Here\'s your reddit formatted votes:<br /><textarea style="width:380px; height: 350px;">' + text.join('\n\n') + '</textarea>');
         doc.close();
 
     },
@@ -60,7 +63,7 @@
         var voteData = '',
             prizes = $('#prizes').is(':checked');
 
-        $('.round').each(function() {
+        $('.round:not(.voted)').each(function() {
             var
                 $this = $(this),
                 $selected = $this.find('.entrant.selected:not(.voted)');
