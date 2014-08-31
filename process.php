@@ -1,7 +1,28 @@
 <?php
 
 require('lib/aal.php');
-session_start();
+
+function getVotedRounds($user, $votes) {
+	
+	$roundKeys = [];
+	$params = [ ':userId' => $user->id ];
+	for ($i = 0, $count = count($votes); $i < $count; $i += 2) {
+		$params[':round' . $i] = $votes[$i];
+		$roundKeys[] = ':round' . $i;
+	}
+	
+	$result = Lib\Db::Query('SELECT round_id FROM votes WHERE user_id = :userId AND round_id IN (' . implode(',', $roundKeys) . ')', $params);
+	$retVal = [];
+	if ($result && $result->count > 0) {
+		while ($row = Lib\Db::Fetch($result)) {
+			$retVal[$row->round_id] = true;
+		}
+	}
+	
+	return $retVal;
+}
+
+Lib\Session::start();
 
 $action = Lib\Url::Get('action');
 
@@ -66,13 +87,17 @@ if ($user) {
 							$params = [ ':userId' => $user->id, ':date' => time(), ':bracketId' => $bracketId ];
 
 							$insertCount = 0;
-							for ($i = 0, $count = count($votes); $i < $count; $i += 2) {
-								$row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM votes WHERE user_id = :userId AND round_id = :round', [ ':userId' => $user->id, ':round' => $votes[$i] ]));
-								if ((int) $row->total === 0) {
+							
+							// Only run an insert for rounds that haven't been voted on
+							$rounds = getVotedRounds($user, $votes);
+
+							for ($i = 0; $i < $count; $i += 2) {
+								if (!isset($rounds[$votes[$i]])) {
 									$query .= '(:userId, :date, :round' . $i . ', :character' . $i . ', :bracketId),';
 									$params[':round' . $i] = $votes[$i];
 									$params[':character' . $i] = $votes[$i + 1];
 									$insertCount++;
+									$rounds[$votes[$i]] = true;
 								}
 							}
 
