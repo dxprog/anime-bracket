@@ -10,16 +10,18 @@ namespace Controller {
 
 		public static function render() {
 
+			self::_initTemplateHelpers();
+
 			$action = Lib\Url::Get('action');
 			$perma = Lib\Url::Get('bracket');
 			$bracket = Api\Bracket::getBracketByPerma($perma);
 
-			Lib\Display::setVariable('CSS_VERSION', CSS_VERSION);
-			Lib\Display::setVariable('JS_VERSION', JS_VERSION);
+			Lib\Display::addKey('CSS_VERSION', CSS_VERSION);
+			Lib\Display::addKey('JS_VERSION', JS_VERSION);
 
 			if ($bracket) {
-				Lib\Display::setVariable('BRACKET_ID', $bracket->id);
-				Lib\Display::setVariable('TITLE', $bracket->name . ' - The Great Awwnime Bracket');
+				Lib\Display::addKey('bracket_id', $bracket->id);
+				Lib\Display::addKey('title', $bracket->name . ' - The Great Awwnime Bracket');
 				switch ($action) {
 					case 'nominate':
 						if ($bracket->state == BS_NOMINATIONS && $bracket->start < time()) {
@@ -33,10 +35,6 @@ namespace Controller {
 							self::_displayCurrentRound($bracket->id);
 						}
 						break;
-					case 'tier':
-						$tier = Lib\Url::GetInt('tier');
-						self::_displayRound($bracket->id, $tier);
-						break;
 					case 'view':
 						self::_displayBracketView($bracket);
 						break;
@@ -45,7 +43,6 @@ namespace Controller {
 						break;
 				}
 			} else {
-				Lib\Display::setVariable('title', 'The Great Awwnime Bracket');
 				if ($action === 'all') {
 					self::_displayBrackets();
 				} else {
@@ -54,8 +51,6 @@ namespace Controller {
 			}
 
 		}
-
-		public static function registerExtension($class, $method, $type) { }
 
 		private static function _checkLogin() {
 			$user = Api\User::getCurrentUser();
@@ -74,21 +69,6 @@ namespace Controller {
 			return $user;
 		}
 
-		private static function _displayRound($bracket, $tier) {
-			$user = self::_checkLogin();
-			$cacheKey = 'BracketRound_' . $bracket . '_' . $tier . '_' . $user->id;
-			$out = Lib\Cache::Get($cacheKey);
-
-			if (false === $out) {
-				$rounds = Api\Round::getBracketRounds($bracket, $tier);
-				$out = Lib\Display::compile($rounds, 'round', $cacheKey);
-			}
-
-			Lib\Display::setTemplate('round');
-			Lib\Display::setVariable('content', $out);
-
-		}
-
 		private static function _displayCurrentRound($bracketId) {
 			$user = self::_checkLogin();
 			$cacheKey = 'CurrentRound_' . $bracketId . '_' . $user->id;
@@ -100,27 +80,44 @@ namespace Controller {
 				$out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
 				$out->bracket = Api\Bracket::getById($bracketId);
 				$out->round = Api\Round::getCurrentRounds($bracketId);
-				$out = Lib\Display::compile($out, 'round', $cacheKey);
 			}
 
-			Lib\Display::setTemplate('round');
-			Lib\Display::setVariable('content', $out);
+			Lib\Display::addKey('page', 'vote');
+			Lib\Display::renderAndAddKey('content', 'voting', $out);
 
 		}
 
 		private static function _displayLanding() {
-			$brackets = Api\Bracket::getAll();
-			$content = Lib\Display::compile(end($brackets), 'landing');
-			Lib\Display::setVariable('page', 'landing');
-			Lib\Display::setTemplate('default');
-			Lib\Display::setVariable('content', $content);
+			Lib\Display::addKey('page', 'landing');
+			Lib\Display::renderAndAddKey('content', 'landing', null);
 		}
 
 		private static function _displayBrackets() {
-			$brackets = Api\Bracket::getAll();
-			$content = Lib\Display::compile($brackets, 'brackets');
-			Lib\Display::setTemplate('default');
-			Lib\Display::setVariable('content', $content);
+
+			$brackets = Lib\Cache::fetch(function() {
+
+				$brackets = Api\Bracket::getAll();
+
+				// Check for card images
+				foreach ($brackets as $bracket) {
+					if (is_readable('./images/bracket_' . $bracket->id . '_card.jpg')) {
+						$bracket->cardImage = '/images/bracket_' . $bracket->id . '_card.jpg';
+					} else {
+						$bracket->entrants = Api\Character::getRandomCharacters($bracket, 9);
+					}
+				}
+
+				// Sort the brackets by reverse date
+				usort($brackets, function($a, $b) {
+					return $a->start > $b->start ? -1 : 1;
+				});
+
+				return $brackets;
+
+			}, 'Controller::Brackets_displayBrackets');
+
+			Lib\Display::addKey('page', 'brackets');
+			Lib\Display::renderAndAddKey('content', 'bracketsView', $brackets);
 		}
 
 		private static function _displayBracketView($bracket) {
@@ -129,9 +126,8 @@ namespace Controller {
 			if ($user) {
 				$bracket->userVotes = $bracket->getVotesForUser($user);
 			}
-			Lib\Display::setTemplate('results');
-			Lib\Display::setVariable('data', json_encode($bracket));
-			Lib\Display::setVariable('title', $bracket->name);
+			Lib\Display::addKey('page', 'results');
+			Lib\Display::renderAndAddKey('content', 'results', $bracket);
 		}
 
 		private static function _displayNominations($bracket) {
@@ -148,6 +144,46 @@ namespace Controller {
 			$content = Lib\Display::compile($out, 'characters', 'Controller_displayBracketCharacters_' . $bracket->id);
 			Lib\Display::setVariable('content', $content);
 			Lib\Display::setVariable('title', $bracket->name . ' - Character Pool');
+		}
+
+		private static function _initTemplateHelpers() {
+
+            Lib\Display::addHelper('isBracketNotHidden', function($template, $context, $args, $source) {
+                $bracket = $context->get($args);
+                $retVal = '';
+
+                if ($bracket instanceof Api\Bracket && $bracket->state != BS_HIDDEN) {
+                	$retVal = $template->render($context);
+                }
+
+                return $retVal;
+            });
+
+            Lib\Display::addHelper('isBracketNominations', function($template, $context, $args, $source) {
+            	return self::_bracketStateIs($template, $context, $args, BS_NOMINATIONS);
+            });
+
+            Lib\Display::addHelper('isBracketEliminations', function($template, $context, $args, $source) {
+				return self::_bracketStateIs($template, $context, $args, BS_ELIMINATIONS);
+            });
+
+            Lib\Display::addHelper('isBracketVoting', function($template, $context, $args, $source) {
+                return self::_bracketStateIs($template, $context, $args, BS_VOTING);
+            });
+
+            Lib\Display::addHelper('isBracketFinal', function($template, $context, $args, $source) {
+            	return self::_bracketStateIs($template, $context, $args, BS_FINAL);
+            });
+
+		}
+
+		private static function _bracketStateIs($template, $context, $args, $state) {
+			$retVal = '';
+			$bracket = $context->get($args);
+			if ($bracket instanceof Api\Bracket && $bracket->state == $state) {
+				$retVal = $template->render($context);
+			}
+			return $retVal;
 		}
 
 	}
