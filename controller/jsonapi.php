@@ -22,6 +22,12 @@ namespace Controller {
                 case 'rounds':
                     $retVal = self::_getCurrentRounds();
                     break;
+                case 'login':
+                    header('Location: ' . str_replace('authorize', 'authorize.compact', Api\User::getLoginUrl('/')));
+                    exit;
+                case 'user':
+                    $retVal = Api\User::getCurrentUser();
+                    break;
             }
 
             header('Content-Type: application/json; charset=utf-8');
