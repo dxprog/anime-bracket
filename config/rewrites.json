@@ -42,15 +42,6 @@
         "rule": "^([^/.]+)/nominate/$",
         "replace": "page=bracket&action=nominate&bracket=$1"
     },
-	{
-		"rule": "^tier/([0-9]+)$",
-		"replace": "tier/$1/",
-		"redirect": true
-	},
-	{
-		"rule": "^tier/([0-9]+)/$",
-		"replace": "page=bracket&action=tier"
-	},
     {
         "rule": "^([^/.]+)/vote$",
         "replace": "$1/vote/",
