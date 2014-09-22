@@ -18,14 +18,12 @@ $GLOBALS['_content'] = null;
 $GLOBALS['_sidebars'] = null;
 $GLOBALS['_api'] = 'http://api.dxprog.com/';
 $GLOBALS['_title'] = 'The Great Awwnime Bracket';
-Lib\Display::setVariable('title', $_title);
+Lib\Display::addKey('title', $_title);
 
 // Handle URL and templating things
 $found = Lib\Url::Rewrite('config/rewrites.json');
 $GLOBALS['_baseURI'] = current(explode('?', Lib\Url::getRawUrl()));
-Lib\Display::setTheme('.');
-Lib\Display::setTemplate('default');
-Lib\Display::setVariable('baseuri', $GLOBALS['_baseURI']);
+Lib\Display::setLayout('default');
 
 Lib\Session::start();
 
