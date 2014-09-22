@@ -2,17 +2,25 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         concat: {
-            options: {
-                separator: ';'
-            },
-            dist: {
+            js: {
+                options: {
+                    separator: ';'
+                },
                 src: [
-                    'view/js/handlebars.runtime.js',
-                    'view/js/templates.js',
-                    'view/js/model/*.js',
-                    'view/js/bracket_display.js'
+                    'static/js/dev/lib/jquery-1.10.2.min.js',
+                    'static/js/dev/lib/handlebars.runtime.js',
+                    'static/js/dev/lib/templates.js',
+                    'static/js/dev/controls/*.js',
+                    'static/js/dev/model/*.js',
+                    'static/js/dev/*.js'
                 ],
-                dest: 'view/<%= pkg.name %>.js'
+                dest: 'static/js/<%= pkg.name %>.js'
+            },
+            scss: {
+                src: [
+                    'static/css/dev/compile/*.css'
+                ],
+                dest: 'static/css/<%= pkg.name %>.css'
             }
         },
         uglify: {
@@ -21,19 +29,19 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'view/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+                    'static/js/<%= pkg.name %>.min.js': ['<%= concat.js.dest %>']
                 }
             }
         },
         watch: {
             files: [
-                'view/js/bracket_display.js',
-                'view/js/model/*.js',
-                'view/css/styles.scss',
-                'view/css/mixins.scss',
+                'static/js/dev/model/*.js',
+                'static/js/dev/controls/*.js',
+                'static/js/dev/*.js',
+                'static/css/dev/*.scss',
                 'view/handlebars/*.handlebars'
             ],
-            tasks: [ 'handlebars', 'concat', 'sass' ]
+            tasks: [ 'handlebars', 'sass', 'concat', 'cssmin' ]
         },
         handlebars: {
             compile: {
@@ -47,14 +55,28 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    'view/js/templates.js': 'view/handlebars/*.handlebars'
+                    'view/js/lib/templates.js': 'view/handlebars/*.handlebars'
                 }
             }
         },
         sass: {
             dist: {
+                files: [{
+                    expand: true,
+                    cwd: 'static/css/dev',
+                    src: [ '*.scss' ],
+                    dest: 'static/css/dev/compile',
+                    ext: '.css'
+                }]
+            }
+        },
+        cssmin: {
+            dist: {
+                options: {
+                    banner: '/* <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+                },
                 files: {
-                    'view/css/styles.css': 'view/css/styles.scss'
+                    'static/css/<%= pkg.name %>.min.css': [ '<%= concat.scss.dest %>' ]
                 }
             }
         }
@@ -66,7 +88,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-    grunt.registerTask('default', ['handlebars', 'concat', 'uglify', 'sass']);
+    grunt.registerTask('default', ['handlebars', 'sass', 'concat', 'uglify', 'cssmin' ]);
 
 };
