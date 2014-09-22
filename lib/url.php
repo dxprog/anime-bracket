@@ -93,7 +93,7 @@ namespace Lib {
 					}
 					
 				} else {
-					throw new Exception('URL_REQRITE: Congig file empty or malformed');
+					throw new Exception('URL_REWRITE: Congig file empty or malformed');
 				}
 				
 			}
