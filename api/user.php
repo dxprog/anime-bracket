@@ -64,25 +64,25 @@ namespace Api {
                     $data = json_decode($response->body());
                     if ($data) {
 
-                        // Block out new user accounts
-                        if ((int) $data->created > time() - REDDIT_MINAGE) {
-                            $retVal = false;
-                        } else {
-                            $user = self::getByName($data->name);
-                            if (!$user) {
+                        $user = self::getByName($data->name);
+                        if (!$user) {
+                            // Block out new user accounts
+                            if ((int) $data->created > time() - REDDIT_MINAGE) {
+                                $retVal = false;
+                            } else {
                                 $user = new User;
                                 $user->name = $data->name;
                                 $user->ip = $_SERVER['REMOTE_ADDR'];
                                 if ($user->sync()) {
                                     $retVal = true;
                                 }
-                            } else {
-                                $retVal = true;
                             }
-
-                            Lib\Session::set('user', $user);
-
+                        } else {
+                            $retVal = true;
                         }
+
+                        Lib\Session::set('user', $user);
+
                     }
                 }
             } catch (Exception $e) {
