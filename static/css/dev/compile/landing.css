@@ -1,0 +1,50 @@
+/**
+ * Taken from: https://gist.github.com/thbar/1319313
+ */
+#page-landing {
+  background: url(/static/images/bracket_2014_landing_bg.jpg) no-repeat right center;
+  background-size: cover;
+  overflow: hidden; }
+  #page-landing h1 {
+    overflow: hidden;
+    width: 242px;
+    height: 0;
+    padding-top: 118px;
+    display: block;
+    background: url(/static/images/logo_light.png) no-repeat;
+    position: absolute;
+    bottom: 50px;
+    right: 150px; }
+  #page-landing #content {
+    padding-left: 150px;
+    padding-top: 8.5%;
+    width: 690px; }
+    #page-landing #content:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 40%;
+      background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      background: -o-linear-gradient(right, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      background: -moz-linear-gradient(right, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      z-index: -1; }
+    #page-landing #content h2 {
+      text-transform: uppercase;
+      font: bold 2.5em/1 'Roboto Condensed', sans-serif;
+      color: #ce8665;
+      margin-bottom: 30px; }
+    #page-landing #content p {
+      font: 2em/1.2 'Roboto', sans-serif;
+      color: white;
+      margin-bottom: 75px; }
+    #page-landing #content strong {
+      color: #e1ac94; }
+
+@media screen and (max-width: 1280px), screen and (max-height: 768px) {
+  #page-landing #content {
+    width: 47%;
+    margin-left: 75px;
+    margin-top: 100px; } }

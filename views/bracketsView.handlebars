@@ -1,0 +1,41 @@
+<h2>Past Brackets</h2>
+<ul class="brackets">
+    {{#each .}}
+        {{#isBracketNotHidden .}}
+            <li class="bracket-card">
+                {{#if cardImage}}
+                    <img src="{{cardImage}}" alt="{{name}}" class="card-image" />
+                {{else}}
+                    <div class="card-entrants">
+                        <div class="inner">
+                            {{#each entrants}}
+                                <img src="//cdn.awwni.me/bracket/{{image}}" alt="{{name}}" title="{{name}}" />
+                            {{/each}}
+                        </div>
+                    </div>
+                {{/if}}
+                <div class="info">
+                    <h3>{{name}}</h3>
+                    {{#if winner}}
+                        <h4 class="winner">{{winner.name}}</h4>
+                    {{else}}
+                        <h4>
+                            {{#isBracketVoting .}}Voting in session{{/isBracketVoting}}
+                            {{#isBracketEliminations .}}Eliminations round{{/isBracketEliminations}}
+                            {{#isBracketNominations .}}Now accepting nominations{{/isBracketNominations}}
+                        </h4>
+                    {{/if}}
+                    <ul class="actions">
+                        <li><a href="/{{perma}}/view/">Results</a></li>
+                        {{#isBracketVoting .}}
+                            <li><a href="/{{perma}}/vote/">Vote</a></li>
+                        {{/isBracketVoting}}
+                        {{#isBracketEliminations .}}
+                            <li><a href="/{{perma}}/vote/">Vote</a></li>
+                        {{/isBracketEliminations}}
+                    </ul>
+                </div>
+            </li>
+        {{/isBracketNotHidden}}
+    {{/each}}
+</ul>

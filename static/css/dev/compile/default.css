@@ -1,0 +1,38 @@
+* {
+  padding: 0;
+  margin: 0; }
+
+body {
+  font-size: 24px; }
+
+html {
+  height: 100%; }
+
+body {
+  height: 100%;
+  background: url(/static/images/main_bg.png); }
+
+.button {
+  font: bold 1.5rem/1 'Roboto Condensed', sans-serif;
+  color: white;
+  padding: 15px 20px;
+  background: #e1ac94;
+  text-decoration: none; }
+
+footer {
+  position: absolute;
+  bottom: 50px;
+  left: 150px; }
+  footer p {
+    font: 1em/1 'Roboto', sans-serif;
+    color: white;
+    margin-bottom: 10px; }
+  footer a {
+    color: #e1ac94;
+    text-decoration: none; }
+
+@media screen and (max-width: 1280px), screen and (max-height: 768px) {
+  body {
+    font-size: 18px; }
+  footer {
+    left: 75px; } }

@@ -1,0 +1,421 @@
+@import "globals";
+
+#page-results {
+    h1 {
+        display: none;
+    }
+
+    footer {
+        position: static;
+        margin: 20px;
+    }
+
+}
+
+$ENTRANT_HEIGHT: 75px;
+$ENTRANT_SPACING: 25px;
+
+.results {
+    margin: 100px 20px 20px;
+
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9001;
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            height: 150px;
+            @include gradient(rgba(236, 134, 101, .25), rgba(0, 0, 0, 0));
+            z-index: 9000;
+        }
+
+        .title {
+            @include heading();
+            text-align: center;
+            margin: 25px 0 20px;
+            text-shadow: 0 0 2px rgba(0, 0, 0, .15);
+        }
+
+        ul {
+            font: 18px/1 'Helvetica Light', sans-serif;
+            background: #fff;
+            list-style: none;
+            width: 200px;
+            margin: 0 auto;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, .25);
+            position: relative;
+            z-index: 9002;
+
+            &:after {
+                content: '';
+                display: block;
+                border: 5px solid transparent;
+                border-top: 5px solid #666;
+                position: absolute;
+                right: 10px;
+                top: 16px;
+            }
+
+            li {
+                cursor: pointer;
+                padding: 11px 20px;
+                font-size: 14px;
+                margin: 0;
+                display: none;
+                text-align: center;
+                &.selected {
+                    display: block;
+                    border: 1px solid #eee;
+                    @include border-box();
+                }
+
+            }
+
+            &:hover {
+                li {
+
+                    &.selected {
+                        border: 0;
+                        background: $light;
+                    }
+
+                    &:first-child {
+                        border: 1px solid #eee;
+                        border-bottom: 0;
+                    }
+
+                    &:hover {
+                        color: $dark;
+                    }
+
+                    display: block;
+                    border-top: 1px solid #eee;
+                    @include border-box();
+                }
+            }
+
+        }
+    }
+
+    #content {
+        overflow: hidden;
+        margin-top: 60px;
+    }
+
+    .tier {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        float: left;
+
+        .round {
+            margin-top: 0;
+            position: relative;
+
+            &:before {
+                display: block;
+                position: absolute;
+                content: '';
+                top: 50%;
+                height: 2px;
+                border-top: 1px solid $standard;
+                left: 289px;
+                right: 0;
+            }
+
+            &.highlighted:before {
+                border-color: $dark !important;
+            }
+
+            &.single-entrant {
+                &:before {
+                    left: 281px;
+                }
+
+                .entrant {
+                    &:before {
+                        border-width: 0 !important;
+                    }
+                }
+            }
+
+        }
+
+        .winner {
+            text-align: center;
+            width: 298px;
+
+            h2 {
+                @include heading();
+                font-size: 36px;
+            }
+
+            dl {
+                width: 298px;
+                position: absolute;
+                height: 200px;
+                top: 50%;
+                margin-top: -100px;
+                &:before {
+                    display: block;
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
+                    right: 0;
+                    border-top: 1px solid $standard;
+                    z-index: -9001;
+                }
+
+                dt {
+                    position: absolute;
+                    left: -9999px;
+                    top: -9999px;
+                }
+            }
+        }
+
+        .entrant {
+            width: 298px;
+            position: relative;
+            line-height: 1;
+            color: $dark;
+            position: relative;
+
+            &:before {
+                display: block;
+                position: absolute;
+                border-right: 1px solid $standard;
+                content: '';
+                left: 280px;
+                right: 8px;
+            }
+
+            &.entrant-top:before {
+                top: 50%;
+                bottom: 0;
+                border-top: 1px solid $standard;
+            }
+
+            &.entrant-bottom:before {
+                top: 0;
+                bottom: 50%;
+                border-bottom: 1px solid $standard;
+            }
+
+            &.nobody {
+                opacity: 0.25;
+            }
+
+            .entrant-info {
+                @include border-box();
+                border: 1px solid $standard;
+                background: #fff;
+                height: $ENTRANT_HEIGHT;
+                width: 280px;
+                margin-top: $ENTRANT_HEIGHT / 2 * -1;
+                top: 50%;
+                position: absolute;
+
+                dd {
+                    position: absolute;
+                    left: 86px;
+                }
+
+                dt {
+                    position: absolute;
+                    left: -9999px;
+                    top: -9999px;
+                }
+
+                .name {
+                    font: bold 18px/1 'Roboto Condensed', sans-serif;
+                    bottom: 42px;
+                }
+
+                .image {
+                    left: -1px;
+                    top: -1px;
+                    width: 75px;
+                    height: 75px;
+                    overflow: hidden;
+
+                    img {
+                        width: 75px;
+                        height: 75px;
+                        display: block;
+                    }
+                }
+
+                .source {
+                    display: none;
+                }
+
+                .votes {
+                    font: bold 18px/1 'Roboto', sans-serif;
+                    top: 42px;
+                }
+
+            }
+
+            .stats-popup {
+                position: absolute;
+                background: #fff;
+                width: 300px;
+                padding: 20px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+                top: 50%;
+                margin-top: -138px;
+                left: 320px;
+                z-index: 9000;
+
+                &:after {
+                    content: '';
+                    display: block;
+                    border: 20px solid transparent;
+                    border-right-color: #fff;
+                    position: absolute;
+                    left: -40px;
+                    top: 118px;
+                }
+
+                dt {
+                    font-size: 16px;
+                    margin-top: 10px;
+                    &:first-child {
+                        margin-top: 0;
+                    }
+                }
+
+                dd {
+                    background: none;
+                    font: 14px sans-serif;
+                    color: #000;
+                }
+
+                .also-voted-for {
+                    overflow: hidden;
+                    list-style: none;
+                    li {
+                        float: left;
+                        position: relative;
+                        margin-right: 10px;
+                        img {
+                            width: 50px;
+                            height: 50px;
+                            display: block;
+                        }
+                        .percent {
+                            display: block;
+                            background: #000;
+                            color: #fff;
+                            padding: 2px;
+                            text-align: center;
+                            font-size: 12px;
+                        }
+                    }
+                }
+
+                &.out-bounds-top {
+                    margin-top: -59px;
+                    &:after {
+                        top: 39px;
+                    }
+                }
+
+                &.out-bounds-bottom {
+                    margin-top: 0;
+                    top: auto;
+                    bottom: 5px;
+                    &:after {
+                        top: auto;
+                        bottom: 29px;
+                    }
+                }
+
+            }
+
+            &.highlighted {
+                dl {
+                    background: $light;
+                }
+                &:before {
+                    border-color: $dark !important;
+                }
+            }
+
+            &.user-voted .image:after {
+                content: '';
+                position: absolute;
+                bottom: -15px;
+                right: -15px;
+                display: block;
+                width: 60px;
+                height: 61px;
+                background: url(images/bracket_check.png) no-repeat;
+            }
+
+        }
+
+        &.right {
+
+            .round {
+                &:before {
+                    left: -18px;
+                    right: 306px;
+                }
+
+                &.single-entrant:before {
+                    left: -8;
+                    right: 298;
+                }
+            }
+
+            .entrant {
+
+                &:before {
+                    border-left: 1px solid $standard;
+                    border-right: 0;
+                    content: '';
+                    right: 298px;
+                    left: -8px;
+                }
+
+                dl {
+                    background-position: right 0;
+                }
+                .image {
+                    left: auto;
+                    right: 0;
+                }
+                dd {
+                    text-align: right;
+                    left: auto;
+                    right: 86px;
+                }
+
+                .stats-popup {
+                    left: -380px;
+                    &:after {
+                        border-right-color: transparent;
+                        border-left-color: #fff;
+                        left: auto;
+                        right: -40px;
+                    }
+                    dd {
+                        text-align: left;
+                    }
+                }
+
+            }
+        }
+
+    }
+}

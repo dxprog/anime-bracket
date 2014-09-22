@@ -1,0 +1,77 @@
+$darkGrey: #494a4c;
+$medTurk: #96bcb1;
+$blue: #7b8fa8;
+$lightBlue: #e6fff7;
+
+$dark: #9b5231;
+$standard: #ce8665;
+$light: #e1ac94;
+
+@mixin heading() {
+  font: bold 48px/1 'Roboto Condensed', sans-serif;
+  color: $standard;
+  text-transform: uppercase;
+}
+
+@mixin image-text($background, $width, $height, $display: block) {
+  overflow: hidden;
+  width: $width;
+  height: 0;
+  padding-top: $height;
+  display: $display;
+  background: $background no-repeat;
+}
+
+@mixin center-block() {
+  margin: 0 auto;
+}
+
+@mixin border-box() {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/**
+ * Taken from: https://gist.github.com/thbar/1319313
+ */
+@mixin gradient($from, $to) {
+
+  /* Firefox 3.6+ */
+  background-image: -moz-linear-gradient($from, $to);
+
+  /* Safari 4+, Chrome 1+ */
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+
+  /* Safari 5.1+, Chrome 10+ */
+  background-image: -webkit-linear-gradient($from, $to);
+
+  /* Opera 11.10+ */
+  background-image: -o-linear-gradient($from, $to);
+
+  /* IE */
+  background-image: -ms-linear-gradient(top, $from 0%, $to 100%);
+  filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr="$from", endColorstr="$to")';
+
+}
+
+@mixin button() {
+    display: inline-block;
+    padding: 16px 25px;
+    font: 24px/1 'Helvetica Condensed Bold', sans-serif;
+    @include gradient(#829d94, #697e77);
+    border-radius: 5px;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    border: 0;
+    box-shadow: 0 3px 1px rgba(0, 0, 0, .25);
+}
+
+@mixin logo($type: light) {
+  @if $type == dark {
+    @include image-text($background: url(/static/images/logo_dark.png), $width: 242px, $height: 118px);
+  } @else {
+    @include image-text($background: url(/static/images/logo_light.png), $width: 242px, $height: 118px);
+  }
+}
