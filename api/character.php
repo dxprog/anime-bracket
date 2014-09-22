@@ -126,6 +126,28 @@ namespace Api {
 		}
 
 		/**
+		 * Returns a random number of characters from bracket
+		 */
+		public static function getRandomCharacters(Bracket $bracket, $count) {
+
+			if (is_numeric($count)) {
+				return Lib\Cache::fetch(function() use ($bracket, $count) {
+					$retVal = [];
+					$result = Lib\Db::Query('SELECT * FROM `character` WHERE bracket_id = :id ORDER BY RAND() LIMIT ' . $count, [ ':id' => $bracket->id ]);
+					if ($result && $result->count) {
+						while ($row = Lib\Db::Fetch($result)) {
+							$retVal[] = new Character($row);
+						}
+					}
+					return $retVal;
+				}, 'Api::Character_getRandomCharacters_' . $bracket->id . '_' . $count);
+			}
+
+			return [];
+
+		}
+
+		/**
 		 * Given the passed character, returns the characters that users also voted for
 		 * @param $sameSource bool Return only characters that are from the same source
 		 * @param $excludeEliminations bool Ignore votes cast in the elimination round
@@ -190,7 +212,7 @@ namespace Api {
 			$retVal = null;
 
 			if ($this->bracketId && $this->id) {
-				$query = 'SELECT COUNT(1) AS total, ' . 
+				$query = 'SELECT COUNT(1) AS total, ' .
 						 'SUM(CASE WHEN v.character_id = :characterId THEN 1 ELSE 0 END) AS character_votes ' .
 						 'FROM votes v INNER JOIN round r ON r.round_id = v.round_id ' .
 						 'WHERE v.bracket_id = :bracketId ' .
