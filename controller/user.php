@@ -1,14 +1,14 @@
 <?php
 
 namespace Controller {
-    
+
     use Lib;
     use Api;
 
     use stdClass;
-    
+
     class User implements Page {
-    
+
         public static function render() {
 
             $code = Lib\Url::Get('code', null);
@@ -26,13 +26,9 @@ namespace Controller {
                 $obj = new stdClass;
                 $obj->loginUrl = Api\User::getLoginUrl(Lib\Url::Get('redirect'));
                 $obj->originalUrl = Lib\Url::Get('redirect');
-                Lib\Display::setVariable('content', Lib\Display::compile($obj, 'login'));
+                Lib\Display::renderAndAddKey('content', 'login', $obj);
             }
 
-        }
-        
-        public static function registerExtension($class, $method, $type) {
-            
         }
 
     }
