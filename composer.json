@@ -1,0 +1,6 @@
+{
+    "require": {
+        "xamin/handlebars.php": "dev-master",
+        "keeguon/oauth2-php": ">=1.0.0"
+    }
+}
