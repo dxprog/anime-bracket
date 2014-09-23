@@ -33,7 +33,11 @@ namespace Api {
         }
 
         public static function getCurrentUser() {
-            return Lib\Session::get('user');
+            $user = Lib\Session::get('user');
+            if ($user instanceof User) {
+                $user->admin = ord($user->admin) === 1;
+            }
+            return $user;
         }
 
         /**

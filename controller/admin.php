@@ -15,7 +15,8 @@ namespace Controller {
             $_GET['flushCache'] = true;
 
             $user = Api\User::getCurrentUser();
-            if (!$user || !$user->admin) {
+
+            if (!$user) {
                 header('Location: /login/?redirect=' . urlencode('/admin/'));
             } else {
                 $action = Lib\Url::Get('action', null);
@@ -37,7 +38,7 @@ namespace Controller {
                         $state = Lib\Url::GetInt('state', null);
                         self::_setState($id, $state);
                     default:
-                        $content = self::_main();
+                        $content = self::_main($user);
                         break;
                 }
 
@@ -52,8 +53,8 @@ namespace Controller {
 
         public static function registerExtension($class, $method, $type) { }
 
-        public static function _main() {
-            $brackets = Api\Bracket::getAll(true);
+        public static function _main(Api\User $user) {
+            $brackets = Api\Bracket::getUserOwnedBrackets($user);
             return Lib\Display::compile($brackets, 'admin/brackets_overview');
         }
 

@@ -107,6 +107,38 @@ namespace Api {
 		}
 
 		/**
+		 * Returns brackets owned by the passed user
+		 */
+		public static function getUserOwnedBrackets($user) {
+			$retVal = null;
+
+			if ($user instanceof User) {
+				$retVal = Lib\Cache::fetch(function() use ($user) {
+
+					$retVal = null;
+
+					// Admins get all the fun
+					if ($user->admin) {
+						$retVal = self::getAll();
+					} else {
+						$result = Lib\Db::Query('SELECT * FROM bracket WHERE bracket_id IN (SELECT bracket_id FROM bracket_owners WHERE user_id = :userId)', [ ':userId' => $user->id ]);
+						if ($result && $result->count) {
+							$retVal = [];
+							while ($row = Lib\Db::Fetch($result)) {
+								$retVal[] = new Bracket($row);
+							}
+						}
+					}
+
+					return $retVal;
+
+				}, 'Api:Bracket:getUserOwnedBrackets_' . $user->id);
+			}
+
+			return $retVal;
+		}
+
+		/**
 		 * Gets a bracket by perma lookup
 		 */
 		public static function getBracketByPerma($perma) {
@@ -292,7 +324,7 @@ namespace Api {
 				$this->winnerCharacterId = $this->winner->id;
 				$this->state = BS_FINAL;
 				$this->sync();
-				
+
 			}
 
 		}
