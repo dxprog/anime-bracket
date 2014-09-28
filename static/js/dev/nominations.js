@@ -55,7 +55,7 @@
                 }
             } else {
                 $.ajax({
-                    url:'/process.php?action=nominate',
+                    url:'/submit/?action=nominate',
                     dataType:'json',
                     type:'POST',
                     data: $form.serialize(),
