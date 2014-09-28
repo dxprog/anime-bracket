@@ -1,0 +1,99 @@
+@import "globals";
+
+#admin {
+
+    max-width: 1240px;
+    margin: 0 auto;
+    background: url(/static/images/argyle_bg.png);
+
+    padding: 40px;
+
+    h1 {
+        @include logo();
+        float: left;
+    }
+
+    #content {
+        padding-left: 360px;
+    }
+
+    h2 {
+        @include heading();
+        margin-bottom: 40px;
+    }
+
+    footer {
+        position: static;
+    }
+
+    .top-actions {
+        margin-bottom: 40px;
+    }
+
+    .bracket-card .actions {
+        position: static;
+        li {
+            float: none;
+        }
+        a {
+            text-transform: none;
+        }
+    }
+
+    label {
+        display: block;
+        font: 24px/1 'Roboto', sans-serif;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+
+    input[type="text"], textarea {
+        font: 20px/1.2 'Roboto', sans-serif;
+        padding: 5px;
+        margin-bottom: 20px;
+        width: 75%;
+    }
+
+    textarea {
+        height: 400px;
+    }
+
+    .foot {
+        font: 20px/1 'Roboto', sans-serif;
+        color: #ccc;
+        margin-bottom: 10px;
+        a {
+            color: $light;
+            text-decoration: none;
+            &:hover {
+                color: $dark;
+            }
+        }
+    }
+
+    button {
+        display: block;
+        border: 0;
+        cursor: pointer;
+        &:hover {
+            background: $dark;
+        }
+    }
+
+    .message {
+        font: 20px/1 'Roboto', sans-serif;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        &.error {
+            color: #a94442;
+            background: #f2dede;
+        }
+
+        &.success {
+            color: #3c763d;
+            background: #dff0d8;
+        }
+
+    }
+
+}

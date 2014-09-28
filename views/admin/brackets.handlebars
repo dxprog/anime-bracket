@@ -1,0 +1,44 @@
+<h2>My Brackets</h2>
+
+{{#if message}}
+    <p class="message {{message.type}}">{{message.message}}</p>
+{{/if}}
+
+<div class="top-actions">
+    <a href="/admin/create/" class="button">Create a New Bracket</a>
+</div>
+<ul class="brackets">
+    {{#each brackets}}
+        {{#isBracketNotHidden .}}
+            <li class="bracket-card">
+                {{>_card_image}}
+                <div class="info">
+                    <h3>{{name}}</h3>
+                    <h4>
+                        {{#hasNotStarted .}}Not started{{/hasNotStarted}}
+                        {{#isBracketVoting .}}Voting{{/isBracketVoting}}
+                        {{#isBracketEliminations .}}Eliminations{{/isBracketEliminations}}
+                        {{#isBracketNominations .}}Nominations{{/isBracketNominations}}
+                        {{#isBracketFinal .}}Final{{/isBracketFinal}}
+                    </h4>
+                    <ul class="actions">
+                        {{#hasNotStarted .}}
+                            <li><a href="/admin/{{perma}}/start/nominations/">Start Nominations</a></li>
+                        {{/hasNotStarted}}
+                        {{#isBracketNominations .}}
+                            <li><a href="/admin/{{perma}}/process/nominations/">Process Nominees</a></li>
+                            <li><a href="/admin/{{perma}}/start/eliminations/">Begin Eliminations</a></li>
+                        {{/isBracketNominations}}
+                        {{#isBracketVoting .}}
+                            <li><a href="/admin/{{perma}}/finalize/">Finalize Active Rounds</a></li>
+                            <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
+                        {{/isBracketVoting}}
+                        {{#isBracketEliminations .}}
+                            <li><a href="/{{perma}}/vote/">Vote</a></li>
+                        {{/isBracketEliminations}}
+                    </ul>
+                </div>
+            </li>
+        {{/isBracketNotHidden}}
+    {{/each}}
+</ul>

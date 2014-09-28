@@ -1,0 +1,17 @@
+<h2>{{#if bracketId}}Edit{{else}}Create{{/if}} Bracket</h2>
+<form action="/admin/create/" method="post">
+
+    <label for="bracketName">Bracket Name:</label>
+    <input type="text" name="bracketName" id="bracketName" value="{{bracketName}}" />
+
+    <label for="rules">Rules/Intro text:</label>
+    <p class="foot">You may use <a href="https://help.github.com/articles/markdown-basics" target="_blank">simple markdown</a> for formatting</p>
+    <textarea name="rules" id="rules">{{rules}}</textarea>
+
+    {{#if bracketId}}
+        <input type="hidden" name="bracketId" value="{{bracketId}}" />
+    {{/if}}
+
+    <button class="button" type="submit">{{#if bracketId}}Update{{else}}Create{{/if}} Bracket</button>
+
+</form>

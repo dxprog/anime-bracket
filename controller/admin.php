@@ -8,59 +8,116 @@ namespace Controller {
 
     class Admin implements Page {
 
+        private static $_user = null;
+
         public static function render() {
 
             $content = null;
 
-            $_GET['flushCache'] = true;
+            self::$_user = Api\User::getCurrentUser();
 
-            $user = Api\User::getCurrentUser();
+            Lib\Display::setLayout('admin');
 
-            if (!$user) {
+            // Hork of the hard work done in the brackets controller
+            Bracket::initTemplateHelpers();
+
+            if (!self::$_user) {
                 header('Location: /login/?redirect=' . urlencode('/admin/'));
             } else {
+                
                 $action = Lib\Url::Get('action', null);
+                $perma = Lib\Url::Get('perma', null);
+                $state = Lib\Url::Get('state', null);
+                $bracket = self::_getBracket($perma);
+
                 switch ($action) {
-                    case 'nominations':
-                        $content = self::_displayNominations();
+                    case 'create':
+                        self::_createBracket();
+                        break;
+                    case 'start':
+                        self::_setState($bracket, $state);
                         break;
                     case 'eliminations':
-                        $content = self::_beginEliminations();
+                        self::_beginEliminations($bracket);
                         break;
                     case 'advance':
-                        $content = self::_advanceBracket();
+                        self::_advanceBracket($bracket);
                         break;
                     case 'createBracket':
-                        $content = self::_createBracket();
+                        self::_generateBracket($bracket);
                         break;
-                    case 'setState':
-                        $id = Lib\Url::GetInt('bracket', null);
-                        $state = Lib\Url::GetInt('state', null);
-                        self::_setState($id, $state);
                     default:
-                        $content = self::_main($user);
+                        self::_main();
                         break;
                 }
 
             }
 
-            Lib\Display::setTemplate('admin');
-            Lib\Display::setVariable('content', $content);
-
             return $content;
 
         }
 
-        public static function registerExtension($class, $method, $type) { }
+        public static function _createBracket() {
 
-        public static function _main(Api\User $user) {
-            $brackets = Api\Bracket::getUserOwnedBrackets($user);
-            return Lib\Display::compile($brackets, 'admin/brackets_overview');
+            // Create the bracket on POST
+            if ($_POST) {
+
+                $name = Lib\Url::Post('bracketName', null);
+                $rules = Lib\Url::Post('rules', null);
+
+                if ($name && $rules) {
+                    $bracket = new Api\Bracket();
+                    $bracket->name = trim($name);
+                    $bracket->rules = $rules;
+                    $bracket->state = 0;
+                    $bracket->start = time();
+                    $bracket->generatePerma();
+
+                    if ($bracket->sync()) {
+                        header('Location: /admin/?flushCache');
+                        exit;
+                    }
+
+                }
+
+            }
+
+            // Or display the form
+            Lib\Display::renderAndAddKey('content', 'admin/bracket', $_POST);
+
         }
 
-        public static function _createBracket() {
+        public static function _main($message = null) {
+            $out = new stdClass;
+            $out->brackets = Api\Bracket::getUserOwnedBrackets(self::$_user);
+
+            if ($out->brackets) {
+
+                // Check for card images
+                foreach ($out->brackets as $bracket) {
+                    if (is_readable('./images/bracket_' . $bracket->id . '_card.jpg')) {
+                        $bracket->cardImage = '/images/bracket_' . $bracket->id . '_card.jpg';
+                    } else {
+                        $bracket->entrants = Api\Character::getRandomCharacters($bracket, 9);
+                    }
+                }
+
+                // Sort the brackets by reverse date
+                usort($out->brackets, function($a, $b) {
+                    return $a->start > $b->start ? -1 : 1;
+                });
+
+            }
+
+            if ($message) {
+                $out->message = $message;
+            }
+
+            Lib\Display::renderAndAddKey('content', 'admin/brackets', $out);
+        }
+
+        public static function _generateBracket(Api\Bracket $bracket) {
             $retVal = null;
-            $bracket = self::_getBracket();
             if ($bracket) {
                 if (count($_POST) > 0) {
                     $entrants = Lib\Url::Post('entrants', true);
@@ -84,17 +141,15 @@ namespace Controller {
             return $retVal;
         }
 
-        public static function _advanceBracket() {
-            $bracket = self::_getBracket();
+        public static function _advanceBracket(Api\Bracket $bracket) {
             if ($bracket) {
                 $bracket->advance();
             }
             return self::_main();
         }
 
-        public static function _beginEliminations() {
+        public static function _beginEliminations(Api\Bracket $bracket) {
             $days = Lib\Url::GetInt('days', null);
-            $bracket = self::_getBracket();
             $retVal = null;
             if ($bracket && $bracket->state == BS_NOMINATIONS) {
                 if (!$days) {
@@ -130,14 +185,27 @@ namespace Controller {
             return $retVal;
         }
 
-        public static function _setState($id, $state) {
-            if ($id && $state) {
-                $bracket = Api\Bracket::getById($id);
-                if ($bracket) {
-                    $bracket->state = $state;
-                    $bracket->sync();
+        public static function _setState($bracket, $state) {
+            
+            $message = self::_createMessage('error', 'There was an error setting the bracket state.');
+
+            if ($bracket) {
+                $stateMap = [
+                    'nominations' => BS_NOMINATIONS,
+                    'eliminations' => BS_ELIMINATIONS,
+                    'voting' => BS_VOTING
+                ];
+
+                if ($bracket && isset($stateMap[$state])) {
+                    $bracket->state = $stateMap[$state];
+                    if ($bracket->sync()) {
+                        $message = self::_createMessage('success', '"' . $bracket->name . '" has advanced to the ' . $state . ' phase.');
+                    }
                 }
             }
+
+            return self::_main($message);
+
         }
 
         public static function _displayNominations() {
@@ -234,9 +302,29 @@ namespace Controller {
 
         }
 
-        private static function _getBracket() {
-            $id = Lib\Url::GetInt('bracket', 0);
-            return Api\Bracket::getById($id);
+        private static function _getBracket($perma) {
+            if ($perma) {
+                $brackets = Api\Bracket::getUserOwnedBrackets(self::$_user);
+                $bracket = Api\Bracket::getBracketByPerma($perma);
+
+                if ($brackets && $bracket) {
+                    // Make sure the user is an owner of the bracket before continuing
+                    foreach ($brackets as $userBracket) {
+                        if ($bracket->id == $userBracket->id) {
+                            return $bracket;
+                        }
+                    }
+                }
+
+            }
+            return null;
+        }
+
+        private static function _createMessage($type, $message) {
+            $retVal = new stdClass;
+            $retVal->type = $type;
+            $retVal->message = $message;
+            return $retVal;
         }
 
     }
