@@ -30,16 +30,16 @@ namespace Lib {
 
 		public static function Set($key, $val, $expiration = 600) {
 			$retVal = false;
-			if (null != self::$_conn && $key) {
-				$retVal = self::$_conn->set($key, $val, null, time() + $expiration);
+			if (null != self::$_conn && is_string($key)) {
+				$retVal = self::$_conn->set(CACHE_PREFIX . ':' . $key, $val, null, time() + $expiration);
 			}
 			return $retVal;
 		}
 
 		public static function Get($key, $forceCacheGet = false) {
 			$retVal = false;
-			if (null != self::$_conn && $key && (!isset($_GET['flushCache']) || $forceCacheGet)) {
-				$retVal = self::$_conn->get($key);
+			if (null != self::$_conn && is_string($key) && (!isset($_GET['flushCache']) || $forceCacheGet)) {
+				$retVal = self::$_conn->get(CACHE_PREFIX . ':' . $key);
 			}
 			return $retVal;
 		}
