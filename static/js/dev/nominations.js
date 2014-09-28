@@ -1,10 +1,11 @@
 (function() {
 
-    var $nominate = $('#nominate'),
+    var $nominate = $('#page-nominate'),
         $txtName = $('#txtName'),
         $txtSource = $('#txtSource'),
         $txtPic = $('#txtPic'),
         $message = $('#message'),
+        $form = $nominate.find('form');
         bracketId = window.bracketId,
         characterTypeahead = null,
 
@@ -57,7 +58,7 @@
                     url:'/process.php?action=nominate',
                     dataType:'json',
                     type:'POST',
-                    data:{ bracketId:bracketId, nomineeName:$txtName.val(), nomineeSource:$txtSource.val(), image:$txtPic.val() },
+                    data: $form.serialize(),
                     success:nomineeCallback
                 });
             }
@@ -79,9 +80,10 @@
         };
 
     if ($nominate.length) {
-        $nominate.find('.info a').on('click', formShow);
-        $nominate.find('button').on('click', nomineeSubmit);
-        $nominate.find('input').on('keypress', nomineeKeypress);
+        $nominate
+            .on('click', '.accept', formShow)
+            .on('click', 'button[type="submit"]', nomineeSubmit)
+            .on('keypress', 'input', nomineeKeypress);
         characterTypeahead = new Typeahead($txtName, characterChosen);
     }
 

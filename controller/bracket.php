@@ -10,7 +10,7 @@ namespace Controller {
 
 		public static function render() {
 
-			self::_initTemplateHelpers();
+			self::initTemplateHelpers();
 
 			$action = Lib\Url::Get('action');
 			$perma = Lib\Url::Get('bracket');
@@ -26,8 +26,6 @@ namespace Controller {
 					case 'nominate':
 						if ($bracket->state == BS_NOMINATIONS && $bracket->start < time()) {
 							self::_displayNominations($bracket);
-						} else {
-							// error
 						}
 						break;
 					case 'vote':
@@ -132,9 +130,11 @@ namespace Controller {
 
 		private static function _displayNominations($bracket) {
 			self::_checkLogin();
-			Lib\Display::setVariable('rules', Lib\Michelf\Markdown::defaultTransform($bracket->rules));
-			Lib\Display::setVariable('perma', $bracket->perma);
-			Lib\Display::setTemplate('nominate');
+			$out = new stdClass;
+			$out->rules = Lib\Michelf\Markdown::defaultTransform($bracket->rules);
+			$out->bracket = $bracket;
+			Lib\Display::addKey('page', 'nominate');
+			Lib\Display::renderAndAddKey('content', 'nominate', $out);
 		}
 
 		private static function _displayBracketCharacters($bracket) {
@@ -146,7 +146,7 @@ namespace Controller {
 			Lib\Display::setVariable('title', $bracket->name . ' - Character Pool');
 		}
 
-		private static function _initTemplateHelpers() {
+		public static function initTemplateHelpers() {
 
             Lib\Display::addHelper('isBracketNotHidden', function($template, $context, $args, $source) {
                 $bracket = $context->get($args);
@@ -157,6 +157,10 @@ namespace Controller {
                 }
 
                 return $retVal;
+            });
+
+            Lib\Display::addHelper('hasNotStarted', function($template, $context, $args, $source) {
+            	return self::_bracketStateIs($template, $context, $args, BS_NOT_STARTED);
             });
 
             Lib\Display::addHelper('isBracketNominations', function($template, $context, $args, $source) {
@@ -173,6 +177,15 @@ namespace Controller {
 
             Lib\Display::addHelper('isBracketFinal', function($template, $context, $args, $source) {
             	return self::_bracketStateIs($template, $context, $args, BS_FINAL);
+            });
+
+            Lib\Display::addHelper('hasResults', function($template, $context, $args, $source) {
+				$retVal = '';
+				$bracket = $context->get($args);
+				if ($bracket instanceof Api\Bracket && ($bracket->state == BS_VOTING || $bracket->state == BS_FINAL)) {
+					$retVal = $template->render($context);
+				}
+				return $retVal;
             });
 
 		}
