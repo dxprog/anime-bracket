@@ -3,17 +3,7 @@
     {{#each .}}
         {{#isBracketNotHidden .}}
             <li class="bracket-card">
-                {{#if cardImage}}
-                    <img src="{{cardImage}}" alt="{{name}}" class="card-image" />
-                {{else}}
-                    <div class="card-entrants">
-                        <div class="inner">
-                            {{#each entrants}}
-                                <img src="//cdn.awwni.me/bracket/{{image}}" alt="{{name}}" title="{{name}}" />
-                            {{/each}}
-                        </div>
-                    </div>
-                {{/if}}
+                {{>_card_image}}
                 <div class="info">
                     <h3>{{name}}</h3>
                     {{#if winner}}
@@ -26,7 +16,12 @@
                         </h4>
                     {{/if}}
                     <ul class="actions">
-                        <li><a href="/{{perma}}/view/">Results</a></li>
+                        {{#hasResults .}}
+                            <li><a href="/{{perma}}/view/">Results</a></li>
+                        {{/hasResults}}
+                        {{#isBracketNominations .}}
+                            <li><a href="/{{perma}}/nominate/">Nominate</a></li>
+                        {{/isBracketNominations}}
                         {{#isBracketVoting .}}
                             <li><a href="/{{perma}}/vote/">Vote</a></li>
                         {{/isBracketVoting}}
