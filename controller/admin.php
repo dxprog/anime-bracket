@@ -37,6 +37,13 @@ namespace Controller {
                     case 'start':
                         self::_setState($bracket, $state);
                         break;
+                    case 'process':
+                        if ($state === 'nominations') {
+                            $content = self::_displayNominations($bracket);
+                        } else if ($state === 'characters') {
+                            // some other thing which hasn't been done yet
+                        }
+                        break;
                     case 'eliminations':
                         self::_beginEliminations($bracket);
                         break;
@@ -208,11 +215,10 @@ namespace Controller {
 
         }
 
-        public static function _displayNominations() {
+        public static function _displayNominations($bracket) {
             $retVal = null;
-            $bracketId = Lib\Url::GetInt('bracket');
 
-            if ($bracketId) {
+            if ($bracket) {
                 if (count($_POST) > 0) {
                     $char = new Api\Character();
                     $id = Lib\Url::Post('id', true);
@@ -222,7 +228,7 @@ namespace Controller {
                         if ($action === 'create') {
                             $char->name = Lib\Url::Post('name');
                             $char->source = Lib\Url::Post('source');
-                            $char->bracketId = $bracketId;
+                            $char->bracketId = $bracket->id;
                             $fail = true;
                             if ($char->name && $char->source && is_uploaded_file($_FILES['headshot']['tmp_name'])) {
                                 if ($char->sync()) {
@@ -252,7 +258,7 @@ namespace Controller {
                                 $character = Api\Character::getById($characterId);
                                 if ($character) {
                                     $character->id = 0;
-                                    $character->bracketId = $bracketId;
+                                    $character->bracketId = $bracket->id;
                                     if ($character->sync()) {
                                         copy(IMAGE_LOCATION . '/' . base_convert($characterId, 10, 36) . '.jpg', IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
                                         $create = true;
@@ -284,7 +290,6 @@ namespace Controller {
                     }
                 }
 
-                $bracket = Api\Bracket::getById($bracketId);
                 $nominee = Api\Nominee::getUnprocessed($bracket->id, 1);
 
                 if (count($nominee) > 0) {
@@ -293,8 +298,23 @@ namespace Controller {
                     $out->nominee = end($nominee);
                     $out->message = isset($message) ? $message : null;
                     $out->similar = $out->nominee->getSimilar($bracket);
-                    $out->character = Api\Character::getBySimilarName($out->nominee->name, $bracket);
-                    $retVal = Lib\Display::compile($out, 'admin/nominee');
+                    $characters = Api\Character::getBySimilarName($out->nominee->name, $bracket);
+                    $thisBracket = [];
+                    $otherBrackets = [];
+
+                    // Split characters up into this bracket and other brackets
+                    foreach ($characters as $character) {
+                        if ($character->bracketId == $bracket->id) {
+                            $thisBracket[] = $character;
+                        } else {
+                            $otherBrackets[] = $character;
+                        }
+                    }
+
+                    $out->thisBracketCharacters = count($thisBracket) ? $thisBracket : null;
+                    $out->otherBracketCharacters = count($otherBrackets) ? $otherBrackets : null;
+
+                    $retVal = Lib\Display::renderAndAddKey('content', 'admin/nominee', $out);
                 }
             }
 

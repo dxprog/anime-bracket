@@ -24,6 +24,7 @@
 
     footer {
         position: static;
+        margin-top: 50px;
     }
 
     .top-actions {
@@ -80,18 +81,191 @@
         }
     }
 
-    .message {
-        font: 20px/1 'Roboto', sans-serif;
-        padding: 15px 20px;
-        margin-bottom: 20px;
-        &.error {
-            color: #a94442;
-            background: #f2dede;
+    .nominee {
+
+        box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+        background: rgba(255, 255, 255, .8);
+
+        label {
+            color: $dark;
         }
 
-        &.success {
-            color: #3c763d;
-            background: #dff0d8;
+        input[type="text"] {
+            width: 300px;
+        }
+
+        dl {
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        dt {
+            display: none;
+        }
+
+        h3 {
+            background: $light;
+            padding: 10px 20px;
+            color: $dark;
+            font: 24px/1 'Roboto Condensed', sans-serif;
+        }
+
+        .image {
+            float: left;
+            margin-right: 20px;
+            position: relative;
+
+            img {
+                display: block;
+                max-width: 150px;
+            }
+
+            button {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, .75);
+                color: #fff;
+                font: 18px/1 'Roboto', sans-serif;
+                padding: 10px 0;
+                width: 100%;
+            }
+        }
+
+        table {
+
+            border-collapse: collapse;
+            border: 0;
+            width: 100%;
+
+            thead {
+                background: $standard;
+                th {
+                    text-align: left;
+                    font: 18px 'Roboto', sans-serif;
+                    color: #fff;
+                    padding: 5px;
+                }
+
+                .name {
+                    width: 356px;
+
+                }
+
+                .thumb {
+                    width: 75px;
+                    padding: 10px;
+                }
+
+            }
+
+            .bracket-name {
+                display: block;
+                font-size: 18px;
+            }
+
+            a.thumb {
+                display: block;
+                width: 75px;
+                margin: 10px;
+                height: 0;
+                overflow: hidden;
+                padding-top: 75px;
+                background-size: cover;
+                background-position: center center;
+            }
+
+            .button {
+                background: transparent;
+                font-size: 18px;
+                color: $dark;
+            }
+
+            .action {
+                button {
+                    float: right;
+                }
+            }
+
+            td {
+                font: 24px 'Roboto', sans-serif;
+                padding: 0 5px;
+
+                &[colspan="4"] {
+                    padding: 0;
+                }
+
+                &.duplicate input {
+                    display: block;
+                    width: 16px;
+                    margin: 0 auto;
+                }
+
+                &.action {
+                    width: 142px;
+                }
+
+            }
+
+        }
+
+        .buttons {
+            background: $standard;
+            padding: 20px 15px;
+        }
+
+        .overlay {
+            display: none;
+            background: rgba(0, 0, 0, .8);
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+
+            .cropper {
+                width: 960px;
+                margin: 100px auto 0;
+            }
+
+            .crop {
+                width: 600px;
+                float: left;
+                padding: 10px;
+
+                background: #000;
+                border: 1px dotted #666;
+
+                .jcrop-holder {
+                    margin: 0 auto;
+                }
+
+                img {
+                    max-width: 600px;
+                    display: block;
+                    margin: 0 auto;
+                }
+            }
+
+            h3 {
+                background: transparent;
+                padding: 0;
+                text-transform: uppercase;
+            }
+
+            .side {
+                float: right;
+                width: 300px;
+                padding: 0 10px;
+            }
+
+            p {
+                font: 18px/1.2 'Roboto', sans-serif;
+                color: #fff;
+                margin: 20px 0;
+            }
+
         }
 
     }

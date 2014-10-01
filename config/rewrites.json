@@ -4,8 +4,24 @@
         "replace": "page=admin"
     },
     {
+        "rule": "^admin/create/$",
+        "replace": "page=admin&action=create"
+    },
+    {
+        "rule": "^admin/([^/]+)/([^/]+)/$",
+        "replace": "page=admin&perma=$1&action=$2"
+    },
+    {
+        "rule": "^admin/([^/]+)/([^/]+)/([^/]+)/$",
+        "replace": "page=admin&perma=$1&action=$2&state=$3"
+    },
+    {
         "rule": "^verify$",
         "replace": "page=user&action=verify_oauth"
+    },
+    {
+        "rule": "^submit/$",
+        "replace": "page=votesubmit"
     },
     {
         "rule": "^typeahead/$",
