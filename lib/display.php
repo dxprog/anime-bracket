@@ -30,6 +30,15 @@ namespace Lib {
             echo self::$_hbEngine->render('layouts/' . self::$_layout . '.handlebars', self::$_tplData);
         }
 
+        /**
+         * Renders an object out as JSON and ends the request
+         */
+        public static function renderJson($obj) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($obj);
+            exit;
+        }
+
         // Displays an error message and halts rendering
         public static function showError($code, $message) {
             // NOOP until I can figure out what to do with this

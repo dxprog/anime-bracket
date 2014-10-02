@@ -243,6 +243,7 @@
 
                 img {
                     max-width: 600px;
+                    max-height: 500px;
                     display: block;
                     margin: 0 auto;
                 }
@@ -258,6 +259,23 @@
                 float: right;
                 width: 300px;
                 padding: 0 10px;
+
+                input[type="file"] {
+                    position: absolute;
+                    left: -9999px;
+                    top: -9999px;
+                }
+
+                label {
+                    color: #fff;
+                    font: 18px/1 'Roboto Condensed', sans-serif;
+                    display: inline-block;
+                }
+
+                button {
+                    margin-top: 40px;
+                }
+
             }
 
             p {

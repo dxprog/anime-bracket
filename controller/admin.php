@@ -6,6 +6,14 @@ namespace Controller {
     use Lib;
     use stdClass;
 
+    define('IMAGE_TYPE_JPEG', 'jpg');
+    define('IMAGE_TYPE_PNG', 'png');
+    define('IMAGE_TYPE_GIF', 'gif');
+
+    define('MAX_WIDTH', 600);
+    define('MAX_HEIGHT', 500);
+    define('BRACKET_IMAGE_SIZE', 150);
+
     class Admin implements Page {
 
         private static $_user = null;
@@ -43,6 +51,12 @@ namespace Controller {
                         } else if ($state === 'characters') {
                             // some other thing which hasn't been done yet
                         }
+                        break;
+                    case 'upload':
+                        self::_uploadFile();
+                        break;
+                    case 'crop':
+                        self::_cropImage();
                         break;
                     case 'eliminations':
                         self::_beginEliminations($bracket);
@@ -345,6 +359,163 @@ namespace Controller {
             $retVal->type = $type;
             $retVal->message = $message;
             return $retVal;
+        }
+
+        private static function _uploadFile() {
+
+            $out = new stdClass;
+            $out->success = false;
+            $out->message = 'Unable to upload image';
+
+            $fileName = './cache/' . uniqid();
+            $tmpFile = $_FILES['upload']['tmp_name'];
+            if (is_uploaded_file($tmpFile) && move_uploaded_file($tmpFile, $fileName)) {
+                $type = self::getImageType($fileName);
+                if ($type) {
+                    rename($fileName, $fileName . '.' . $type);
+                    $out->success = true;
+                    $out->fileName = str_replace('.', '', $fileName) . '.' . $type;
+                } else {
+                    unlink($fileName);
+                    $out->message = 'Invalid image';
+                }
+            }
+
+            Lib\Display::renderJson($out);
+
+        }
+
+        private static function _cropImage() {
+
+            $out = new stdClass;
+            $out->success = false;
+            $out->message = 'Unable to crop image';
+
+            $imageFile = Lib\Url::Post('imageFile');
+            $x = Lib\Url::Post('x', true);
+            $y = Lib\Url::Post('y', true);
+            $width = Lib\Url::Post('width', true);
+            $height = Lib\Url::Post('height', true);
+
+            if ($imageFile && is_int($x) && is_int($y) && is_int($width) && is_int($height)) {
+                $image = self::loadImage($imageFile);
+                if ($image) {
+                    $image = self::_sizeUp($image->image);
+                    $croppedImage = imagecreatetruecolor(BRACKET_IMAGE_SIZE, BRACKET_IMAGE_SIZE);
+                    imagecopyresampled($croppedImage, $image, 0, 0, $x, $y, BRACKET_IMAGE_SIZE, BRACKET_IMAGE_SIZE, $width, $height);
+                    $fileName = explode('.', $imageFile);
+                    $fileName = $fileName[0] . '.jpg';
+                    imagejpeg($croppedImage, '.' . $fileName);
+                    imagedestroy($image);
+                    imagedestroy($croppedImage);
+                    $out->success = true;
+                    $out->fileName = $fileName;
+                }
+            } else {
+                $out->message = 'Parameters missing';
+            }
+
+            Lib\Display::renderJson($out);
+
+        }
+
+        private static function _sizeUp($image) {
+            $width = imagesx($image);
+            $height = imagesy($image);
+            if ($width > MAX_WIDTH || $height > MAX_HEIGHT) {
+                $newHeight = 0;
+                $newWidth = 0;
+                if ($width > $height) {
+                    $ratio = $height / $width;
+                    $newWidth = MAX_WIDTH;
+                    $newHeight = $newWidth * $ratio;
+                } else {
+                    $ratio = $width / $height;
+                    $newHeight = MAX_HEIGHT;
+                    $newWidth = $newHeight * $ratio;
+                }
+
+                $newImage = imagecreatetruecolor($newWidth, $newHeight);
+                imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                imagedestroy($image);
+                $image = $newImage;
+            }
+            return $image;
+        }
+
+        // Ripped straight out of redditbooru. Probably a good candidate for getting into a composer library...
+
+        /**
+         * Loads a file, determines the image type by scanning the header, and returns a GD object
+         * @param string $file Path to the file to load
+         * @return object Object containing the GD image and the mimeType, null on failure
+         */
+        public static function loadImage($file) {
+
+            $retVal = null;
+
+            $file = $file{0} === '/' ? '.' . $file : $file;
+            $type = self::getImageType($file);
+
+            if (false !== $type) {
+                $retVal = new stdClass;
+                $retVal->mimeType = $type;
+                switch ($type) {
+                    case IMAGE_TYPE_JPEG:
+                        $retVal->image = @imagecreatefromjpeg($file);
+                        break;
+                    case IMAGE_TYPE_PNG:
+                        $retVal->image = @imagecreatefrompng($file);
+                        break;
+                    case IMAGE_TYPE_GIF:
+                        $retVal->image = @imagecreatefromgif($file);
+                        break;
+                    default:
+                        $retVal = null;
+                }
+
+                if (null != $retVal && null == $retVal->image) {
+                    $retVal = null;
+                }
+
+            }
+
+            return $retVal;
+
+        }
+
+        /**
+         * Given a file, returns the image mime type
+         */
+        public static function getImageType($fileName) {
+            $retVal = null;
+            $handle = fopen($fileName, 'rb');
+            if ($handle) {
+                $head = fread($handle, 10);
+                $retVal = self::_getImageType($head);
+                fclose($handle);
+            }
+            return $retVal;
+        }
+
+        /**
+         * Determines the image type of the incoming data
+         * @param string $data Data of the image file to determine
+         * @return string Mime type of the image, null if not recognized
+         */
+        private static function _getImageType($data) {
+
+            $retVal = null;
+            if (ord($data{0}) == 0xff && ord($data{1}) == 0xd8) {
+                $retVal = IMAGE_TYPE_JPEG;
+            } else if (ord($data{0}) == 0x89 && substr($data, 1, 3) == 'PNG') {
+                $retVal = IMAGE_TYPE_PNG;
+            } else if (substr($data, 0, 6) == 'GIF89a' || substr($data, 0, 6) == 'GIF87a') {
+                $retVal = IMAGE_TYPE_GIF;
+            }
+
+            return $retVal;
+
         }
 
     }

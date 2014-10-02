@@ -114,14 +114,15 @@ namespace Lib {
 				$retVal = get_magic_quotes_gpc() > 0 ? stripslashes($_POST[$param]) : $_POST[$param];
 			}
 
-			if ($isInt && $retVal) {
-				if (!is_numeric($retVal)) {
-					$retVal = null;
-				}
-			}
-
 			if ($retVal) {
-				if (is_array($retVal)) {
+
+				if ($isInt) {
+					if (!is_numeric($retVal)) {
+						$retVal = null;
+					} else {
+						$retVal = (int) $retVal;
+					}
+				} else if (is_array($retVal)) {
 					foreach ($retVal as &$item) {
 						$item = trim($item);
 					}

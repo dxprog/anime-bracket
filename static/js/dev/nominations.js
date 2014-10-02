@@ -4,25 +4,18 @@
         $txtName = $('#txtName'),
         $txtSource = $('#txtSource'),
         $txtPic = $('#txtPic'),
-        $message = $('#message'),
-        $form = $nominate.find('form');
-        bracketId = window.bracketId,
+        $form = $nominate.find('form'),
+        $message = $form.find('.message'),
         characterTypeahead = null,
 
         isIE = (/MSIE/).test(window.navigator.userAgent),
 
-        displayMessage = function(message) {
-            $message
-                .stop()
-                .css({ top:0, opacity:0 })
-                .html(message)
-                .animate({ top:'-68px', opacity:1 }, 400, function() {
-                    setTimeout(function() { $message.animate({ opacity:0 }); }, 1000);
-                });
+        displayMessage = function(message, success) {
+            $message.removeClass('error success hidden').html(message).addClass(success ? 'success' : 'error');
         },
 
         nomineeCallback = function(data) {
-            displayMessage(data.success ? 'Success!' : data.message);
+            displayMessage(data.success ? '"' + $txtName.val() + '" was successfully nominated!' : data.message, data.success);
             $txtName.focus().val(data.success ? '' : $txtName.val());
             $txtPic.val(data.success ? '' : $txtPic.val());
         },

@@ -4,8 +4,8 @@
         "replace": "page=admin"
     },
     {
-        "rule": "^admin/create/$",
-        "replace": "page=admin&action=create"
+        "rule": "^admin/([^/]+)/$",
+        "replace": "page=admin&action=$1"
     },
     {
         "rule": "^admin/([^/]+)/([^/]+)/$",

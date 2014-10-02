@@ -89,7 +89,8 @@
 
         </table>
 
-        <input type="hidden" name="id" value="{//nominee/id}" />
+        <input type="hidden" name="id" value="{{nominee.id}}" />
+        <input type="hidden" name="bracketId" value="{{bracket.id}}" />
 
         <div class="buttons">
             <button class="button">Add Character</button>
@@ -103,8 +104,9 @@
                 <div class="side">
                     <h3>Edit Image</h3>
                     <p>All images must be 150x150 px. Use the tool to the left to crop your picture or upload a custom one.</p>
-                    <label for="upload">Upload Image</label>
+                    <label for="upload" class="button">Upload Image</label>
                     <input type="file" name="upload" id="upload" />
+                    <button type="button" class="button crop-submit">Done</button>
                 </div>
             </div>
         </div>
