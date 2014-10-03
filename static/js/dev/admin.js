@@ -90,7 +90,7 @@
         },
 
         submitCrop = function(evt) {
-            alert('blah');
+            
             evt.preventDefault();
 
             var imageFile = $cropper.find('img').attr('src');
@@ -107,7 +107,10 @@
                 }
             }).done(function(data) {
                 if (data.success) {
-                    
+                    // Replace the old image
+                    $('.nominee .image img').attr('src', data.fileName);
+                    $('[name="imageFile"]').val(data.fileName);
+                    $cropper.fadeOut();
                 } else {
                     alert(data.message);
                 }
