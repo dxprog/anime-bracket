@@ -41,44 +41,52 @@
         }
     }
 
-    label {
-        display: block;
-        font: 24px/1 'Roboto', sans-serif;
-        color: #fff;
-        margin-bottom: 10px;
+    .non-button {
+        background: transparent;
     }
 
-    input[type="text"], textarea {
-        font: 20px/1.2 'Roboto', sans-serif;
-        padding: 5px;
-        margin-bottom: 20px;
-        width: 75%;
-    }
+    .form {
 
-    textarea {
-        height: 400px;
-    }
+        label {
+            display: block;
+            font: 24px/1 'Roboto', sans-serif;
+            color: #fff;
+            margin-bottom: 10px;
+        }
 
-    .foot {
-        font: 20px/1 'Roboto', sans-serif;
-        color: #ccc;
-        margin-bottom: 10px;
-        a {
-            color: $light;
-            text-decoration: none;
-            &:hover {
-                color: $dark;
+        input[type="text"], textarea {
+            font: 20px/1.2 'Roboto', sans-serif;
+            padding: 5px;
+            margin-bottom: 20px;
+            width: 75%;
+        }
+
+        textarea {
+            height: 400px;
+        }
+
+        .foot {
+            font: 20px/1 'Roboto', sans-serif;
+            color: #ccc;
+            margin-bottom: 10px;
+            a {
+                color: $light;
+                text-decoration: none;
+                &:hover {
+                    color: $dark;
+                }
             }
         }
-    }
 
-    button {
-        display: block;
-        border: 0;
-        cursor: pointer;
-        &:hover {
-            background: $dark;
+        button {
+            display: block;
+            border: 0;
+            cursor: pointer;
+            &:hover {
+                background: $dark;
+            }
         }
+
     }
 
     .nominee {
@@ -160,6 +168,10 @@
 
             }
 
+            tr.checked {
+                opacity: .5;
+            }
+
             .bracket-name {
                 display: block;
                 font-size: 18px;
@@ -182,8 +194,12 @@
                 color: $dark;
             }
 
+            input[type="checkbox"] {
+                display: none;
+            }
+
             .action {
-                button {
+                .button {
                     float: right;
                 }
             }

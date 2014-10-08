@@ -110,6 +110,26 @@ namespace Api {
 			}
 			return $retVal;
 		}
+
+		/**
+		 * Takes an array of nominee IDs and marks them as processed
+		 */
+		public static function markAsProcessed($nominees) {
+			$retVal = false;
+			if (is_array($nominees)) {
+
+				$params = [];
+				$i = 0;
+				foreach ($nominees as $id) {
+					$params[':nominee' . $i] = $id;
+					$i++;
+				}
+
+				$retVal = Lib\Db::Query('UPDATE `nominee` SET `nominee_processed` = 1 WHERE `nominee_id` IN (' . implode(',', array_keys($params)) . ')', $params);
+
+			}
+			return $retVal;
+		}
 		
 	}
 

@@ -1,7 +1,11 @@
 <h2>Process Nominees</h2>
+
+<p class="message hidden">{{message}}</p>
+
 <div class="nominee">
-    <form action="/admin/?action=nominations&amp;bracket={//bracket/id}" method="post" enctype="multipart/form-data">
-        <dl>
+
+    <form action="/admin/{{bracket.perma}}/process/nominee/" method="post" enctype="multipart/form-data">
+        <dl class="form">
             <dt>Image</dt>
             <dd class="image">
                 <img src="{{nominee.image}}" />
@@ -41,9 +45,7 @@
                     </td>
                     <td>{{name}}</td>
                     <td>{{source}}</td>
-                    <td class="action">
-                        <button type="button" class="button" data-id="{{id}}">Use Character</button>
-                    </td>
+                    <td class="action"></td>
                 </tr>
             {{/each}}
         {{/if}}
@@ -63,7 +65,7 @@
                     </td>
                     <td>{{source}}</td>
                     <td class="action">
-                        <button type="button" class="button" data-id="{{id}}">Use Character</button>
+                        <button type="button" class="button copy" data-name="{{name}}" data-source="{{source}}" data-image="http://cdn.awwni.me/bracket/{{image}}">Use Character</button>
                     </td>
                 </tr>
             {{/each}}
@@ -81,7 +83,8 @@
                     <td>{{name}}</td>
                     <td>{{source}}</td>
                     <td class="action">
-                        <button class="button">Ignore</button>
+                        <label for="nominee-{{id}}" class="button">Is Duplicate</label>
+                        <input type="checkbox" id="nominee-{{id}}" name="nominee[]" value="{{id}}" />
                     </td>
                 </tr>
             {{/each}}
@@ -95,6 +98,7 @@
 
         <div class="buttons">
             <button class="button">Add Character</button>
+            <button class="button non-button" value="ignore">Delete Nominee</button>
         </div>
 
         <div class="overlay">

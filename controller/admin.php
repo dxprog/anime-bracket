@@ -44,6 +44,8 @@ namespace Controller {
                     case 'process':
                         if ($state === 'nominations') {
                             $content = self::_displayNominations($bracket);
+                        } else if ($state === 'nominee') {
+                            self::_processNominee($bracket);
                         } else if ($state === 'characters') {
                             // some other thing which hasn't been done yet
                         }
@@ -225,80 +227,10 @@ namespace Controller {
 
         }
 
-        public static function _displayNominations($bracket) {
+        public static function _displayNominations($bracket, $jsonOnly = false) {
             $retVal = null;
 
             if ($bracket) {
-                if (count($_POST) > 0) {
-                    $char = new Api\Character();
-                    $id = Lib\Url::Post('id', true);
-                    if ($id) {
-                        $create = false;
-                        $action = Lib\Url::Post('form_action');
-                        if ($action === 'create') {
-                            $char->name = Lib\Url::Post('name');
-                            $char->source = Lib\Url::Post('source');
-                            $char->bracketId = $bracket->id;
-                            $fail = true;
-                            if ($char->name && $char->source && is_uploaded_file($_FILES['headshot']['tmp_name'])) {
-                                if ($char->sync()) {
-                                    $fileName = IMAGE_LOCATION . '/' . base_convert($char->id, 10, 36) . '.jpg';
-                                    if (move_uploaded_file($_FILES['headshot']['tmp_name'], $fileName)) {
-                                        $create = true;
-                                    } else {
-                                        $message = 'Picture failed to upload';
-                                        $char->delete();
-                                    }
-                                } else {
-                                    $message = 'Unable to create the character entry';
-                                }
-
-                                if ($fail) {
-                                    $nominee = Api\Nominee::getById($id);
-                                }
-                            } else {
-                                $message = 'Field missing';
-                            }
-                        }
-
-                        if (strpos($action, 'clone') === 0) {
-                            $pieces = explode('|', $action);
-                            $characterId = end($pieces);
-                            if (is_numeric($characterId)) {
-                                $character = Api\Character::getById($characterId);
-                                if ($character) {
-                                    $character->id = 0;
-                                    $character->bracketId = $bracket->id;
-                                    if ($character->sync()) {
-                                        copy(IMAGE_LOCATION . '/' . base_convert($characterId, 10, 36) . '.jpg', IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
-                                        $create = true;
-                                    }
-                                }
-                            }
-                        }
-
-                        if ($create || $action === 'skip') {
-                            $params = [ ':id0' => $id ];
-                            $similar = Lib\Url::Post('chkProcess');
-                            if (count($similar) > 0) {
-                                for ($i = 0, $count = count($similar); $i < $count; $i++) {
-                                    $params[':id' . ($i + 1)] = $similar[$i];
-                                }
-                            }
-                            if (Lib\Db::Query('UPDATE nominee SET nominee_processed = 1 WHERE nominee_id IN (' . implode(',', array_keys($params)) . ')', $params)) {
-                                $message = $create ? 'Character created successfully!' : 'Nominees have been marked as processed';
-                                $fail = false;
-                            } else {
-                                $message = 'Unable to finalize nominee processing';
-                                if (isset($char)) {
-                                    $char->delete();
-                                    unlink($fileName);
-                                }
-                            }
-                        }
-
-                    }
-                }
 
                 $nominee = Api\Nominee::getUnprocessed($bracket->id, 1);
 
@@ -324,11 +256,77 @@ namespace Controller {
                     $out->thisBracketCharacters = count($thisBracket) ? $thisBracket : null;
                     $out->otherBracketCharacters = count($otherBrackets) ? $otherBrackets : null;
 
-                    $retVal = Lib\Display::renderAndAddKey('content', 'admin/nominee', $out);
+                    $retVal = $jsonOnly ? $out : Lib\Display::renderAndAddKey('content', 'admin/nominee', $out);
                 }
             }
 
             return $retVal;
+
+        }
+
+        private static function _processNominee($bracket) {
+
+            $out = new stdClass;
+            $out->success = false;
+
+            if ($bracket) {
+
+                $name = Lib\Url::Post('name');
+                $source = Lib\Url::Post('source');
+                $imageFile = Lib\Url::Post('imageFile');
+                $nomineeId = Lib\Url::Post('id', true);
+                $ignore = Lib\Url::Post('ignore') === 'true';
+                $nominees = Lib\Url::Post('nominee');
+                $nominees = $nominees ?: [];
+
+                if ((($name && $source && $imageFile) || $ignore) && $nomineeId) {
+
+                    if (!$ignore) {
+
+                        $imageFile = $imageFile{0} === '/' ? '.' . $imageFile : $imageFile;
+
+                        // Verify the image is an image and the correct size
+                        if (self::_verifyImage($imageFile)) {
+
+                            $character = new Api\Character();
+                            $character->name = $name;
+                            $character->bracketId = $bracket->id;
+                            $character->source = $source;
+
+
+                            if ($character->sync()) {
+                                // Save the character image off in the correct directory and as a JPEG
+                                $image = Lib\ImageLoader::loadImage($imageFile);
+                                imagejpeg($image->image, IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
+                                imagedestroy($image->image);
+                                $out = self::_displayNominations($bracket, true);
+                                $out->success = true;
+                                $out->message = '"' . $character->name . '" successfully processed';
+                            } else {
+                                $out->message = 'Unable to save character to database';
+                            }
+
+                        } else {
+                            $out->message = 'Image must by JPEG, GIF, or PNG and 150x150 pixels';
+                        }
+
+                    } else {
+                        $out->success = true;
+                        $out->message = 'Nominee' . (count($nominees) > 0 ? 's' : '') . ' deleted';
+                    }
+
+                    if ($out->success) {
+                        $nominees[] = $nomineeId;
+                        Api\Nominee::markAsProcessed($nominees);
+                    }
+
+                }
+
+            } else {
+                $out->message = 'Invalid bracket';
+            }
+
+            Lib\Display::renderJson($out);
 
         }
 
@@ -437,6 +435,13 @@ namespace Controller {
                 $image = $newImage;
             }
             return $image;
+        }
+
+        private static function _verifyImage($url) {
+            $image = Lib\ImageLoader::loadImage($url);
+            $retVal = $image && imagesx($image->image) === BRACKET_IMAGE_SIZE && imagesy($image->image) === BRACKET_IMAGE_SIZE;
+            imagedestroy($image->image);
+            return $retVal;
         }
 
     }
