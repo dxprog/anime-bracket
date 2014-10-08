@@ -28,9 +28,17 @@ module.exports = function(grunt) {
                 banner: '/* <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             dist: {
-                files: {
-                    'static/js/<%= pkg.name %>.min.js': ['<%= concat.js.dest %>']
-                }
+                files: [
+                    {
+                        'static/js/<%= pkg.name %>.min.js': ['<%= concat.js.dest %>']
+                    },
+                    {
+                        expand: true,
+                        cwd: 'static/js/dev/modules',
+                        src: '*.js',
+                        dest: 'static/js'
+                    }
+                ]
             }
         },
         watch: {
@@ -39,7 +47,9 @@ module.exports = function(grunt) {
                 'static/js/dev/controls/*.js',
                 'static/js/dev/*.js',
                 'static/css/dev/*.scss',
-                'view/handlebars/*.handlebars'
+                'views/*.handlebars',
+                'views/admin/*.handlebars',
+                'static/js/dev/modules/*.js'
             ],
             tasks: [ 'handlebars', 'sass', 'concat', 'cssmin' ]
         },
@@ -47,15 +57,14 @@ module.exports = function(grunt) {
             compile: {
                 options: {
                     namespace: 'Templates',
-                    wrapped:true,
+                    wrapped: true,
                     processName: function(filename) {
-                        filename = filename.split('/');
-                        filename = filename[filename.length - 1];
                         return filename.split('.')[0];
                     }
                 },
                 files: {
-                    'view/js/lib/templates.js': 'view/handlebars/*.handlebars'
+                    'static/js/dev/lib/templates.js': 'views/*.handlebars',
+                    'static/js/adminTemplates.js': 'views/admin/*.handlebars'
                 }
             }
         },
