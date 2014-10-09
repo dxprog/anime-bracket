@@ -141,9 +141,8 @@ namespace Controller {
 			$out = new stdClass;
 			$out->characters = Api\Character::getByBracketId($bracket->id);
 			$out->bracket = $bracket;
-			$content = Lib\Display::compile($out, 'characters', 'Controller_displayBracketCharacters_' . $bracket->id);
-			Lib\Display::setVariable('content', $content);
-			Lib\Display::setVariable('title', $bracket->name . ' - Character Pool');
+			Lib\Display::addKey('page', 'characters');
+			$content = Lib\Display::renderAndAddKey('content', 'characters', $out);
 		}
 
 		public static function initTemplateHelpers() {
