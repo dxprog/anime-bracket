@@ -58,7 +58,7 @@ namespace Api {
 		public function __construct($character = null) {
 			if (is_object($character)) {
 				parent::__construct($character);
-				$this->image = base_convert($this->id, 10, 36) . '.jpg';
+				$this->image = IMAGE_URL . '/' . base_convert($this->id, 10, 36) . '.jpg';
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace Api {
 		/**
 		 * Gets other characters in this bracket with similar names (checks for Japanese and Western naming order)
 		 */
-		public static function getBySimilarName($name, $bracket) {
+		public static function getBySimilarName($name) {
 			$retVal = null;
 
 			$query = 'SELECT * FROM `character` WHERE ';
@@ -117,7 +117,9 @@ namespace Api {
 			if ($result && $result->count) {
 				$retVal = [];
 				while ($row = Lib\Db::Fetch($result)) {
-					$retVal[] = new Character($row);
+					$obj = new Character($row);
+					$obj->bracket = Bracket::getById($obj->bracketId);
+					$retVal[] = $obj;
 				}
 			}
 

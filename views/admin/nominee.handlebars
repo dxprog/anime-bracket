@@ -41,7 +41,7 @@
             {{#each thisBracketCharacters}}
                 <tr>
                     <td>
-                        <a class="thumb" style="background-image:url(//cdn.awwni.me/bracket/{{image}})" href="//cdn.awwni.me/bracket/{{image}}" target="_blank">Thumbnail</a>
+                        <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
                     </td>
                     <td>{{name}}</td>
                     <td>{{source}}</td>
@@ -57,7 +57,7 @@
             {{#each otherBracketCharacters}}
                 <tr>
                     <td>
-                        <a class="thumb" style="background-image:url(//cdn.awwni.me/bracket/{{image}})" href="//cdn.awwni.me/bracket/{{image}}" target="_blank">Thumbnail</a>
+                        <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
                     </td>
                     <td>
                         {{name}}
@@ -65,7 +65,7 @@
                     </td>
                     <td>{{source}}</td>
                     <td class="action">
-                        <button type="button" class="button copy" data-name="{{name}}" data-source="{{source}}" data-image="http://cdn.awwni.me/bracket/{{image}}">Use Character</button>
+                        <button type="button" class="button copy" data-name="{{name}}" data-source="{{source}}" data-image="{{image}}">Use Character</button>
                     </td>
                 </tr>
             {{/each}}
