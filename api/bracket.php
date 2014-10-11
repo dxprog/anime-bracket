@@ -5,6 +5,7 @@ namespace Api {
 	use Lib;
 	use stdClass;
 
+	define('BS_NOT_STARTED', 0);
 	define('BS_NOMINATIONS', 1);
 	define('BS_ELIMINATIONS', 2);
 	define('BS_VOTING', 3);
@@ -25,7 +26,8 @@ namespace Api {
 			'state' => 'bracket_state',
 			'pic' => 'bracket_pic',
 			'winnerCharacterId' => 'winner_character_id',
-			'rules' => 'bracket_rules'
+			'rules' => 'bracket_rules',
+			'source' => 'bracket_source'
 		);
 
 		/**
@@ -84,10 +86,15 @@ namespace Api {
 		public $rules;
 
 		/**
+		 * Source ID of the bracket
+		 */
+		public $source = BRACKET_SOURCE;
+
+		/**
 		 * Override for getAll to include the winner character object
 		 */
 		public static function getAll($force = false) {
-			$cacheKey = 'Api:Bracket:getAll_' . ($force ? 'true' : 'false');
+			$cacheKey = 'Api:Bracket:getAll_' . implode('_', [ $force ? 'true' : 'false', BRACKET_SOURCE ]);
 			$retVal = Lib\Cache::Get($cacheKey);
 			if (false === $retVal) {
 				$brackets = parent::getAll();
@@ -97,7 +104,7 @@ namespace Api {
 						$bracket->winner = Character::getById($bracket->winnerCharacterId);
 					}
 
-					if ($bracket->start <= time() || $force) {
+					if (($bracket->start <= time() || $force) && $bracket->source == BRACKET_SOURCE) {
 						$retVal[] = $bracket;
 					}
 				}
@@ -121,7 +128,7 @@ namespace Api {
 					if ($user->admin) {
 						$retVal = self::getAll();
 					} else {
-						$result = Lib\Db::Query('SELECT * FROM bracket WHERE bracket_id IN (SELECT bracket_id FROM bracket_owners WHERE user_id = :userId)', [ ':userId' => $user->id ]);
+						$result = Lib\Db::Query('SELECT * FROM bracket WHERE bracket_source = :source AND bracket_id IN (SELECT bracket_id FROM bracket_owners WHERE user_id = :userId)', [ ':source' => BRACKET_SOURCE, ':userId' => $user->id ]);
 						if ($result && $result->count) {
 							$retVal = [];
 							while ($row = Lib\Db::Fetch($result)) {
@@ -132,7 +139,7 @@ namespace Api {
 
 					return $retVal;
 
-				}, 'Api:Bracket:getUserOwnedBrackets_' . $user->id);
+				}, 'Api:Bracket:getUserOwnedBrackets_' . implode('_', [ $user->id, BRACKET_SOURCE ]));
 			}
 
 			return $retVal;
@@ -400,6 +407,30 @@ namespace Api {
 		        $retVal[] = $count * 2 - ($buildFrom[$i] - 1);
 		    }
 		    return count($retVal) === $entrants ? $retVal : self::generateSeededBracket($entrants, $retVal);
+		}
+
+		/**
+		 * Generates a perma link for this bracket
+		 */
+		public function generatePerma() {
+			$perma = preg_replace('/[^A-Za-z0-9\-]+/i', '-', $this->name);
+			$perma = str_replace('--', '-', $perma);
+			$this->perma = $perma = strtolower($perma);
+
+			// Make sure this doesn't share a perma with another bracket
+			$permaOkay = false;
+			$counter = 0;
+			while (!$permaOkay) {
+				$result = Lib\Db::Query('SELECT bracket_id FROM `bracket` WHERE `bracket_perma` = :perma', [ ':perma' => $perma ]);
+				if ($result && $result->count) {
+					$counter++;
+					$perma = $this->perma . '-' . $counter;
+				} else {
+					$permaOkay = true;
+					$this->perma = $perma;
+				}
+			}
+
 		}
 
 	}

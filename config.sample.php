@@ -6,6 +6,9 @@ define('DB_USER', 'username');
 define('DB_PASS', 'password');
 define('DB_NAME', 'anime_bracket');
 
+// awwnime brackets only
+define('BRACKET_SOURCE', 1);
+
 define('REDDIT_TOKEN', 'reddit_token');
 define('REDDIT_SECRET', 'reddit_secret');
 define('REDDIT_HANDLER', 'http://reddit_oauth_handler');
