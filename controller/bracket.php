@@ -86,8 +86,23 @@ namespace Controller {
 		}
 
 		private static function _displayLanding() {
+
+			$bracket = Lib\Cache::fetch(function() {
+				$retVal = null;
+				$brackets = Api\Bracket::getAll();
+				if ($brackets) {
+					foreach ($brackets as $bracket) {
+						if ($bracket->state != BS_NOT_STARTED && $bracket->state != BS_FINAL && $bracket->state != BS_HIDDEN) {
+							$retVal = $bracket;
+							break;
+						}
+					}
+				}
+				return $retVal;
+			}, 'LandingBracket', CACHE_LONG);
+
 			Lib\Display::addKey('page', 'landing');
-			Lib\Display::renderAndAddKey('content', 'landing', null);
+			Lib\Display::renderAndAddKey('content', 'landing', $bracket);
 		}
 
 		private static function _displayBrackets() {

@@ -1,10 +1,12 @@
 @import "globals";
 
 #page-landing {
-    background: url(/static/images/bracket_2014_landing_bg.jpg) no-repeat right center;
+    background: url(/static/images/bracket_2014_landing_bg.jpg) no-repeat center center;
+    background-attachment: fixed;
     background-size: cover;
 
-    overflow: hidden;
+    max-width: 1280px;
+    margin: 0 auto;
 
     h1 {
         @include logo();
@@ -14,14 +16,15 @@
     }
 
     #content {
-        padding-left: 150px;
+        margin: 0;
+        padding-left: 75px;
         padding-top: 8.5%;
         width: 690px;
 
 
         &:before {
             content: '';
-            position: absolute;
+            position: fixed;
             left: 0;
             top: 0;
             bottom: 0;
@@ -52,12 +55,22 @@
 
     }
 
+    footer {
+        position: static;
+    }
+
+    .brackets-link {
+        display: block;
+        margin-top: 40px;
+        font: 18px/1 'Roboto Condensed', sans-serif;
+        color: #fff;
+        text-decoration: none;
+    }
+
 }
 
 @media screen and (max-width: 1280px), screen and (max-height: 768px) {
     #page-landing #content {
         width: 47%;
-        margin-left: 75px;
-        margin-top: 100px;
     }
 }

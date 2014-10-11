@@ -1,6 +1,12 @@
+@import "globals";
+
 * {
     padding: 0;
     margin: 0;
+}
+
+ul {
+    list-style: none;
 }
 
 body {
@@ -13,7 +19,27 @@ html {
 
 body {
     height: 100%;
-    background: url(/static/images/main_bg.png);
+
+    max-width: 1240px;
+    margin: 0 auto;
+    background: url(/static/images/argyle_bg.png);
+
+    padding: 40px;
+
+    h1 {
+        @include logo();
+        float: left;
+    }
+
+    #content {
+        padding-left: 360px;
+    }
+
+}
+
+h2 {
+    @include heading();
+    margin-bottom: 40px;
 }
 
 .button {
@@ -22,12 +48,13 @@ body {
     padding: 15px 20px;
     background: #e1ac94;
     text-decoration: none;
+    display: inline-block;
+    border: 0;
+    cursor: pointer;
 }
 
 footer {
-    position: absolute;
-    bottom: 50px;
-    left: 150px;
+    margin: 60px 0;
 
     p {
         font: 1em/1 'Roboto', sans-serif;
@@ -41,11 +68,29 @@ footer {
     }
 }
 
+// Banner message
+.message {
+    font: 20px/1 'Roboto', sans-serif;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    &.error {
+        color: #a94442;
+        background: #f2dede;
+    }
+
+    &.success {
+        color: #3c763d;
+        background: #dff0d8;
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+}
+
 @media screen and (max-width: 1280px), screen and (max-height: 768px) {
     body {
         font-size: 18px;
-    }
-    footer {
-        left: 75px;
     }
 }
