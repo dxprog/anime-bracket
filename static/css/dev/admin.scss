@@ -2,26 +2,6 @@
 
 #admin {
 
-    max-width: 1240px;
-    margin: 0 auto;
-    background: url(/static/images/argyle_bg.png);
-
-    padding: 40px;
-
-    h1 {
-        @include logo();
-        float: left;
-    }
-
-    #content {
-        padding-left: 360px;
-    }
-
-    h2 {
-        @include heading();
-        margin-bottom: 40px;
-    }
-
     footer {
         position: static;
         margin-top: 50px;
@@ -85,6 +65,35 @@
             &:hover {
                 background: $dark;
             }
+        }
+
+    }
+
+    .eliminations {
+        h2 {
+            margin-bottom: 5px;
+        }
+
+        h3 {
+            font: 30px/1 'Roboto Condensed', sans-serif;
+            color: #fff;
+            margin-bottom: 40px;
+        }
+
+        label {
+            font: 30px/1.2 'Roboto', sans-serif;
+        }
+
+        p {
+            font: 24px/1.2 'Roboto', sans-serif;
+            margin-bottom: 20px;
+        }
+
+        select {
+            font: 24px/1 'Roboto', sans-serif;
+            padding: 15px;
+            display: block;
+            margin-bottom: 20px;
         }
 
     }

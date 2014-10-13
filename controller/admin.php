@@ -16,6 +16,9 @@ namespace Controller {
 
         public static function render() {
 
+            // Disable cache
+            $_GET['flushCache'] = true;
+
             $content = null;
 
             self::$_user = Api\User::getCurrentUser();
@@ -57,7 +60,7 @@ namespace Controller {
                         self::_cropImage();
                         break;
                     case 'eliminations':
-                        self::_beginEliminations($bracket);
+                        
                         break;
                     case 'advance':
                         self::_advanceBracket($bracket);
@@ -168,8 +171,8 @@ namespace Controller {
         }
 
         public static function _beginEliminations(Api\Bracket $bracket) {
-            $days = Lib\Url::GetInt('days', null);
-            $retVal = null;
+            $days = Lib\Url::Post('days', true);
+echo $days;
             if ($bracket && $bracket->state == BS_NOMINATIONS) {
                 if (!$days) {
                     $result = Lib\Db::Query('SELECT COUNT(1) AS total FROM `character` WHERE bracket_id = :id', [ ':id' => $bracket->id ]);
@@ -177,7 +180,7 @@ namespace Controller {
                         $count = Lib\Db::Fetch($result);
                         $bracket->count = (int) $count->total;
                     }
-                    $retVal = Lib\Display::compile($bracket, 'admin/eliminations');
+                    Lib\Display::renderAndAddKey('content', 'admin/eliminations', $bracket);
                 } else {
                     $days = (int) $days;
                     $result = Lib\Db::Query('SELECT character_id FROM `character` WHERE bracket_id = :id ORDER BY RAND()', [ ':id' => $bracket->id ]);
@@ -196,12 +199,16 @@ namespace Controller {
                             $order++;
                             $group = $order % $days;
                         }
-                        self::_setState($bracket->id, BS_ELIMINATIONS);
-                        $retVal = self::_main();
+                        
+                        $bracket->state = BS_ELIMINATIONS;
+                        if ($bracket->sync()) {
+                            $message = self::_createMessage('success', 'Eliminations for "' . $bracket->name . '" have started.');
+                        }
+                        self::_main($message);
+
                     }
                 }
             }
-            return $retVal;
         }
 
         public static function _setState($bracket, $state) {
@@ -209,6 +216,7 @@ namespace Controller {
             $message = self::_createMessage('error', 'There was an error setting the bracket state.');
 
             if ($bracket) {
+
                 $stateMap = [
                     'nominations' => BS_NOMINATIONS,
                     'eliminations' => BS_ELIMINATIONS,
@@ -216,6 +224,11 @@ namespace Controller {
                 ];
 
                 if ($bracket && isset($stateMap[$state])) {
+
+                    if ($stateMap[$state] == BS_ELIMINATIONS) {
+                        return self::_beginEliminations($bracket);
+                    }
+
                     $bracket->state = $stateMap[$state];
                     if ($bracket->sync()) {
                         $message = self::_createMessage('success', '"' . $bracket->name . '" has advanced to the ' . $state . ' phase.');
@@ -241,20 +254,22 @@ namespace Controller {
                     $out->message = isset($message) ? $message : null;
                     $out->similar = $out->nominee->getSimilar($bracket);
                     $characters = Api\Character::getBySimilarName($out->nominee->name, $bracket);
-                    $thisBracket = [];
-                    $otherBrackets = [];
 
                     // Split characters up into this bracket and other brackets
-                    foreach ($characters as $character) {
-                        if ($character->bracketId == $bracket->id) {
-                            $thisBracket[] = $character;
-                        } else {
-                            $otherBrackets[] = $character;
+                    if ($characters && count($characters)) {
+                        $thisBracket = [];
+                        $otherBrackets = [];
+                        foreach ($characters as $character) {
+                            if ($character->bracketId == $bracket->id) {
+                                $thisBracket[] = $character;
+                            } else {
+                                $otherBrackets[] = $character;
+                            }
                         }
-                    }
 
-                    $out->thisBracketCharacters = count($thisBracket) ? $thisBracket : null;
-                    $out->otherBracketCharacters = count($otherBrackets) ? $otherBrackets : null;
+                        $out->thisBracketCharacters = count($thisBracket) ? $thisBracket : null;
+                        $out->otherBracketCharacters = count($otherBrackets) ? $otherBrackets : null;
+                    }
 
                     $retVal = $jsonOnly ? $out : Lib\Display::renderAndAddKey('content', 'admin/nominee', $out);
                 }
@@ -311,6 +326,7 @@ namespace Controller {
                         }
 
                     } else {
+                        $out = self::_displayNominations($bracket, true);
                         $out->success = true;
                         $out->message = 'Nominee' . (count($nominees) > 0 ? 's' : '') . ' deleted';
                     }
