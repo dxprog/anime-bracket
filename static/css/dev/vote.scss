@@ -1,0 +1,30 @@
+@import "globals";
+
+#page-vote {
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        @include sub-heading();
+    }
+
+    p {
+        @include body-copy();
+    }
+
+    label {
+        cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+        display: none;
+
+        &:checked + .mini-card {
+            box-shadow: 0 0 15px $light;
+        }
+
+    }
+
+}

@@ -70,39 +70,27 @@ namespace Controller {
 		private static function _displayCurrentRound($bracketId) {
 			$user = self::_checkLogin();
 			$cacheKey = 'CurrentRound_' . $bracketId . '_' . $user->id;
-			$out = Lib\Cache::Get($cacheKey);
-
-			if (false === $out) {
+			$out = Lib\Cache::fetch(function() use ($user, $bracketId) {
 				$out = new stdClass;
 				$out->userId = $user->id;
 				$out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
 				$out->bracket = Api\Bracket::getById($bracketId);
 				$out->round = Api\Round::getCurrentRounds($bracketId);
-			}
+				$out->groupName = self::_getGroupName($out->round);
+				return $out;
+			}, $cacheKey, CACHE_MEDIUM);
 
-			Lib\Display::addKey('page', 'vote');
-			Lib\Display::renderAndAddKey('content', 'voting', $out);
+			if ($out) {
+				$template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
+				Lib\Display::addKey('page', 'vote');
+				Lib\Display::renderAndAddKey('content', $template, $out);
+			}
 
 		}
 
 		private static function _displayLanding() {
-
-			$bracket = Lib\Cache::fetch(function() {
-				$retVal = null;
-				$brackets = Api\Bracket::getAll();
-				if ($brackets) {
-					foreach ($brackets as $bracket) {
-						if ($bracket->state != BS_NOT_STARTED && $bracket->state != BS_FINAL && $bracket->state != BS_HIDDEN) {
-							$retVal = $bracket;
-							break;
-						}
-					}
-				}
-				return $retVal;
-			}, 'LandingBracket', CACHE_LONG);
-
 			Lib\Display::addKey('page', 'landing');
-			Lib\Display::renderAndAddKey('content', 'landing', $bracket);
+			Lib\Display::renderAndAddKey('content', 'landing', null);
 		}
 
 		private static function _displayBrackets() {
@@ -158,6 +146,29 @@ namespace Controller {
 			$out->bracket = $bracket;
 			Lib\Display::addKey('page', 'characters');
 			$content = Lib\Display::renderAndAddKey('content', 'characters', $out);
+		}
+
+		/**
+		 * Given an array of rounds, determine's the group name
+		 */
+		private static function _getGroupName($rounds) {
+			
+			$retVal = 'Group';
+
+			foreach($rounds as $round) {
+				if (!isset($groups[$round->group])) {
+					$groups[$round->group] = 0;
+				}
+				$groups[$round->group]++;
+			}
+
+			if (count($groups) === 1) {
+				$retVal .= ' ' . chr(65 + array_keys($groups)[0]);
+			} else {
+
+			}
+
+			return $retVal;
 		}
 
 		public static function initTemplateHelpers() {
