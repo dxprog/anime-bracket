@@ -26,6 +26,7 @@ namespace Controller {
                 $obj = new stdClass;
                 $obj->loginUrl = Api\User::getLoginUrl(Lib\Url::Get('redirect'));
                 $obj->originalUrl = Lib\Url::Get('redirect');
+                Lib\Display::addKey('page', 'login');
                 Lib\Display::renderAndAddKey('content', 'login', $obj);
             }
 
