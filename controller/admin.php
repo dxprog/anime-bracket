@@ -24,6 +24,9 @@ namespace Controller {
             self::$_user = Api\User::getCurrentUser();
 
             Lib\Display::setLayout('admin');
+            Lib\Display::addKey('CSS_VERSION', CSS_VERSION);
+            Lib\Display::addKey('JS_VERSION', JS_VERSION);
+            Lib\Display::addKey('USE_MIN', USE_MIN);
 
             // Hork of the hard work done in the brackets controller
             Bracket::initTemplateHelpers();
@@ -172,7 +175,7 @@ namespace Controller {
 
         public static function _beginEliminations(Api\Bracket $bracket) {
             $days = Lib\Url::Post('days', true);
-echo $days;
+
             if ($bracket && $bracket->state == BS_NOMINATIONS) {
                 if (!$days) {
                     $result = Lib\Db::Query('SELECT COUNT(1) AS total FROM `character` WHERE bracket_id = :id', [ ':id' => $bracket->id ]);
