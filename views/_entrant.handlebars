@@ -1,0 +1,15 @@
+<dl data-id="{{id}}" class="entrant-info">
+    <dt>Headshot</dt>
+    <dd class="image">
+        <img src="{{image}}" alt="{{name}}" />
+    </dd>
+    <dd class="name">{{name}}</dd>
+    <dd class="source">{{source}}</dd>
+    <dd class="votes">
+        {{#if votes}}
+            {{votes}} votes
+        {{else}}
+            Pending
+        {{/if}}
+    </dd>
+</dl>
