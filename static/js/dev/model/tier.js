@@ -2,6 +2,8 @@
     
     var ENTRANT_HEIGHT = 100,
 
+        TIER_TMPL = Templates['views/tier'],
+
         Tier = window.Tier = function(data) {
 
         var rounds = [],
@@ -48,21 +50,21 @@
         if (count > 1 || !split) {
             for (i = 0, count = rounds.length, halfCount = count / 2; i < count; i++) {
                 if (split && i > 0 && i % halfCount === 0) {
-                    retVal.push(Templates['tier']({ side: 'left', height: cellHeight, rounds: side }));
+                    retVal.push(TIER_TMPL({ side: 'left', height: cellHeight, rounds: side }));
                     side = [];
                 }
                 side.push(rounds[i]);
             }
-            retVal.push(Templates['tier']({ side:(split ? 'right' : 'left'), height: cellHeight, rounds: side }));
+            retVal.push(TIER_TMPL({ side:(split ? 'right' : 'left'), height: cellHeight, rounds: side }));
         } else {
-            retVal.push(Templates['tier']({
+            retVal.push(TIER_TMPL({
                 side: 'left',
                 height: cellHeight,
                 rounds: [
                     { entrant1: rounds[0].entrant1 }
                 ]
             }));
-            retVal.push(Templates['tier']({
+            retVal.push(TIER_TMPL({
                 side: 'right',
                 height: cellHeight,
                 rounds: [

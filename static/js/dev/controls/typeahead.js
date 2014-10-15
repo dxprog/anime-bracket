@@ -9,6 +9,7 @@
             KEYCODE_TAB = 9,
             KEYCODES = [ KEYCODE_ENTER, KEYCODE_DOWN, KEYCODE_UP, KEYCODE_TAB ],
             SELECTED = 'selected',
+            TEMPLATE = Templates['views/typeahead'],
 
             fullCache = [],
             itemCache = [],
@@ -74,7 +75,7 @@
                     } else {
                         if (!loadingDataset) {
                             position = $el.offset();
-                            $container.css({ left: position.left + 'px', top: (position.top + $el.outerHeight(true)) + 'px' });
+                            $container.css({ left: position.left + 'px', top: (position.top + $el.outerHeight()) + 'px' });
 
                             loadingDataset = dataset;
                             $.ajax({
@@ -106,7 +107,7 @@
             displayMatches = function(data) {
                 if (data.length > 0) {
                     $container
-                        .html(Templates.typeahead(data))
+                        .html(TEMPLATE(data))
                         .show()
                         .find('li:first')
                         .addClass(SELECTED);

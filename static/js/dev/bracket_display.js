@@ -72,7 +72,7 @@
                     }
                 }
                 winner.height = bracketHeight;
-                left += Templates.winner(winner);
+                left += Templates['views/winner'](winner);
             }
 
             // Add an additional column for the winner
@@ -157,7 +157,7 @@
 
             $header
                 .find('ul')
-                .prepend(Templates.groupPicker({ groups:out }))
+                .prepend(Templates['views/groupPicker']({ groups:out }))
                 .on('click', 'li', handleGroupChange)
                 .find('[data-group="' + selectedGroup + '"]')
                 .addClass('selected');
