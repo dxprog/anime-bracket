@@ -16,14 +16,11 @@
         padding-left: 360px;
 
         h2 {
-            @include heading();
-            margin-bottom: 10px;
+            @include heading(true);
         }
 
         h3 {
-            font: 36px/1 'Roboto', sans-serif;
-            color: #fff;
-            margin-bottom: 40px;
+            @include sub-heading();
         }
 
         label {
@@ -31,15 +28,15 @@
             display: block;
         }
 
-        p {
-            font: 18px/1 'Roboto', sans-serif;
-        }
-
         ul {
+            list-style: disc;
             padding-left:32px;
+            margin-bottom: 20px;
             li {
                 width: 610px;
                 font-size: 20px;
+                font: 24px/1.2 'Roboto', sans-serif;
+                margin-bottom: 10px;
             }
         }
 
@@ -61,13 +58,17 @@
 
         .info {
             p {
-                font: 24px/1.2 'Roboto', sans-serif;
-                margin-bottom: 40px;
+                @include body-copy();
             }
+
+            strong {
+                font-size: 28px;
+            }
+
         }
 
         .footnote {
-            font-size: 14px;
+            font: 14px/1.2 'Roboto', sans-serif;
             margin: 0 0 5px;
             width: 500px;
         }

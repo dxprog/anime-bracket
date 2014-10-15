@@ -6,10 +6,6 @@
     margin: 0 auto;
     background: url(/static/images/argyle_bg.png);
 
-    ul {
-        list-style: none;
-    }
-
     padding: 40px;
 
     h1 {
@@ -26,56 +22,65 @@
         margin-bottom: 40px;
     }
 
-    .bracket-card {
-        width: 700px;
+    footer {
+        position: static;
+    }
+
+}
+
+/**
+ * Global bracket card pattern
+ */
+.bracket-card {
+    width: 700px;
+    height: 300px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+    background: rgba(255, 255, 255, .8);
+    position: relative;
+    margin-bottom: 40px;
+
+    .info {
+        padding: 20px;
+    }
+
+    h3 {
+        font: 36px/1 'Roboto', sans-serif;
+        margin-bottom: 20px;
+    }
+
+    h4 {
+        font: 24px/1 'Roboto', sans-serif;
+        margin-bottom: 10px;
+
+        &.winner:after {
+            content: 'Winner';
+            display: block;
+            font: 18px/1 'Roboto', sans-serif;
+            color: #666;
+        }
+
+    }
+
+    .card-image {
+        width: 350px;
         height: 300px;
-        box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
-        background: rgba(255, 255, 255, .8);
+        float: left;
+        padding-right: 20px;
+    }
+
+    .card-entrants {
+        float: left;
+        width: 350px;
+        height: 300px;
+        overflow: hidden;
         position: relative;
-        margin-bottom: 40px;
+        margin-right: 20px;
 
-        .info {
-            padding: 20px;
-        }
-
-        h3 {
-            font: 36px/1 'Roboto', sans-serif;
-            margin-bottom: 20px;
-        }
-
-        h4 {
-            font: 24px/1 'Roboto', sans-serif;
-            margin-bottom: 10px;
-
-            &.winner:after {
-                content: 'Winner';
-                display: block;
-                font: 18px/1 'Roboto', sans-serif;
-                color: #666;
-            }
-
-        }
-
-        .card-image {
-            width: 350px;
-            height: 300px;
-            float: left;
-            padding-right: 20px;
-        }
-
-        .card-entrants {
-            float: left;
-            width: 350px;
-            height: 300px;
-            overflow: hidden;
-            position: relative;
-
-            .inner {
-                position: absolute;
-                left: -12px;
-                top: -38px;
-                width: 450px;
-            }
+        .inner {
+            position: absolute;
+            left: -12px;
+            top: -38px;
+            width: 450px;
 
             img {
                 width: 125px;
@@ -83,33 +88,39 @@
                 float: left;
             }
 
-            margin-right: 20px;
-
         }
 
-        .actions {
+        &:after {
+            content: '';
+            display: block;
             position: absolute;
-            bottom: 17px;
-            right: 20px;
-
-            li {
-                float: right;
-                padding-left: 20px;
-            }
-
-            a {
-                color: $dark;
-                text-decoration: none;
-                font: 24px/1 'Roboto', sans-serif;
-                text-transform: uppercase;
-            }
-
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: url(/static/images/vignette.png);
+            z-index: 10;
         }
 
     }
 
-    footer {
-        position: static;
+    .actions {
+        position: absolute;
+        bottom: 17px;
+        right: 20px;
+
+        li {
+            float: right;
+            padding-left: 20px;
+        }
+
+        a {
+            color: $dark;
+            text-decoration: none;
+            font: 24px/1 'Roboto', sans-serif;
+            text-transform: uppercase;
+        }
+
     }
 
 }
