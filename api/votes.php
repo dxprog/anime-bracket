@@ -2,6 +2,8 @@
 
 namespace Api {
     
+    use Lib;
+
     class Votes {
 
         /**
@@ -10,15 +12,14 @@ namespace Api {
          */
         public static function getOpenRounds($user, $votes) {
             
-            $roundKeys = [];
             $params = [ ':userId' => $user->id ];
-            for ($i = 0, $count = count($votes); $i < $count; $i += 2) {
-                $params[':round' . $i] = $votes[$i];
-                $roundKeys[] = ':round' . $i;
+            for ($i = 0, $count = count($votes); $i < $count; $i++) {
+                $params[':round' . $i] = $votes[$i]->roundId;
             }
             
-            $query = 'SELECT round_id FROM votes WHERE user_id = :userId AND round_id IN (' . implode(',', $roundKeys) . ') UNION ';
-            $query .= 'SELECT round_id FROM round WHERE round_id IN (' . implode(',', $roundKeys) . ') AND round_final = 1';
+            $roundKeys = implode(',', array_keys($params));
+            $query = 'SELECT round_id FROM votes WHERE user_id = :userId AND round_id IN (' . $roundKeys . ') UNION ';
+            $query .= 'SELECT round_id FROM round WHERE round_id IN (' . $roundKeys . ') AND round_final = 1';
 
             $result = Lib\Db::Query($query, $params);
             $retVal = [];
