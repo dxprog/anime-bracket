@@ -28,6 +28,9 @@ namespace Controller {
                 case 'user':
                     $retVal = Api\User::getCurrentUser();
                     break;
+                case 'characters':
+                    $retVal = self::_getBracketCharacters();
+                    break;
             }
 
             header('Content-Type: application/json; charset=utf-8');
@@ -53,6 +56,15 @@ namespace Controller {
             $bracketId = Lib\Url::GetInt('bracketId', null);
             if ($bracketId) {
                 $retVal = Api\Round::getCurrentRounds($bracketId);
+            }
+            return $retVal;
+        }
+
+        private static function _getBracketCharacters() {
+            $retVal = null;
+            $bracketId = Lib\Url::GetInt('bracketId', null);
+            if ($bracketId) {
+                $retVal = Api\Character::getByBracketId($bracketId);
             }
             return $retVal;
         }
