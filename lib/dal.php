@@ -1,37 +1,38 @@
 <?php
 
 namespace Lib {
-	
+
     use Api;
     use Exception;
     use stdClass;
 
 	class Dal {
-		
+
         /**
          * Constructor
          */
         public function __construct($obj = null) {
-        
+
             if (is_numeric($obj)) {
                 $this->getById($obj);
             } else if (is_object($obj)) {
                 $this->copyFromDbRow($obj);
             }
-        
+
         }
-        
+
 		/**
 		 * Syncs the current object to the database
+         * @param forceInsert boolean Force an insert with the primary index
 		 */
-		public function sync() {
-			
+		public function sync($forceInsert = false) {
+
 			$retVal = false;
 
 			if (property_exists($this, '_dbTable') && property_exists($this, '_dbMap')) {
-				
+
 				$dbParams = array();
-				
+
 				// Determine if a primary key was set
 				$primaryKey = property_exists($this, '_dbPrimaryKey') ? $this->_dbPrimaryKey : false;
 				$primaryKeyValue = 0;
@@ -48,21 +49,21 @@ namespace Lib {
 				}
 
 				// If the primary key value is non-zero, do an UPDATE
-				$method = $primaryKeyValue !== 0 ? 'UPDATE' : 'INSERT';
+				$method = $primaryKeyValue !== 0 && !$forceInsert ? 'UPDATE' : 'INSERT';
 				$parameters = array();
-				
+
 				foreach ($this->_dbMap as $property => $column) {
-					// Primary only gets dropped in for UPDATEs
-					if (($primaryKey === $property && 'UPDATE' === $method) || $primaryKey !== $property) {
+					// Primary only gets dropped for UPDATEs
+					if ($forceInsert || ($primaryKey === $property && 'UPDATE' === $method) || $primaryKey !== $property) {
 						$paramName = ':' . $property;
-						
+
 						// Serialize objects going in as JSON
 						$value = $this->$property;
 						if (is_object($value)) {
 							$value = json_encode($value);
 						}
 						$params[$paramName] = $value;
-						
+
 						if ('INSERT' === $method) {
 							$parameters[] = $paramName;
 						} else if ($primaryKey != $property) {
@@ -70,12 +71,15 @@ namespace Lib {
 						}
 					}
 				}
-				
+
 				// Build and execute the query
 				$query = $method;
 				if ('INSERT' === $method) {
 					$query .= ' INTO `' . $this->_dbTable . '` (`' . implode('`,`', $this->_dbMap) . '`) VALUES (' . implode(',', $parameters) . ')';
-					$query = str_replace('`' . $this->_dbMap[$primaryKey] . '`,', '', $query);
+
+                    if (!$forceInsert) {
+                        $query = str_replace('`' . $this->_dbMap[$primaryKey] . '`,', '', $query);
+                    }
 				} else {
 					$query .= ' `' . $this->_dbTable . '` SET ' . implode(',', $parameters) . ' WHERE `' . $this->_dbMap[$primaryKey] . '` = :' . $primaryKey;
 				}
@@ -83,18 +87,20 @@ namespace Lib {
 
 				// Save the ID for insert
 				if ('INSERT' === $method && $retVal && $retVal->count > 0) {
-                    $this->$primaryKey = $retVal->insertId;
+                    if (!$forceInsert) {
+                        $this->$primaryKey = $retVal->insertId;
+                    }
 					$retVal = $retVal->count;
 				} else if ('UPDATE' === $method && $retVal) {
                     $retVal = true;
                 }
-				
+
 			}
-			
+
 			return $retVal;
-		
+
 		}
-		
+
 		/**
 		 * Creates an object from the passed database row
 		 */
@@ -110,7 +116,7 @@ namespace Lib {
 				}
 			}
 		}
-        
+
         /**
          * Gets a record from the database by the primary key
          */
@@ -128,7 +134,7 @@ namespace Lib {
 
                         $query  = 'SELECT ' . implode(',', $obj->_dbMap) . ' FROM `' . $obj->_dbTable . '` ';
                         $query .= 'WHERE ' . $obj->_dbMap[$obj->_dbPrimaryKey] . ' = :id LIMIT 1';
-                        
+
                         $result = Db::Query($query, [ ':id' => $id ]);
                         if ($result && $result->count === 1) {
                             $row = Db::Fetch($result);
@@ -210,7 +216,7 @@ namespace Lib {
         private function _hasRequiredProperties() {
         	return property_exists($this, '_dbTable') && property_exists($this, '_dbMap') && property_exists($this, '_dbPrimaryKey');
         }
-	
+
 	}
 
 }
