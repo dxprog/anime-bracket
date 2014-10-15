@@ -150,6 +150,15 @@ namespace Api {
 						
 						$round->character1 = Character::getById($row->round_character1_id);
 						$round->character2 = Character::getById($row->round_character2_id);
+
+						if ($round->votedCharacterId) {
+							if ($round->votedCharacterId == $round->character1->id) {
+								$round->character1->voted = true;
+							} else {
+								$round->character2->voted = true;
+							}
+						}
+
 						$retVal[] = $round;
 					}
 				}
