@@ -1,0 +1,29 @@
+@import "globals";
+
+#page-login {
+    
+    h3 {
+        margin: 40px 0 10px;
+        font: 30px/1 'Roboto Condensed', sans-serif;
+        color: #fff;
+    }
+
+    ul {
+        list-style: disc;
+        padding-left: 25px;
+    }
+
+    p, li {
+        font: 24px/1.2 'Roboto', sans-serif;
+        margin-bottom: 5px;
+    }
+
+    .read-only {
+        display: block;
+        margin-top: 40px;
+        font: 18px/1 'Roboto Condensed', sans-serif;
+        color: #fff;
+        text-decoration: none;
+    }
+
+}
