@@ -27,15 +27,17 @@
                         {{/hasNotStarted}}
                         {{#isBracketNominations .}}
                             <li><a href="/admin/{{perma}}/process/nominations/">Process Nominees</a></li>
+                            <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
                             <li><a href="/admin/{{perma}}/start/eliminations/">Begin Eliminations</a></li>
                         {{/isBracketNominations}}
+                        {{#isBracketEliminations .}}
+                            <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
+                            <li><a href="/admin/{{perma}}/start/voting/">Begin Bracket</a></li>
+                        {{/isBracketEliminations}}
                         {{#isBracketVoting .}}
                             <li><a href="/admin/{{perma}}/finalize/">Finalize Active Rounds</a></li>
                             <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
                         {{/isBracketVoting}}
-                        {{#isBracketEliminations .}}
-                            <li><a href="/{{perma}}/vote/">Vote</a></li>
-                        {{/isBracketEliminations}}
                     </ul>
                 </div>
             </li>
