@@ -1,5 +1,9 @@
 [
     {
+        "rule": "^api/([^/.]+)/$",
+        "replace": "page=jsonapi&action=$1"
+    },
+    {
         "rule": "^admin/$",
         "replace": "page=admin"
     },
@@ -84,9 +88,5 @@
 	{
 		"rule": "^([^/.]+)/characters/$",
 		"replace": "page=bracket&action=characters&bracket=$1"
-	},
-    {
-        "rule": "^api/([^/.]+)/$",
-        "replace": "page=jsonapi&action=$1"
-    }
+	}
 ]
