@@ -21,8 +21,15 @@
     input[type="checkbox"] {
         display: none;
 
-        &:checked + .mini-card {
-            box-shadow: 0 0 15px $light;
+        &:checked + .mini-card .image:after {
+            content: '';
+            display: block;
+            background: url(/static/images/checkmark.png);
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100px;
+            width: 100px;
         }
 
     }

@@ -1,24 +1,29 @@
 <h2>{{bracket.name}}</h2>
 <h3>Elimination Phase - {{groupName}}</h3>
 
+<p class="message hidden"></p>
+
 <p>Select all entrants you want to move into the bracket.</p>
 
-<ul class="eliminations mini-card-container">
-    {{#each round}}
-        <li>
-            <input type="checkbox" name="entrant[]" id="entrant{{character1.id}}" value="{{character1.id}}" />
-            <label for="entrant{{character1.id}}" class="mini-card">
-                <dl>
-                    <dt>Image</dt>
-                    <dd class="image"><img src="{{character1.image}}" alt="{{character1.name}}" /></dd>
-                    <dt>Name</dt>
-                    <dd class="name">{{character1.name}}</dd>
-                    <dt>Source</dt>
-                    <dd class="source">{{character1.source}}</dd>
-                </dl>
-            </label>
-        </li>
-    {{/each}}
-</ul>
+<form action="/submit/?action=vote" method="post">
+    <ul class="eliminations mini-card-container">
+        {{#each round}}
+            <li>
+                <input type="checkbox" name="round:{{id}}" id="entrant{{character1.id}}" value="{{character1.id}}" {{#if character1.voted}}checked="checked" disabled="disabled"{{/if}} />
+                <label for="entrant{{character1.id}}" class="mini-card">
+                    <dl>
+                        <dt>Image</dt>
+                        <dd class="image"><img src="{{character1.image}}" alt="{{character1.name}}" /></dd>
+                        <dt>Name</dt>
+                        <dd class="name">{{character1.name}}</dd>
+                        <dt>Source</dt>
+                        <dd class="source">{{character1.source}}</dd>
+                    </dl>
+                </label>
+            </li>
+        {{/each}}
+    </ul>
 
-<button class="button">Submit Votes</button>
+    <input type="hidden" name="bracketId" value="{{bracket.id}}" />
+    <button type="submit" class="button">Submit Votes</button>
+</form>
