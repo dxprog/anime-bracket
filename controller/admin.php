@@ -302,6 +302,7 @@ namespace Controller {
                 $source = Lib\Url::Post('source');
                 $action = Lib\Url::Post('action');
                 if ($id && $name && $source && $action) {
+                    $out->action = $action;
                     $character = Api\Character::getById($id);
                     if ($character && $character->bracketId == $bracket->id) {
                         if ($action == 'update') {
@@ -314,10 +315,16 @@ namespace Controller {
                             }
                         } else if ($action == 'delete') {
                             if ($bracket->state == BS_NOMINATIONS || $bracket->state == BS_ELIMINATIONS) {
-
+                                if ($character->delete()) {
+                                    $out->success = true;
+                                } else {
+                                    $out->message = 'Delete failed';
+                                }
                             } else {
                                 $out->message = 'Cannot delete characters after voting has started';
                             }
+                        } else {
+                            $out->message = 'Unknown action';
                         }
                     } else {
                         $out->message = 'Character does not belong to this bracket';
