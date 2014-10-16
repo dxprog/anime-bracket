@@ -159,7 +159,7 @@ namespace Lib {
         	if ($this->_hasRequiredProperties()) {
         		$primaryKey = $this->_dbPrimaryKey;
         		if ($this->$primaryKey) {
-	        		$query = 'DELETE FROM ' . $this->_dbTable . ' WHERE ' . $this->_dbMap[$primaryKey] . ' = :id';
+	        		$query = 'DELETE FROM `' . $this->_dbTable . '` WHERE ' . $this->_dbMap[$primaryKey] . ' = :id';
 	        		$params = array( ':id' => $this->$primaryKey );
 	        		$retVal = Db::Query($query, $params);
 	        	}
