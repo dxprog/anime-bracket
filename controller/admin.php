@@ -53,7 +53,9 @@ namespace Controller {
                         } else if ($state === 'nominee') {
                             self::_processNominee($bracket);
                         } else if ($state === 'characters') {
-                            // some other thing which hasn't been done yet
+                            self::_displayCharacters($bracket);
+                        } else if ($state === 'character') {
+                            self::_updateCharacter($bracket);
                         }
                         break;
                     case 'upload':
@@ -280,6 +282,53 @@ namespace Controller {
 
             return $retVal;
 
+        }
+
+        private static function _displayCharacters($bracket) {
+            if ($bracket) {
+                $out = new stdClass;
+                $out->characters = Api\Character::getByBracketId($bracket->id);
+                $out->bracket = $bracket;
+                Lib\Display::renderAndAddKey('content', 'admin/characters', $out);
+            }
+        }
+
+        private static function _updateCharacter($bracket) {
+            $out = new stdClass;
+            $out->success = false;
+            if ($bracket) {
+                $id = Lib\Url::Post('characterId', true);
+                $name = Lib\Url::Post('name');
+                $source = Lib\Url::Post('source');
+                $action = Lib\Url::Post('action');
+                if ($id && $name && $source && $action) {
+                    $character = Api\Character::getById($id);
+                    if ($character && $character->bracketId == $bracket->id) {
+                        if ($action == 'update') {
+                            $character->name = $name;
+                            $character->source = $source;
+                            if ($character->sync()) {
+                                $out->success = true;
+                            } else {
+                                $out->message = 'Error updating database';
+                            }
+                        } else if ($action == 'delete') {
+                            if ($bracket->state == BS_NOMINATIONS || $bracket->state == BS_ELIMINATIONS) {
+
+                            } else {
+                                $out->message = 'Cannot delete characters after voting has started';
+                            }
+                        }
+                    } else {
+                        $out->message = 'Character does not belong to this bracket';
+                    }
+                } else {
+                    $out->message = 'Missing fields';
+                }
+            } else {
+                $out->message = 'Invalid bracket';
+            }
+            Lib\Display::renderJson($out);
         }
 
         private static function _processNominee($bracket) {
