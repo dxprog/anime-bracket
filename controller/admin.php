@@ -169,10 +169,12 @@ namespace Controller {
         }
 
         public static function _advanceBracket(Api\Bracket $bracket) {
+            $message = null;
             if ($bracket) {
                 $bracket->advance();
+                $message = $bracket->name . ' has advanced to the next round';
             }
-            return self::_main();
+            return self::_main($message);
         }
 
         public static function _beginEliminations(Api\Bracket $bracket) {
