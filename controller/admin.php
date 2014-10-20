@@ -84,7 +84,7 @@ namespace Controller {
 
         }
 
-        public static function _createBracket() {
+        public static function _createBracket($bracket) {
 
             // Create the bracket on POST
             if ($_POST) {
@@ -136,6 +136,26 @@ namespace Controller {
 
             }
 
+            // Decorate each bracket with some information about what phase it can
+            // safely move to. Mostyl this is for eliminations
+            foreach ($out->brackets as $bracket) {
+                if ($bracket->state == BS_ELIMINATIONS) {
+                    // Should query all the brackets at once, but I'm feeling lazy tonight...
+                    $result = Lib\Db::Query('SELECT MIN(round_group) AS current_group, MAX(round_group) AS last_group FROM `round` WHERE bracket_id = :bracketId AND round_final = 0', [ ':bracketId' => $bracket->id ]);
+                    if ($result && $result->count) {
+                        $row = Lib\Db::Fetch($result);
+
+                        // If the eliminations are on the last group, don't show the
+                        // advance button
+                        if ($row->current_group == $row->last_group) {
+                            $bracket->showStart = true;
+                        } else {
+                            $bracket->showAdvance = true;
+                        }
+                    }
+                }
+            }
+
             if ($message) {
                 $out->message = $message;
             }
@@ -150,22 +170,28 @@ namespace Controller {
                     $entrants = Lib\Url::Post('entrants', true);
                     $groups = Lib\Url::Post('groups', true);
                     if ($entrants && $groups) {
+                        $bracket->advance();
                         $bracket->createBracketFromEliminations($entrants, $groups);
-                        $retVal = self::_main();
+                        $message = self::_createMessage('success', 'Voting for bracket "' . $bracket->name . '" has successfully started!');
+                        self::_main($message);
+                    } else {
+                        $message = self::_createMessage('error', 'There was an error starting the bracket');
+                        self::_main($message);
                     }
                 } else {
                     $count = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE round_tier = 0 AND bracket_id = :bracketId', [ ':bracketId' => $bracket->id ]));
                     $i = 2;
-                    $entrants = [];
                     $count = (int) $count->total;
+                    $out = new stdClass;
+                    $out->bracket = $bracket;
+                    $out->entrants = [];
                     while ($i < $count) {
-                        $entrants[] = $i;
+                        $out->entrants[] = $i;
                         $i *= 2;
                     }
-                    $retVal = Lib\Display::compile($entrants, 'admin/create_bracket');
+                    Lib\Display::renderAndAddKey('content', 'admin/start_bracket', $out);
                 }
             }
-            return $retVal;
         }
 
         public static function _advanceBracket(Api\Bracket $bracket) {
@@ -234,11 +260,15 @@ namespace Controller {
 
                 if ($bracket && isset($stateMap[$state])) {
 
-                    if ($stateMap[$state] == BS_ELIMINATIONS) {
+                    $stateId = $stateMap[$state];
+
+                    if ($stateId == BS_ELIMINATIONS) {
                         return self::_beginEliminations($bracket);
+                    } else if ($stateId == BS_VOTING) {
+                        return self::_generateBracket($bracket);
                     }
 
-                    $bracket->state = $stateMap[$state];
+                    $bracket->state = $stateId;
                     if ($bracket->sync()) {
                         $message = self::_createMessage('success', '"' . $bracket->name . '" has advanced to the ' . $state . ' phase.');
                     }

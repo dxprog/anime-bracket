@@ -32,8 +32,12 @@
                         {{/isBracketNominations}}
                         {{#isBracketEliminations .}}
                             <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
-                            <li><a href="/admin/{{perma}}/advance/">Advance to Next Round</a></li>
-                            <li><a href="/admin/{{perma}}/start/voting/">Begin Bracket</a></li>
+                            {{#if showAdvance}}
+                                <li><a href="/admin/{{perma}}/advance/">Advance to Next Round</a></li>
+                            {{/if}}
+                            {{#if showStart}}
+                                <li><a href="/admin/{{perma}}/start/voting/">Begin Bracket</a></li>
+                            {{/if}}
                         {{/isBracketEliminations}}
                         {{#isBracketVoting .}}
                             <li><a href="/admin/{{perma}}/finalize/">Finalize Active Rounds</a></li>
