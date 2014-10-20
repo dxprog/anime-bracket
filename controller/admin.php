@@ -172,7 +172,9 @@ namespace Controller {
             $message = null;
             if ($bracket) {
                 $bracket->advance();
-                $message = $bracket->name . ' has advanced to the next round';
+                $message = new stdClass;
+                $message->type = 'success';
+                $message->message = $bracket->name . ' has advanced to the next round';
             }
             return self::_main($message);
         }
