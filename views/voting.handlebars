@@ -1,6 +1,42 @@
-<script>
-console.log({{{jsonBlob .}}});
+<h2>{{bracket.name}}</h2>
+<h3>Round {{round.0.tier}} - {{groupName}}</h3>
 
+<p class="message hidden"></p>
 
+<p>Select all entrants you want to move into the bracket.</p>
 
-</script>
+<form action="/submit/?action=vote" method="post">
+    <ul class="voting mini-card-container">
+        {{#each round}}
+            <li class="entrant1">
+                <input type="radio" name="round:{{id}}" id="entrant{{character1.id}}" value="{{character1.id}}" {{#if character1.voted}}checked="checked" disabled="disabled"{{/if}} class="character-input" />
+                <label for="entrant{{character1.id}}" class="mini-card left">
+                    <dl>
+                        <dt>Image</dt>
+                        <dd class="image"><img src="{{character1.image}}" alt="{{character1.name}}" /></dd>
+                        <dt>Name</dt>
+                        <dd class="name">{{character1.name}}</dd>
+                        <dt>Source</dt>
+                        <dd class="source">{{character1.source}}</dd>
+                    </dl>
+                </label>
+            </li>
+            <li class="entrant2">
+                <input type="radio" name="round:{{id}}" id="entrant{{character2.id}}" value="{{character2.id}}" {{#if character2.voted}}checked="checked" disabled="disabled"{{/if}} class="character-input" />
+                <label for="entrant{{character2.id}}" class="mini-card right">
+                    <dl>
+                        <dt>Image</dt>
+                        <dd class="image"><img src="{{character2.image}}" alt="{{character2.name}}" /></dd>
+                        <dt>Name</dt>
+                        <dd class="name">{{character2.name}}</dd>
+                        <dt>Source</dt>
+                        <dd class="source">{{character2.source}}</dd>
+                    </dl>
+                </label>
+            </li>
+        {{/each}}
+    </ul>
+
+    <input type="hidden" name="bracketId" value="{{bracket.id}}" />
+    <button type="submit" class="button">Submit Votes</button>
+</form>

@@ -60,4 +60,16 @@
         width: 100px;
     }
 
+    &.right {
+        padding-left: 15px;
+        padding-right: 115px;
+        dd {
+            text-align: right;
+        }
+        img {
+            left: auto;
+            right: 0;
+        }
+    }
+
 }
