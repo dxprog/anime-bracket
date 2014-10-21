@@ -37,6 +37,37 @@
             right: 0;
         }
 
+        & + .left {
+            position: relative;
+            &:after {
+                content: 'vs';
+                position: absolute;
+                padding-top: 12px;
+                text-align: center;
+                @include border-box();
+                font: 28px 'Roboto Condensed', sans-serif;
+                right: -40px;
+                top: 18px;
+                color: #fff;
+                background: $standard;
+                height: 60px;
+                width: 60px;
+                overflow: hidden;
+                border-radius: 30px;
+                z-index: 9001;
+                box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+            }
+        }
+
+        @media screen and (max-width: 1170px) {
+            & + .left:after {
+                right: 50%;
+                margin-right: -25px;
+                top: auto;
+                bottom: -40px;
+            }
+        }
+
     }
 
 }
