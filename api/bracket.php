@@ -357,10 +357,9 @@ namespace Api {
 				}
 
 				$characters = [];
-				$result = Lib\Db::Query('SELECT COUNT(1) AS total, v.character_id, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId GROUP BY v.character_id', [ ':bracketId' => $this->id ]);
+				$result = Lib\Db::Query('SELECT COUNT(1) AS total, c.*, r.round_group FROM votes v INNER JOIN `character` c ON c.character_id = v.character_id INNER JOIN round r ON r.round_id = v.round_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId GROUP BY v.character_id', [ ':bracketId' => $this->id ]);
 				while ($row = Lib\Db::Fetch($result)) {
-					$obj = new stdClass;
-					$obj->id = $row->character_id;
+					$obj = new Character($row);
 
 					// Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
 					// $obj->adjustedVotes = round(($obj->votes / $groups[$obj->group]) * $max);
@@ -382,9 +381,19 @@ namespace Api {
 					$round->tier = 1;
 					$round->order = ($i + 1) % $groupSplit;
 					$round->group = floor($i / $groupSplit);
-					$round->character1Id = $characters[$seeding[$i] - 1]->id;
-					$round->character2Id = $characters[$seeding[$i + 1] - 1]->id;
+
+					// Get the correct character and save their seed
+					$character1 = $characters[$seeding[$i] - 1];
+					$character1->seed = $seeding[$i];
+					$character1->sync();
+					$character2 = $characters[$seeding[$i + 1] - 1];
+					$character2->seed = $seeding[$i + 1];
+					$character2->sync();
+
+					$round->character1Id = $character1->id;
+					$round->character2Id = $character2->id;
 					$round->sync();
+
 				}
 
 				// Change the state to standard bracket voting
