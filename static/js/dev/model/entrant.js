@@ -8,8 +8,9 @@
             this.source = data.source;
             this.votes = parseInt(data.votes, 10);
             this.id = data.id;
+            this.seed = data.seed;
         } else {
-            this.image = 'unknown.jpg';
+            this.image = '//cdn.awwni.me/bracket/unknown.jpg';
             this.name = '';
             this.source = '';
             this.id = 1;

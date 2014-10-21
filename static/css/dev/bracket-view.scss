@@ -270,6 +270,20 @@ $ENTRANT_SPACING: 25px;
                     top: 42px;
                 }
 
+                .seed {
+                    border: 1px solid $dark;
+                    position: absolute;
+                    bottom: -1px;
+                    width: 22px;
+                    text-align: center;
+                    left: -1px;
+                    padding: 2px;
+                    font: 12px/1 'Roboto', sans-serif;
+                    font: 12px/1 'Roboto', sans-serif;
+                    background: $dark;
+                    color: #fff;
+                }
+
             }
 
             .stats-popup {
@@ -406,6 +420,11 @@ $ENTRANT_SPACING: 25px;
                     text-align: right;
                     left: auto;
                     right: 86px;
+                }
+
+                .seed {
+                    right: -1px;
+                    left: auto;
                 }
 
                 .stats-popup {
