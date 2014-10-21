@@ -14,7 +14,8 @@ namespace Api {
 			'id' => 'character_id',
 			'bracketId' => 'bracket_id',
 			'name' => 'character_name',
-			'source' => 'character_source'
+			'source' => 'character_source',
+			'seed' => 'character_seed'
 		);
 
 		/**
@@ -51,6 +52,11 @@ namespace Api {
 		 * Image path for this character
 		 */
 		public $image = '';
+
+		/**
+		 * Character's seed (if they are in the bracket voting)
+		 */
+		public $seed;
 
 		/**
 		 * Constructor
