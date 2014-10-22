@@ -38,11 +38,16 @@
                             {{#if showStart}}
                                 <li><a href="/admin/{{perma}}/start/voting/">Begin Bracket</a></li>
                             {{/if}}
+                            <li><a href="/admin/{{perma}}/stats/">Voting Stats</a></li>
                         {{/isBracketEliminations}}
                         {{#isBracketVoting .}}
                             <li><a href="/admin/{{perma}}/advance/">Advance to Next Round</a></li>
                             <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
+                            <li><a href="/admin/{{perma}}/stats/">Voting Stats</a></li>
                         {{/isBracketVoting}}
+                        {{#isBracketFinal .}}
+                            <li><a href="/admin/{{perma}}/stats/">Voting Stats</a></li>
+                        {{/isBracketFinal}}
                     </ul>
                 </div>
             </li>

@@ -64,8 +64,8 @@ namespace Controller {
                     case 'crop':
                         self::_cropImage();
                         break;
-                    case 'eliminations':
-                        
+                    case 'stats':
+                        self::_stats($bracket);
                         break;
                     case 'advance':
                         self::_advanceBracket($bracket);
@@ -457,12 +457,26 @@ namespace Controller {
             return null;
         }
 
+        private static function _stats(Api\Bracket $bracket) {
+            if ($bracket) {
+                $stats = Api\Round::getVotingStats($bracket->id);
+                if ($stats) {
+                    $out = new stdClass;
+                    $out->bracket = $bracket;
+                    $out->stats = $stats;
+                    Lib\Display::renderAndAddKey('content', 'admin/stats', $out);
+                }
+            }
+        }
+
         private static function _createMessage($type, $message) {
             $retVal = new stdClass;
             $retVal->type = $type;
             $retVal->message = $message;
             return $retVal;
         }
+
+        // IMAGE STUFF (TO BE MOVED OUT)
 
         private static function _uploadFile() {
 

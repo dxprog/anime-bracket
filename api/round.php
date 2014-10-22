@@ -3,6 +3,7 @@
 namespace Api {
 	
 	use Lib;
+	use stdClass;
 	
 	class Round extends Lib\Dal {
 	
@@ -289,7 +290,29 @@ namespace Api {
 			}
 			return $retVal;
 		}
-	
+
+		public static function getVotingStats($bracketId) {
+			$retVal = null;
+			if (is_numeric($bracketId)) {
+				$retVal = Lib\Cache::fetch(function() use ($bracketId) {
+					$retVal = null;
+					$result = Lib\Db::Query('SELECT COUNT(1) AS total, r.round_tier, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_tier, r.round_group', [ ':bracketId' => $bracketId ]);
+					if ($result && $result->count) {
+						$retVal = [];
+						while ($row = Lib\Db::Fetch($result)) {
+							$obj = new stdClass;
+							$obj->total = (int) $row->total;
+							$obj->tier = (int) $row->round_tier;
+							$obj->group = (int) $row->round_group;
+							$retVal[] = $obj;
+						}
+					}
+					return $retVal;
+				}, 'Api:Round:getVotingStates_' . $bracketId);
+			}
+			return $retVal;
+		}
+
 	}
 
 }
