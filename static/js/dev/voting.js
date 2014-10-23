@@ -5,6 +5,14 @@
         $message = $('.message'),
         bracketId = window.bracketId,
 
+        deselectEntrant = function(evt) {
+            var radio = document.getElementById(evt.currentTarget.getAttribute('for'));
+            if (radio.checked) {
+                radio.checked = false;
+                evt.preventDefault();
+            }
+        },
+
         setMessage = function(message, success) {
             $(window).scrollTop(0);
             $message.html(message).removeClass('hidden error success').addClass(success ? 'success' : 'error')
@@ -33,6 +41,8 @@
         };
 
     if ($('#page-vote').length) {
+        // For deselected an already selected radio
+        $('form').on('click', '[type="radio"]:not([disabled]) + label', deselectEntrant);
         $('form').on('submit', formSubmit);
     }
 
