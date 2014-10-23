@@ -17,7 +17,9 @@ namespace Api {
 			'tier' => 'round_tier',
 			'group' => 'round_group',
 			'character1Id' => 'round_character1_id',
+			'character1Votes' => 'round_character1_votes',
 			'character2Id' => 'round_character2_id',
+			'character2Votes' => 'round_character2_votes',
 			'final' => 'round_final'
 		);
 		
@@ -65,7 +67,12 @@ namespace Api {
 		 * Character 1 object
 		 */
 		public $character1;
-		
+
+		/**
+		 * Number of votes that character 1 received (after round is final)
+		 */
+		public $character1Votes;
+
 		/**
 		 * Character 2 object
 		 */
@@ -75,6 +82,11 @@ namespace Api {
 		 * Character 2 Id
 		 */
 		public $character2Id;
+
+		/**
+		 * Number of votes that character 2 received (after round is final)
+		 */
+		public $character2Votes;
 		
 		/**
 		 * Whether the user has voted on this round
@@ -283,10 +295,17 @@ namespace Api {
 
 		public function getVoteCount() {
 			$retVal = 0;
-			$result = Lib\Db::Query('SELECT COUNT(1) AS total FROM votes WHERE round_id = :id', [ ':id' => $this->id ]);
-			if ($result && $result->count === 1) {
-				$row = Lib\Db::Fetch($result);
-				$retVal = (int) $row->total;
+			$result = Lib\Db::Query('SELECT COUNT(1) AS total, character_id FROM votes WHERE round_id = :id GROUP BY character_id', [ ':id' => $this->id ]);
+			if ($result && $result->count) {
+				while ($row = Lib\Db::Fetch($result)) {
+					if ($row->character_id == $this->character1Id) {
+						$this->character1Votes = (int) $row->total;
+					} else {
+						$this->character2Votes = (int) $row->total;
+					}
+					$retVal += (int) $row->total;
+				}
+
 			}
 			return $retVal;
 		}

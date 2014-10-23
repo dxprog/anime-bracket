@@ -203,10 +203,8 @@ namespace Api {
 							$round->character2->id = (int) $round->character2->id;
 
 							if ($round->final) {
-								$char1 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', [ ':id' => $round->character1Id, ':round' => $round->id ]));
-								$char2 = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(DISTINCT user_id) AS total FROM votes WHERE character_id = :id AND round_id = :round', [ ':id' => $round->character2Id, ':round' => $round->id ]));
-								$round->character1->votes = (int) $char1->total;
-								$round->character2->votes = (int) $char2->total;
+								$round->character1->votes = (int) $round->character1Votes;
+								$round->character2->votes = (int) $round->character2Votes;
 							}
 
 							// Toss out some extraneous data
@@ -316,8 +314,10 @@ namespace Api {
 					$newRound->sync();
 
 					// Finalize the current tier
+					$rounds[$i]->getVoteCount();
 					$rounds[$i]->final = true;
 					$rounds[$i]->sync();
+					$rounds[$i + 1]->getVoteCount();
 					$rounds[$i + 1]->final = true;
 					$rounds[$i + 1]->sync();
 
