@@ -31,8 +31,11 @@
                 setMessage(data.message, data.success);
                 
                 if (data.success) {
-                    // Disable all the characters the user voted for
-                    $('input:checked').prop('disabled', true);
+                    // Disable all the rounds the user voted on
+                    $('input:checked').each(function() {
+                        var name = this.getAttribute('name');
+                        $('[name="' + name + '"]').prop('disabled', true);
+                    });
                 }
             }).fail(function() {
                 setMessage('There was an unexpected error talking to the server. Please try again in a few moments.', false);
