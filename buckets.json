@@ -1,0 +1,18 @@
+{
+    "entrantSwap": {
+        "ramps": [
+            {
+                "percent": 40,
+                "value": "control"
+            },
+            {
+                "percent": 50,
+                "value": "random"
+            },
+            {
+                "percent": 5,
+                "value": "flip"
+            }
+        ]
+    }
+}

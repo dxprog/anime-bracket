@@ -65,6 +65,9 @@ namespace Controller {
 				$user->id = 0;
 			}
 
+			// Seed the test bucket with the user's ID
+			Lib\TestBucket::initialize($user->id);
+
 			return $user;
 		}
 
@@ -84,6 +87,20 @@ namespace Controller {
 				if ($out) {
 					$out->bracket = $bracket;
 					$template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
+
+					$entrantSwap = Lib\TestBucket::get('entrantSwap');
+					if ($entrantSwap !== 'control') {
+						foreach ($out->round as $round) {
+							// Interesting side effect that I had not considered before:
+							// When TestBucket initializes, it's setting the random seed for the entire RNG (duh).
+							// That means the following random line will produce a static set of results, so the 
+							// user experience won't be wonky.
+							if ($entrantSwap === 'flip' || ($entrantSwap === 'random' && rand() % 2 === 0)) {
+								$round = self::_flipEntrants($round);
+							}
+						}
+					}
+
 					Lib\Display::addKey('page', 'vote');
 					Lib\Display::renderAndAddKey('content', $template, $out);
 				}
@@ -240,6 +257,19 @@ namespace Controller {
 				$retVal = $template->render($context);
 			}
 			return $retVal;
+		}
+
+		// Honestly surprised PHP doesn't have a swap_var function when they've got shit for suntimes >_>
+		private static function _flipEntrants(Api\Round $round) {
+			$char = $round->character1;
+			$charId = $round->character1Id;
+			$charVotes = $round->character1Votes;
+			$round->character1 = $round->character2;
+			$round->character1Id = $round->character2Id;
+			$round->character1Votes = $round->character2Votes;
+			$round->character2 = $char;
+			$round->character2Id = $charId;
+			$round->character2Votes = $charVotes;
 		}
 
 	}
