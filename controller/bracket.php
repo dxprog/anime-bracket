@@ -31,7 +31,7 @@ namespace Controller {
 						break;
 					case 'vote':
 						if ($bracket->start <=  time() && ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING || $bracket->state == BS_WILDCARD)) {
-							self::_displayCurrentRound($bracket->id);
+							self::_displayCurrentRound($bracket);
 						}
 						break;
 					case 'view':
@@ -68,23 +68,25 @@ namespace Controller {
 			return $user;
 		}
 
-		private static function _displayCurrentRound($bracketId) {
+		private static function _displayCurrentRound(Api\Bracket $bracket) {
 			$user = self::_checkLogin();
-			$cacheKey = 'CurrentRound_' . $bracketId . '_' . $user->id;
-			$out = Lib\Cache::fetch(function() use ($user, $bracketId) {
-				$out = new stdClass;
-				$out->userId = $user->id;
-				$out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
-				$out->bracket = Api\Bracket::getById($bracketId);
-				$out->round = Api\Round::getCurrentRounds($bracketId);
-				$out->groupName = self::_getGroupName($out->round);
-				return $out;
-			}, $cacheKey, CACHE_MEDIUM);
+			if ($bracket) {
+				$cacheKey = 'CurrentRound_' . $bracket->id . '_' . $user->id;
+				$out = Lib\Cache::fetch(function() use ($user, $bracket) {
+					$out = new stdClass;
+					$out->userId = $user->id;
+					$out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
+					$out->round = Api\Round::getCurrentRounds($bracket->id);
+					$out->groupName = self::_getGroupName($out->round);
+					return $out;
+				}, $cacheKey, CACHE_MEDIUM);
 
-			if ($out) {
-				$template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
-				Lib\Display::addKey('page', 'vote');
-				Lib\Display::renderAndAddKey('content', $template, $out);
+				if ($out) {
+					$out->bracket = $bracket;
+					$template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
+					Lib\Display::addKey('page', 'vote');
+					Lib\Display::renderAndAddKey('content', $template, $out);
+				}
 			}
 
 		}
