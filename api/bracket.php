@@ -324,6 +324,7 @@ namespace Api {
 				}
 			} else if (count($rounds) === 1) {
 				$round = $rounds[0];
+				$round->getVoteCount();
 				$round->final = true;
 				$round->sync();
 
@@ -333,6 +334,9 @@ namespace Api {
 				$this->sync();
 
 			}
+
+			// Clear the results cache
+			Lib\Cache::Set('Api:Bracket:getResults_' . $this->id, false, 1);
 
 		}
 
