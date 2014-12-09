@@ -6,6 +6,7 @@
         $txtPic = $('#txtPic'),
         $form = $nominate.find('form'),
         $message = $form.find('.message'),
+        bracketId = $form.find('[name="bracketId"]').val(),
         characterTypeahead = null,
 
         isIE = (/MSIE/).test(window.navigator.userAgent),
@@ -17,6 +18,7 @@
         nomineeCallback = function(data) {
             displayMessage(data.success ? '"' + $txtName.val() + '" was successfully nominated!' : data.message, data.success);
             $txtName.focus().val(data.success ? '' : $txtName.val());
+            $txtSource.val(data.success ? '' : $txtSource.val());
             $txtPic.val(data.success ? '' : $txtPic.val());
         },
 
@@ -67,8 +69,8 @@
         characterChosen = function(data) {
             if (null !== data) {
                 $txtName.val(data.name);
-                $txtSource.val(data.sources[0].name);
-                $txtPic.val(data.pic.replace('t.jpg', '.jpg'));
+                $txtSource.val(data.source);
+                $txtPic.val(data.image).focus();
             }
         };
 
@@ -77,7 +79,7 @@
             .on('click', '.accept', formShow)
             .on('click', 'button[type="submit"]', nomineeSubmit)
             .on('keypress', 'input', nomineeKeypress);
-        characterTypeahead = new Typeahead($txtName, characterChosen);
+        characterTypeahead = new Typeahead($txtName, characterChosen, bracketId);
     }
 
 }());

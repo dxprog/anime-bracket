@@ -134,6 +134,35 @@ namespace Api {
 		}
 
 		/**
+		 * Does fuzzy searching for characters within a bracket
+		 */
+		public static function searchBracketCharacters($query, $bracketId) {
+			return Lib\Cache::fetch(function() use ($query, $bracketId) {
+
+				$retVal = [];
+				$params = [
+					':bracketId' => $bracketId,
+
+					// essentially a first name search
+					':queryA' => $query . '%', 
+
+					 // last name search
+					':queryB' => '% ' . $query . '%'
+				];
+
+				$result = Lib\Db::Query('SELECT * FROM `character` WHERE bracket_id = :bracketId AND (character_name LIKE :queryA OR character_name LIKE :queryB)', $params);
+				if ($result && $result->count) {
+					while ($row = Lib\Db::Fetch($result)) {
+						$retVal[] = new Character($row);
+					}
+				}
+
+				return $retVal;
+
+			}, 'Api::Character_searchCharacters_' . $query . '_' . $bracketId, CACHE_MEDIUM);
+		}
+
+		/**
 		 * Returns a random number of characters from bracket
 		 */
 		public static function getRandomCharacters(Bracket $bracket, $count) {

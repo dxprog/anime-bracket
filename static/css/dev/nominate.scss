@@ -93,6 +93,7 @@
     li {
         margin: 0;
         padding: 10px 10px;
+        overflow: hidden;
 
         font: 24px/1 'Roboto', sans-serif;
 
@@ -103,7 +104,17 @@
         }
 
         img {
-            vertical-align: middle;
+            float: left;
+            max-width: 50px;
+        }
+
+        h4,
+        h5 {
+            padding-left: 60px;
+        }
+
+        h4 {
+            font-family: 'Roboto Condensed';
         }
 
     }

@@ -1,6 +1,6 @@
 (function($, undefined) {
 
-    var Typeahead = function($el, onSelect) {
+    var Typeahead = function($el, onSelect, bracketId) {
 
         var MAX_NUM_ITEMS = 10,
             KEYCODE_UP = 38,
@@ -79,7 +79,7 @@
 
                             loadingDataset = dataset;
                             $.ajax({
-                                url: '/typeahead/?q=' + dataset,
+                                url: '/typeahead/?q=' + dataset + '&bracketId=6',
                                 dataType: 'json',
                                 success: dataCallback
                             });
@@ -136,7 +136,7 @@
                 out.sort(function(a, b) {
                     var x = a.name.toLowerCase().indexOf(query),
                         y = b.name.toLowerCase().indexOf(query);
-                    return x < y ? -1 : x === y ? a.name < b.name ? -1 : 1 : 1;
+                    return a.order < b.order ? -1 : (x < y ? -1 : (x === y ? (a.name < b.name ? -1 : 1) : 1));
                 });
 
                 displayMatches(out.splice(0, MAX_NUM_ITEMS));
