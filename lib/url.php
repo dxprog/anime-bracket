@@ -3,6 +3,7 @@
 namespace Lib {
 
 	use Exception;
+	use stdClass;
 
 	class Url {
 
@@ -33,77 +34,49 @@ namespace Lib {
 			return 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 		}
 
-		/**
-		 * Takes the URI and extracts parameters as specified in the rewrite file
-		 */
-		public static function Rewrite($configFile) {
+        /**
+         * Takes the URI and extracts parameters as specified in the rewrite file
+         */
+        public static function getRoute($default = DEFAULT_CONTROLLER) {
 
-			$uri = current(explode('?', $_SERVER['REQUEST_URI']));
-			$retVal = $uri === '/';
+            $uri = current(explode('?', $_SERVER['REQUEST_URI']));
 
-			if (!$retVal) {
+            $retVal = new stdClass;
+            $retVal->controller = DEFAULT_CONTROLLER;
+            $retVal->route = [];
 
-				// Seperate out any actual GET parameters that may have been passed along and store appropriately
-				if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
-					$uri = explode('?', $_SERVER['REQUEST_URI']);
-					$get = $uri[1];
-					$_SERVER['QUERY_STRING'] = $get;
-					$uri = $uri[0];
-					$get = explode('&', $get);
-					foreach ($get as $param) {
-						$p = explode('=', $param);
-						$_GET[$p[0]] = count($p) === 2 ? urldecode($p[1]) : true;
-					}
-				}
+            if ($uri !== '/') {
 
-				$path = self::getHostPath();
-				$uri = str_replace(substr($path, 0, strlen($path)  - 1), '', $uri);
-				if ($uri{0} == '/') {
-					$uri = substr($uri, 1);
-				}
+                // Seperate out any actual GET parameters that may have been passed along and store appropriately
+                if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
+                    $uri = explode('?', $_SERVER['REQUEST_URI']);
+                    $get = $uri[1];
+                    $_SERVER['QUERY_STRING'] = $get;
+                    $uri = $uri[0];
+                    $get = explode('&', $get);
+                    foreach ($get as $param) {
+                        $p = explode('=', $param);
+                        $_GET[$p[0]] = count($p) === 2 ? urldecode($p[1]) : true;
+                    }
+                }
 
-				$rewrites = Cache::fetch(function() use ($configFile) {
-					return json_decode(@file_get_contents($configFile));
-				}, 'url_rewrites');
+                $path = self::getHostPath();
+                $uri = str_replace(substr($path, 0, strlen($path)  - 1), '', $uri);
+                if ($uri{0} == '/') {
+                    $uri = substr($uri, 1);
+                }
 
-				if ($rewrites) {
+                if (strlen($uri)) {
+                    $uri = explode('/', $uri);
+                    $retVal->controller = array_shift($uri);
+                    $retVal->route = $uri;
+                }
 
-					$qs = null;
-					foreach($rewrites as $rewrite) {
-						$expr = '@' . $rewrite->rule . '@is';
+            }
 
-						if (preg_match($expr, $uri)) {
-							$qs = preg_replace($expr, $rewrite->replace, $uri);
-						}
+            return $retVal;
 
-						if ($qs && isset($rewrite->redirect) && $rewrite->redirect === true) {
-							header('Location: ' . $qs);
-							exit();
-						} else if ($qs) {
-
-							$params = explode('&', $qs);
-							foreach ($params as $param) {
-								$temp = explode('=', $param);
-								self::$params[$temp[0]] = $temp[1];
-								$_GET[$temp[0]] = $temp[1];
-							}
-
-							$retVal = true;
-							break;
-
-						}
-
-					}
-
-				} else {
-					throw new Exception('URL_REWRITE: Congig file empty or malformed');
-				}
-
-			}
-
-			return $retVal;
-
-		}
+        }
 
 		/**
 		 * Gets an item from POST and cleans magic quotes if necessary
@@ -162,9 +135,9 @@ namespace Lib {
 			$source = $source ?: $_GET;
 			return isset($source[$param]) && is_numeric($source[$param]) ? floatVal($source[$param]) : $default;
 		}
-		
-		
+
+
 
 	}
-	
+
 }

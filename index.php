@@ -3,7 +3,7 @@
 /**
  * dxprog.com PHP library
  */
- 
+
 // Used to keep track of page generation time
 $_begin = microtime (true);
 
@@ -13,43 +13,15 @@ require_once('./lib/aal.php');
 // Set the time zone
 date_default_timezone_set('America/Chicago');
 
-// Define our globals
-$GLOBALS['_content'] = null;
-$GLOBALS['_sidebars'] = null;
-$GLOBALS['_api'] = 'http://api.dxprog.com/';
-$GLOBALS['_title'] = 'The Great Awwnime Bracket';
-Lib\Display::addKey('title', $_title);
-
-// Handle URL and templating things
-$found = Lib\Url::Rewrite('config/rewrites.json');
-$GLOBALS['_baseURI'] = current(explode('?', Lib\Url::getRawUrl()));
-Lib\Display::setLayout('default');
-
 Lib\Session::start();
 
-// Handle URL rewrites
-if (!$found) {
-
-	// If the rewriter couldn't come up with anything, 
+// Check for the controller and either throw a 404 or let the controller do its thing
+$route = Lib\Url::getRoute();
+if (!class_exists('Controller\\' . $route->controller, true)) {
 	header('HTTP/1.1 404 Content Not Found');
-	Lib\Display::showError(404, 'Sorry, but we couldn\'t find what you were looking for.');
-	
+	exit;
 } else {
-
-	// Check to see which page must be included
-	$_page = isset($_GET['page']) ? $_GET['page'] : 'bracket';
-	
-	// Make sure that there exists a page for the request
-	if (!is_readable('./controller/' . $_page . '.php')) {
-		header('HTTP/1.1 404 Content Not Found');
-		Lib\Display::showError(404, 'Sorry, but we couldn\'t find what you were looking for.');
-	} else {
-		header('Content-Type: text/html; charset=utf8');
-		// Turn control over to the requested page
-		call_user_func(array('Controller\\' . $_page, 'render'));
-		
-	}
-	
+	call_user_func([ 'Controller\\' . $route->controller, 'render' ], $route->route);
 }
 
 // Render the page to output
