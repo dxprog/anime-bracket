@@ -1,76 +1,115 @@
 @import "globals";
 
+$BASE-INDEX: 1;
+
 #page-landing {
-    background: url(/static/images/bracket_2014_landing_bg.jpg) no-repeat center center;
-    background-attachment: fixed;
-    background-size: cover;
 
-    max-width: 1280px;
-    margin: 0 auto;
+    background: url(/static/images/honey_bg.png);
+    z-index: $BASE-INDEX;
+    overflow: hidden;
 
-    h1 {
-        @include logo();
+    &:after {
+        content: '';
+        display: block;
         position: absolute;
-        bottom: 50px;
-        right: 150px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: $BASE-INDEX + 1;
+        background-image: url(/static/images/squares_bg.png),
+            -webkit-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+            -webkit-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
+
+        background-image: url(/static/images/squares_bg.png),
+            -moz-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+            -moz-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
     }
 
     #content {
-        margin: 0;
-        padding-left: 75px;
-        padding-top: 8.5%;
-        width: 690px;
-
-
-        &:before {
-            content: '';
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            right: 40%;
-            background: -webkit-linear-gradient(left, rgba(0, 0, 0, .75), rgba(0, 0, 0, 0));
-            background: -o-linear-gradient(right, rgba(0, 0, 0, .75), rgba(0, 0, 0, 0));
-            background: -moz-linear-gradient(right, rgba(0, 0, 0, .75), rgba(0, 0, 0, 0));
-            background: linear-gradient(to right, rgba(0, 0, 0, .75), rgba(0, 0, 0, 0));
-            z-index: -1;
-        }
-
-        h2 {
-            text-transform: uppercase;
-            font: bold 2.5em/1 'Roboto Condensed', sans-serif;
-            color: #ce8665;
-            margin-bottom: 30px;
-        }
-
-        p {
-            font: 2em/1.2 'Roboto', sans-serif;
-            color: #fff;
-            margin-bottom: 75px;
-        }
-
-        strong {
-            color: #e1ac94;
-        }
-
+        z-index: $BASE-INDEX + 5;
+        position: relative; // To get the content above the grid background
+        width: 696px;
+        margin: 0 auto;
+        padding: 0 70px;
+        text-align: center;
     }
 
-    footer {
-        position: static;
+    h1 {
+        @include logo();
+        margin: 100px auto 50px;
     }
 
-    .brackets-link {
+    h2 {
+        @include font-light(48px);
+        color: #fff;
+        margin-bottom: 100px;
+        text-shadow: 0 0 10px #000;
+    }
+
+    a {
+        &.button {
+            @include button();
+        }
+
         display: block;
-        margin-top: 40px;
-        font: 18px/1 'Roboto Condensed', sans-serif;
+        width: 375px;
+        margin: 0 auto 20px;
+        padding: 15px 0;
+        text-align: center;
         color: #fff;
         text-decoration: none;
+        @include font-light(36px);
+
+    }
+
+    .pair {
+
+        position: absolute;
+        opacity: 0;
+        -webkit-animation: hexFade 30s infinite;
+        animation: hexFade 30s infinite;
+
+        svg {
+            position: absolute;
+            top: 0;
+
+            &.last {
+                top: 115px;
+            }
+        }
+
+        &.forward svg.first {
+            left: 66px;
+        }
+
+        &.backslash svg.last {
+            left: 66px;
+        }
+
+        image {
+            clip-path: url(#hexagon);
+        }
+    }
+
+    .defs {
+        position: absolute;
+        left: -9999px;
+        right: -9999px;
     }
 
 }
 
-@media screen and (max-width: 1280px), screen and (max-height: 768px) {
-    #page-landing #content {
-        width: 47%;
-    }
+@keyframes hexFade {
+    0% { opacity: 0; }
+    3% { opacity: 1; }
+    13% { opacity: 1; }
+    17% { opacity: 0; }
+}
+
+@-webkit-keyframes hexFade {
+    0% { opacity: 0; }
+    3% { opacity: 1; }
+    13% { opacity: 1; }
+    17% { opacity: 0; }
 }
