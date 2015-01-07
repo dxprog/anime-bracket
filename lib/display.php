@@ -13,11 +13,13 @@ namespace Lib {
         private static $_theme;
         private static $_layout;
         private static $_hbEngine = null;
+        private static $_viewPath = null;
 
         public static function init() {
+
             self::$_hbEngine = new Handlebars([
-                'loader' => new \Handlebars\Loader\FilesystemLoader(__DIR__ . '/../views/'),
-                'partials_loader' => new \Handlebars\Loader\FilesystemLoader(__DIR__ . '/../views/partials/')
+                'loader' => new \Handlebars\Loader\FilesystemLoader(VIEW_PATH),
+                'partials_loader' => new \Handlebars\Loader\FilesystemLoader(VIEW_PATH . '/partials/')
             ]);
             self::addKey(KEY_CLIENT_DATA, new stdClass);
             self::_addStandardHelpers();

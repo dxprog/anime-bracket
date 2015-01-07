@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <link href="http://fonts.googleapis.com/css?family=Roboto:400,300" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/anime-bracket.css" />
+    </head>
+    <body id="page-landing">
+        <svg class="defs">
+            <defs>
+                <clipPath id="hexagon">
+                    <polygon points="70.0 0.0 135.0 37.0 135.0 113.0 70.0 150.0 4.0 113.0 4.0 37.0" />
+                </clipPath>
+            </defs>
+        </svg>
+        <div id="content">
+            <h1>Anime Bracket</h1>
+            <h2>{{phrase}}</h2>
+            <nav>
+                <ul class="nav">
+                    <li>
+                        <a href="/me/" class="button">Start a Bracket</a>
+                    </li>
+                    <li>
+                        <a href="/brackets/" class="button">Current Brackets</a>
+                    </li>
+                    <li>
+                        <a href="/bracket/">Past Brackets</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div id="hexes"></div>
+        <script>
+            window.rounds = {{{jsonBlob rounds}}};
+        </script>
+        <script src="/static/js/anime-bracket.js"></script>
+    </body>
+</html>

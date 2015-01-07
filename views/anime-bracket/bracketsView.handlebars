@@ -1,0 +1,36 @@
+<h2>Past Brackets</h2>
+<ul class="brackets">
+    {{#each .}}
+        {{#isBracketNotHidden .}}
+            <li class="bracket-card">
+                {{>_card_image}}
+                <div class="info">
+                    <h3>{{name}}</h3>
+                    {{#if winner}}
+                        <h4 class="winner">{{winner.name}}</h4>
+                    {{else}}
+                        <h4>
+                            {{#isBracketVoting .}}Voting in session{{/isBracketVoting}}
+                            {{#isBracketEliminations .}}Eliminations round{{/isBracketEliminations}}
+                            {{#isBracketNominations .}}Now accepting nominations{{/isBracketNominations}}
+                        </h4>
+                    {{/if}}
+                    <ul class="actions">
+                        {{#hasResults .}}
+                            <li><a href="/{{perma}}/view/">Results</a></li>
+                        {{/hasResults}}
+                        {{#isBracketNominations .}}
+                            <li><a href="/{{perma}}/nominate/">Nominate</a></li>
+                        {{/isBracketNominations}}
+                        {{#isBracketVoting .}}
+                            <li><a href="/{{perma}}/vote/">Vote</a></li>
+                        {{/isBracketVoting}}
+                        {{#isBracketEliminations .}}
+                            <li><a href="/{{perma}}/vote/">Vote</a></li>
+                        {{/isBracketEliminations}}
+                    </ul>
+                </div>
+            </li>
+        {{/isBracketNotHidden}}
+    {{/each}}
+</ul>

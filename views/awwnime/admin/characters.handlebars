@@ -1,0 +1,37 @@
+<div class="characters">
+    <h2>Edit Entrants</h2>
+    <h3>{{bracket.name}}</h3>
+
+    <table data-bracket="{{bracket.perma}}">
+        <thead>
+            <th></th>
+            <th>Name</th>
+            <th>Source</th>
+            <th>
+        </thead>
+        <tbody>
+            {{#each characters}}
+                <tr data-id="{{id}}">
+                    <td class="image">
+                        <img src="{{image}}" alt="{{name}}" />
+                    </td>
+                    <td class="name">
+                        <input type="text" name="name" value="{{name}}" />
+                    </td>
+                    <td class="source">
+                        <input type="text" name="source" value="{{source}}" />
+                    </td>
+                    <td>
+                        <button class="update" name="action" value="update">Update</button>
+                        {{#isBracketNominations ../bracket}}
+                            <button class="delete" name="action" value="delete">Delete</button>
+                        {{/isBracketNominations}}
+                        {{#isBracketEliminations ../bracket}}
+                            <button class="delete" name="action" value="delete">Delete</button>
+                        {{/isBracketEliminations}}
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
