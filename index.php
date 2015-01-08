@@ -25,7 +25,7 @@ if (!class_exists('Controller\\' . $route->controller, true)) {
 }
 
 // Render the page to output
-Lib\Display::render();
+Lib\Display::render($route);
 
 // Calculate the amount of time it took to generate the page
 $genTime = microtime (true) - $GLOBALS['_begin'];

@@ -2,22 +2,84 @@
 
 namespace Controller {
 
+    use Api;
     use Lib;
 
     abstract class Page {
 
-        public static final function render() {
+        public abstract static function generate(array $params);
+
+        public static final function render(array $params) {
 
             // Set some page default things
             Lib\Display::addKey('title', DEFAULT_TITLE);
             Lib\Display::setLayout('default');
+            static::_initTemplateHelpers();
+
+            Lib\Display::addKey('CSS_VERSION', CSS_VERSION);
+            Lib\Display::addKey('JS_VERSION', JS_VERSION);
+            Lib\Display::addKey('USE_MIN', USE_MIN);
 
             // Kick off page specific rendering
-            static::generate();
+            static::generate($params);
 
         }
 
-        public abstract static function generate();
+        /**
+         * Registers some generic bracket related template helpers
+         */
+        public static function _initTemplateHelpers() {
+
+            Lib\Display::addHelper('isBracketNotHidden', function($template, $context, $args, $source) {
+                $bracket = $context->get($args);
+                $retVal = '';
+
+                if ($bracket instanceof Api\Bracket && $bracket->state != BS_HIDDEN) {
+                    $retVal = $template->render($context);
+                }
+
+                return $retVal;
+            });
+
+            Lib\Display::addHelper('hasNotStarted', function($template, $context, $args, $source) {
+                return self::_bracketStateIs($template, $context, $args, BS_NOT_STARTED);
+            });
+
+            Lib\Display::addHelper('isBracketNominations', function($template, $context, $args, $source) {
+                return self::_bracketStateIs($template, $context, $args, BS_NOMINATIONS);
+            });
+
+            Lib\Display::addHelper('isBracketEliminations', function($template, $context, $args, $source) {
+                return self::_bracketStateIs($template, $context, $args, BS_ELIMINATIONS);
+            });
+
+            Lib\Display::addHelper('isBracketVoting', function($template, $context, $args, $source) {
+                return self::_bracketStateIs($template, $context, $args, BS_VOTING);
+            });
+
+            Lib\Display::addHelper('isBracketFinal', function($template, $context, $args, $source) {
+                return self::_bracketStateIs($template, $context, $args, BS_FINAL);
+            });
+
+            Lib\Display::addHelper('hasResults', function($template, $context, $args, $source) {
+                $retVal = '';
+                $bracket = $context->get($args);
+                if ($bracket instanceof Api\Bracket && ($bracket->state == BS_VOTING || $bracket->state == BS_FINAL)) {
+                    $retVal = $template->render($context);
+                }
+                return $retVal;
+            });
+
+        }
+
+        protected static function _bracketStateIs($template, $context, $args, $state) {
+            $retVal = '';
+            $bracket = $context->get($args);
+            if ($bracket instanceof Api\Bracket && $bracket->state == $state) {
+                $retVal = $template->render($context);
+            }
+            return $retVal;
+        }
 
     }
 
