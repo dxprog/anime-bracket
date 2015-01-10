@@ -4,6 +4,7 @@ namespace Controller {
 
     use Api;
     use Lib;
+    use stdClass;
 
     abstract class Page {
 
@@ -79,6 +80,31 @@ namespace Controller {
                 $retVal = $template->render($context);
             }
             return $retVal;
+        }
+
+        protected static function _checkLogin() {
+            $user = Api\User::getCurrentUser();
+            $readonly = Lib\Url::GetBool('readonly', null);
+            if (!$user && !$readonly && stripos($_SERVER['HTTP_USER_AGENT'], 'google') === false) {
+                header('Location: /user/login/?redirect=' . urlencode($_GET['q']));
+                exit;
+            }
+
+            // Setup a default user if we're in readonly
+            if (!$user) {
+                $user = new stdClass;
+                $user->id = 0;
+            }
+
+            // Seed the test bucket with the user's ID
+            Lib\TestBucket::initialize($user->id);
+
+            return $user;
+        }
+
+        protected static function _enableAd() {
+            Lib\Display::addKey('showAd', true);
+            Lib\Display::addKey('isMobile', preg_match('/(iphone|android)/i', $_SERVER['HTTP_USER_AGENT']));
         }
 
     }
