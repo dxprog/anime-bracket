@@ -1,0 +1,77 @@
+<?php
+
+namespace Controller {
+
+    use Api;
+    use Lib;
+    use stdClass;
+
+    class Vote extends Page {
+
+        public static function generate(array $params) {
+
+            self::_checkLogin();
+            self::_enableAd();
+
+            $user = (object)[ 'id' => 5 ];
+            $perma = array_shift($params);
+            $bracket = Api\Bracket::getBracketByPerma($perma);
+
+            if ($bracket->start <=  time() && ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING || $bracket->state == BS_WILDCARD)) {
+                $cacheKey = 'CurrentRound_' . $bracket->id . '_' . $user->id;
+                $out = Lib\Cache::fetch(function() use ($user, $bracket) {
+                    $out = new stdClass;
+                    $out->userId = $user->id;
+                    $out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
+                    $out->round = Api\Round::getCurrentRounds($bracket->id);
+                    $out->groupName = self::_getGroupName($out->round);
+                    return $out;
+                }, $cacheKey, CACHE_MEDIUM);
+
+                if ($out) {
+                    $out->bracket = $bracket;
+                    $template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
+/*
+                    $entrantSwap = Lib\TestBucket::get('entrantSwap');
+                    if ($entrantSwap !== 'control') {
+                        foreach ($out->round as $round) {
+                            // Interesting side effect that I had not considered before:
+                            // When TestBucket initializes, it's setting the random seed for the entire RNG (duh).
+                            // That means the following random line will produce a static set of results, so the
+                            // user experience won't be wonky.
+                            if ($entrantSwap === 'flip' || ($entrantSwap === 'random' && rand() % 2 === 0)) {
+                                $round = self::_flipEntrants($round);
+                            }
+                        }
+                    }
+*/
+                    Lib\Display::addKey('page', 'vote');
+                    Lib\Display::renderAndAddKey('content', $template, $out);
+                }
+            }
+
+        }
+
+        private static function _getGroupName($rounds) {
+
+            $retVal = 'Group';
+
+            foreach($rounds as $round) {
+                if (!isset($groups[$round->group])) {
+                    $groups[$round->group] = 0;
+                }
+                $groups[$round->group]++;
+            }
+
+            if (count($groups) === 1) {
+                $retVal .= ' ' . chr(65 + array_keys($groups)[0]);
+            } else {
+
+            }
+
+            return $retVal;
+        }
+
+    }
+
+}
