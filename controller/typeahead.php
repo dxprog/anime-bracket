@@ -14,7 +14,7 @@ namespace Controller {
             $out = Api\MalItem::getNameTypeahead($query, 'character');
 
             if ($bracketId) {
-                $out = self::_getSimilarCharacters($bracketId, $query, $out);
+                $out = array_merge($out, self::_getSimilarCharacters($bracketId, $query));
             }
 
             // Standardize the output
@@ -24,18 +24,20 @@ namespace Controller {
 
         }
 
-        private static function _getSimilarCharacters($bracketId, $query, $out) {
+        private static function _getSimilarCharacters($bracketId, $query) {
 
-            $retVal = $out;
+            $retVal = [];
 
             // Search for similar entered characters first
             $characters = Api\Character::searchBracketCharacters($query, $bracketId);
             if ($characters && count($characters)) {
-                $retVal = array_merge($characters, $retVal);
+                $retVal = $characters;
             } else {
-
                 // Search nominees so that maybe we can prevent another similar character being nominated
-
+                $nominees = Api\Nominee::searchBracketNominees($query, $bracketId);
+                if ($nominees && count($nominees)) {
+                    $retVal = $nominees;
+                }
             }
 
             return $retVal;
@@ -52,7 +54,8 @@ namespace Controller {
                         'name' => $suggestion->name,
                         'source' => $suggestion->source,
                         'image' => $suggestion->image,
-                        'thumb' => $suggestion->image
+                        'thumb' => $suggestion->image,
+                        'verified' => true
                     ];
                 } else if ($suggestion instanceof Api\MalItem) {
                     $retVal[] = [
@@ -61,7 +64,8 @@ namespace Controller {
                         'name' => $suggestion->name,
                         'source' => count($suggestion->sources) ? $suggestion->sources[0]->name : '',
                         'image' => str_replace('t.jpg', '.jpg', $suggestion->pic),
-                        'thumb' => $suggestion->pic
+                        'thumb' => $suggestion->pic,
+                        'verified' => false
                     ];
                 }
             }

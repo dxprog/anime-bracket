@@ -131,6 +131,35 @@ namespace Api {
             return $retVal;
         }
 
+        /**
+         * Does fuzzy searching for characters within a bracket
+         */
+        public static function searchBracketNominees($query, $bracketId) {
+            return Lib\Cache::fetch(function() use ($query, $bracketId) {
+
+                $retVal = [];
+                $params = [
+                    ':bracketId' => $bracketId,
+
+                    // essentially a first name search
+                    ':queryA' => $query . '%',
+
+                     // last name search
+                    ':queryB' => '% ' . $query . '%'
+                ];
+
+                $result = Lib\Db::Query('SELECT * FROM `nominee` WHERE bracket_id = :bracketId AND (nominee_name LIKE :queryA OR nominee_name LIKE :queryB)', $params);
+                if ($result && $result->count) {
+                    while ($row = Lib\Db::Fetch($result)) {
+                        $retVal[] = new Nominee($row);
+                    }
+                }
+
+                return $retVal;
+
+            }, 'Api::Nominee_searchBracketNominees_' . $query . '_' . $bracketId, CACHE_MEDIUM);
+        }
+
     }
 
 }

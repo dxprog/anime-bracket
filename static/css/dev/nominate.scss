@@ -4,13 +4,7 @@
 
     max-width: 1240px;
     margin: 0 auto;
-    background: url(/static/images/argyle_bg.png);
     padding: 40px;
-
-    h1 {
-        @include logo();
-        float: left;
-    }
 
     #content {
         padding-left: 360px;
@@ -89,11 +83,13 @@
     padding: 0;
     margin: 0;
     width: 404px;
+    z-index: $BASE-INDEX + 2;
 
     li {
         margin: 0;
         padding: 10px 10px;
         overflow: hidden;
+        position: relative;
 
         font: 24px/1 'Roboto', sans-serif;
 
@@ -115,6 +111,19 @@
 
         h4 {
             font-family: 'Roboto Condensed';
+        }
+
+        &.verified:after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 25px;
+            border: 3px solid $dark;
+            border-top: 0;
+            border-right: 0;
+            width: 25px;
+            height: 10px;
+            transform: rotate(-45deg);
         }
 
     }
