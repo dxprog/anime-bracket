@@ -8,6 +8,7 @@
         $message = $form.find('.message'),
         bracketId = $form.find('[name="bracketId"]').val(),
         characterTypeahead = null,
+        verified = false,
 
         isIE = (/MSIE/).test(window.navigator.userAgent),
 
@@ -20,12 +21,36 @@
             $txtName.focus().val(data.success ? '' : $txtName.val());
             $txtSource.val(data.success ? '' : $txtSource.val());
             $txtPic.val(data.success ? '' : $txtPic.val());
+            verified = data.success ? false : verified;
+            setFormState(true);
         },
 
         nomineeKeypress = function(e) {
             if ((e.keyCode == 13 || e.charCode == 13) && !isIE) {
                 nomineeSubmit(null);
+            } else {
+                verified = false;
             }
+        },
+
+        verifyImage = function() {
+            var image = new Image,
+                $dfr = $.Deferred();
+            image.onload = function() {
+                $dfr.resolve();
+            };
+            image.onerror = function() {
+                $dfr.reject();
+            }
+            image.src = $txtPic.val();
+            return $dfr.promise();
+        },
+
+        setFormState = function(enabled) {
+            $txtName.prop('readonly', !enabled);
+            $txtSource.prop('readonly', !enabled);
+            $txtPic.prop('readonly', !enabled);
+            $form.find('button').prop('disabled', !enabled);
         },
 
         nomineeSubmit = function(e) {
@@ -49,13 +74,27 @@
                     $txtPic.addClass('error');
                 }
             } else {
-                $.ajax({
-                    url:'/submit/?action=nominate',
-                    dataType:'json',
-                    type:'POST',
-                    data: $form.serialize(),
-                    success:nomineeCallback
-                });
+                setFormState(false);
+                // Verified characters (one that has been nominated or added to the bracket already) get NOOPs
+                if (!verified) {
+                    verifyImage().done(function() {
+                        $.ajax({
+                            url:'/submit/?action=nominate',
+                            dataType:'json',
+                            type:'POST',
+                            data: $form.serialize(),
+                            success:nomineeCallback
+                        });
+                    }).fail(function() {
+                        displayMessage('Invalid picture', false);
+                        $txtPic.addClass('error');
+                        setFormState(true);
+                    });
+
+                } else {
+                    nomineeCallback({ success: true });
+                }
+
             }
         },
 
@@ -71,6 +110,7 @@
                 $txtName.val(data.name);
                 $txtSource.val(data.source);
                 $txtPic.val(data.image).focus();
+                verified = data.verified;
             }
         };
 

@@ -20,6 +20,8 @@
         label {
             font: 24px/1 'Roboto Condensed', sans-serif;
             display: block;
+            color: #fff;
+            margin-bottom: 10px;
         }
 
         ul {
@@ -48,6 +50,15 @@
             &.error {
                 background: #fcc;
             }
+
+            [readonly] {
+                background: #ddd;
+            }
+
+        }
+
+        .button[disabled] {
+            background: #ddd;
         }
 
         .info {
