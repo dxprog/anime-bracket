@@ -1,34 +1,10 @@
 @import "globals";
 
-$BASE-INDEX: 1;
-
 #page-landing {
 
-    background: url(/static/images/honey_bg.png);
-    z-index: $BASE-INDEX;
     overflow: hidden;
 
-    &:after {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: $BASE-INDEX + 1;
-        background-image: url(/static/images/squares_bg.png),
-            -webkit-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
-            -webkit-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
-
-        background-image: url(/static/images/squares_bg.png),
-            -moz-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
-            -moz-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
-    }
-
     #content {
-        z-index: $BASE-INDEX + 5;
-        position: relative; // To get the content above the grid background
         width: 696px;
         margin: 0 auto;
         padding: 0 70px;
@@ -45,12 +21,10 @@ $BASE-INDEX: 1;
         color: #fff;
         margin-bottom: 100px;
         text-shadow: 0 0 10px #000;
+        text-transform: none;
     }
 
     a {
-        &.button {
-            @include button();
-        }
 
         display: block;
         width: 375px;
@@ -87,7 +61,7 @@ $BASE-INDEX: 1;
             left: 66px;
         }
 
-        image {
+        svg {
             clip-path: url(#hexagon);
         }
     }
