@@ -254,7 +254,7 @@ namespace Api {
             $retVal = null;
             if ($user instanceof User) {
                 $cacheKey = 'Api:Bracket:getVotesForUser_' . $this->id . '_' . $user->id;
-                $retVal = Lib\Cache::getLongCache(function() user ($user) {
+                $retVal = Lib\Cache::fetchLongCache(function() use ($user) {
                     $params = [ ':userId' => $user->id, ':bracketId' => $this->id ];
                     $result = Lib\Db::Query('SELECT round_id, character_id FROM votes WHERE user_id = :userId AND bracket_id = :bracketId', $params);
                     $retVal = [];
