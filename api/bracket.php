@@ -27,7 +27,8 @@ namespace Api {
             'pic' => 'bracket_pic',
             'winnerCharacterId' => 'winner_character_id',
             'rules' => 'bracket_rules',
-            'source' => 'bracket_source'
+            'source' => 'bracket_source',
+            'advanceHour' => 'bracket_advance_hour'
         );
 
         /**
@@ -89,6 +90,11 @@ namespace Api {
          * Source ID of the bracket
          */
         public $source = BRACKET_SOURCE;
+
+        /**
+         * Whether this bracket should auto advance and at what hour to do so
+         */
+        public $advanceHour;
 
         /**
          * Override for getAll to include the winner character object
@@ -161,10 +167,13 @@ namespace Api {
             return $retVal;
         }
 
-        public function getResults() {
+        /**
+         * Returns the current results and rounds of the bracket
+         */
+        public function getResults($force = false) {
             $cacheKey = 'Api:Bracket:getResults_' . $this->id;
-            $retVal = Lib\Cache::Get($cacheKey);
-            if (false === $retVal) {
+
+            return Lib\Cache::fetchLongCache(function() {
 
                 $retVal = [];
 
@@ -230,22 +239,22 @@ namespace Api {
                     $baseRounds /= 2;
                 }
 
-                // Do a super long cache for finalized brackets
-                $cacheLength = $this->state = BS_FINAL ? 84600 : 3600;
-                Lib\Cache::Set($cacheKey, $retVal);
+                return $retVal;
 
-            }
-
-            return $retVal;
+            }, $cacheKey, $force);
 
         }
 
-        public function getVotesForUser(User $user) {
+        /**
+         * Returns the votes of a given user for this bracket
+         * @param User $user The user to fetch votes for
+         * @param bool $force Bypass cache and force read from DB
+         */
+        public function getVotesForUser(User $user, $force = false) {
             $retVal = null;
             if ($user instanceof User) {
                 $cacheKey = 'Api:Bracket:getVotesForUser_' . $this->id . '_' . $user->id;
-                $retVal = Lib\Cache::Get($cacheKey);
-                if (false === $retVal) {
+                $retVal = Lib\Cache::getLongCache(function() user ($user) {
                     $params = [ ':userId' => $user->id, ':bracketId' => $this->id ];
                     $result = Lib\Db::Query('SELECT round_id, character_id FROM votes WHERE user_id = :userId AND bracket_id = :bracketId', $params);
                     $retVal = [];
@@ -254,8 +263,8 @@ namespace Api {
                             $retVal[$row->round_id] = (int) $row->character_id;
                         }
                     }
-                    Lib\Cache::Set($cacheKey, $retVal);
-                }
+                    return $retVal;
+                }, $cacheKey, $force);
             }
             return $retVal;
         }
@@ -264,6 +273,10 @@ namespace Api {
          * Advances the bracket to the next tier/group
          */
         public function advance() {
+
+            // Lock the bracket
+            $cacheKey = $this->_lockedCacheKey();
+            Lib\Cache::set($cacheKey, true, CACHE_MEDIUM);
 
             switch ($this->state) {
                 case BS_ELIMINATIONS:
@@ -274,6 +287,19 @@ namespace Api {
                     break;
             }
 
+            // Force update the results
+            $this->getResults(true);
+
+            // Unlock. Keep this on a short cache since it'll default back to false anyways
+            Lib\Cache::set($cacheKey, false, CACHE_SHORT);
+
+        }
+
+        /**
+         * Returns the locked status of the bracket
+         */
+        public function isLocked() {
+            return Lib\Cache::get($this->_lockedCacheKey());
         }
 
         /**
@@ -444,6 +470,20 @@ namespace Api {
                 }
             }
 
+        }
+
+        /**
+         * Assigns this bracket to a user
+         */
+        public function addUser(User $user) {
+            return Lib\Db::Query('INSERT INTO bracket_owners VALUES (:bracketId, :userId)', [ ':bracketId' => $this->id, ':userId' => $user->id ]);
+        }
+
+        /**
+         * Generator for the locked cache key
+         */
+        private function _lockedCacheKey() {
+            return 'Api:Bracket:bracket_locked_' . $this->id;
         }
 
     }

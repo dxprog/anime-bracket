@@ -8,9 +8,9 @@ namespace Controller {
 
     define('FLOOD_CONTROL', 3);
 
-    class VoteSubmit implements Page {
+    class Submit extends Page {
 
-        public static function render() {
+        public static function generate(array $params) {
 
             $action = Lib\Url::Get('action', null);
             $out = new stdClass;
@@ -18,7 +18,7 @@ namespace Controller {
 
             $user = Api\User::getCurrentUser();
             if ($user) {
-                
+
                 if (self::_isFlooding($user)) {
                     $out->message = 'You\'re doing that too fast!';
                 } else {
@@ -103,7 +103,10 @@ namespace Controller {
             if ($bracketId) {
                 $bracket = Api\Bracket::getById($bracketId);
                 $state = $bracket ? (int) $bracket->state : null;
-                if ($state === BS_ELIMINATIONS || $state === BS_VOTING) {
+
+                if ($bracket->isLocked()) {
+                    $out->message = 'The bracket is currently advancing to the next round. Please refresh and try voting again in a few moments.';
+                } else if ($state === BS_ELIMINATIONS || $state === BS_VOTING) {
 
                     // Break the votes down into an array of round/character objects
                     $votes = [];
@@ -124,7 +127,7 @@ namespace Controller {
                         $params = [ ':userId' => $user->id, ':date' => time(), ':bracketId' => $bracketId ];
 
                         $insertCount = 0;
-                        
+
                         // Only run an insert for rounds that haven't been voted on
                         $rounds = Api\Votes::getOpenRounds($user, $votes);
 
