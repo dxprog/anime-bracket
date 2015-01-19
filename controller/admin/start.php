@@ -38,12 +38,10 @@ namespace Controller\Admin {
                 $bracket->state = $stateId;
                 if ($bracket->sync()) {
                     $message = self::_createMessage('success', '"' . $bracket->name . '" has advanced to the ' . $state . ' phase.');
+                    self::_refreshCaches($bracket);
                 }
-            }
 
-            // Clear rollup page caches
-            Lib\Cache::set('Controller::Brackets_displayBrackets_active', false, CACHE_SHORT);
-            Lib\Cache::set('Controller::Brackets_displayBrackets_completed', false, CACHE_SHORT);
+            }
 
             return self::_main($message, true);
 
@@ -83,6 +81,8 @@ namespace Controller\Admin {
                         if ($bracket->sync()) {
                             $message = self::_createMessage('success', 'Eliminations for "' . $bracket->name . '" have started.');
                         }
+
+                        self::_refreshCaches($bracket);
                         self::_main($message);
 
                     }
@@ -100,6 +100,7 @@ namespace Controller\Admin {
                         $bracket->advance();
                         $bracket->createBracketFromEliminations($entrants, $groups);
                         $message = self::_createMessage('success', 'Voting for bracket "' . $bracket->name . '" has successfully started!');
+                        self::_refreshCaches($bracket);
                         self::_main($message);
                     } else {
                         $message = self::_createMessage('error', 'There was an error starting the bracket');
@@ -112,13 +113,29 @@ namespace Controller\Admin {
                     $out = new stdClass;
                     $out->bracket = $bracket;
                     $out->entrants = [];
-                    while ($i < $count) {
+                    while ($i <= $count) {
                         $out->entrants[] = $i;
                         $i *= 2;
                     }
                     Lib\Display::renderAndAddKey('content', 'admin/start_bracket', $out);
                 }
             }
+        }
+
+        private static function _refreshCaches(Api\Bracket $bracket) {
+            // Refresh caches
+            Lib\Cache::setDisabled(true);
+            Api\Bracket::getAll();
+            Api\Bracket::getBracketByPerma($bracket->perma);
+
+            if ($bracket->state == BS_VOTING) {
+                Api\Round::getCurrentRounds($bracket->id);
+                $bracket->getResults();
+            }
+
+            \Controller\Brackets::generate([ 'past' ]);
+            \Controller\Brackets::generate([]);
+            Lib\Cache::setDisabled(false);
         }
 
     }

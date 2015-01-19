@@ -34,7 +34,9 @@ namespace Controller\Admin {
         public static function _displayNominations(Api\Bracket $bracket, $jsonOnly = false) {
             $retVal = null;
 
+            Lib\Cache::setDisabled(true);
             $nominee = Api\Nominee::getUnprocessed($bracket->id, 1);
+            Lib\Cache::setDisabled(false);
 
             if (count($nominee) > 0) {
                 $out = new stdClass;

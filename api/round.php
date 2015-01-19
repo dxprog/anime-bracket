@@ -155,7 +155,7 @@ namespace Api {
                     while ($row = Lib\Db::Fetch($result)) {
                         $round = new Round($row);
 
-                        // If there tier is not 0, character2 is "nobody", and the number of items is not a power of two
+                        // If the tier is not 0, character2 is "nobody", and the number of items is not a power of two
                         // this is a wildcard round and the user has already voted
                         if ($row->round_tier != 0 && $row->round_character2_id == 1 && (($result->count + 1) & ($result->count)) != 0) {
                             return null;
@@ -238,13 +238,6 @@ namespace Api {
         }
 
         /**
-         * Returns the group currently being voted on
-         */
-        public static function getCurrentGroup($bracketId) {
-
-        }
-
-        /**
          * Returns the character object for the winner of the current round
          */
         public function getWinner($useEliminations = false) {
@@ -315,12 +308,13 @@ namespace Api {
             if (is_numeric($bracketId)) {
                 $retVal = Lib\Cache::fetch(function() use ($bracketId) {
                     $retVal = null;
-                    $result = Lib\Db::Query('SELECT COUNT(1) AS total, r.round_tier, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_tier, r.round_group', [ ':bracketId' => $bracketId ]);
+                    $result = Lib\Db::Query('SELECT COUNT(1) AS total, COUNT(DISTINCT v.user_id) AS user_total, r.round_tier, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_tier, r.round_group', [ ':bracketId' => $bracketId ]);
                     if ($result && $result->count) {
                         $retVal = [];
                         while ($row = Lib\Db::Fetch($result)) {
                             $obj = new stdClass;
                             $obj->total = (int) $row->total;
+                            $obj->userTotal = (int) $row->user_total;
                             $obj->tier = (int) $row->round_tier;
                             $obj->group = (int) $row->round_group;
                             $retVal[] = $obj;
@@ -330,6 +324,65 @@ namespace Api {
                 }, 'Api:Round:getVotingStates_' . $bracketId);
             }
             return $retVal;
+        }
+
+        /**
+         * Returns random completed rounds
+         */
+        public static function getRandomCompletedRounds($count) {
+            $count = is_numeric($count) ? $count : 10;
+
+            return Lib\Cache::fetch(function() use ($count) {
+
+                $retVal = null;
+
+                $query = 'SELECT * FROM `round` WHERE round_final = 1 AND round_tier > 0 AND round_character2_id > 1 ORDER BY RAND() LIMIT ' . $count;
+                return self::_getRoundsAndCharacters($query);
+
+            }, 'Round::getRandomCompletedRounds_' . $count, CACHE_LONG * 24);
+        }
+
+        /**
+         * Gets a full dataset including characters for multiple rounds
+         */
+        private static function _getRoundsAndCharacters($query, $params = null) {
+
+            $retVal = null;
+            $result = Lib\Db::Query($query, $params);
+            if ($result && $result->count) {
+
+                // This array will hold all unique character IDs (and later character objects)
+                // to retrieve so we reduce the number of trips to the database.
+                $characters = [];
+                $retVal = [];
+
+                while ($row = Lib\Db::Fetch($result)) {
+                    $round = new Round($row);
+                    $characters[$round->character1Id] = true;
+                    $characters[$round->character2Id] = true;
+                    $retVal[] = new Round($row);
+                }
+
+                // Now fetch the character objects
+                $result = Character::query([ 'id' => [ 'in' => array_keys($characters) ] ]);
+                if ($result && $result->count) {
+                    while ($row = Lib\Db::Fetch($result)) {
+                        $character = new Character($row);
+                        $characters[$character->id] = $character;
+                    }
+
+                    // Now, assign the character objects to their rounds
+                    for ($i = 0, $count = count($retVal); $i < $count; $i++) {
+                        $retVal[$i]->character1 = $characters[$retVal[$i]->character1Id];
+                        $retVal[$i]->character2 = $characters[$retVal[$i]->character2Id];
+                    }
+
+                }
+
+            }
+
+            return $retVal;
+
         }
 
     }

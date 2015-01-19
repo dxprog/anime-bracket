@@ -1,8 +1,8 @@
 (function(undefined) {
-    
+
     'use strict';
 
-    var 
+    var
 
         /**
          * Multiple script loader
@@ -29,6 +29,10 @@
             loadScripts([ '/static/js/jquery.Jcrop.min.js', '/static/js/nominee.js' ]);
         },
 
+        initStatsPage = function() {
+            loadScripts([ '/static/js/Chart.min.js', '/static/js/stats.js' ]);
+        },
+
         _updateCharacter = function(evt) {
             var $target = $(evt.currentTarget),
                 $parent = $target.closest('tr'),
@@ -37,7 +41,7 @@
             $parent.addClass('loading');
 
             $.ajax({
-                url: '/admin/' + $table.data('bracket') + '/process/character/',
+                url: '/me/process/' + $table.data('bracket') + '/character/',
                 type: 'POST',
                 dataType: 'json',
                 data: {
@@ -49,9 +53,13 @@
             }).done(function(data) {
                 if (data.success) {
                     $parent.removeClass('loading').addClass('success');
+                    if (data.action === 'delete') {
+                        $parent.remove();
+                    }
                 } else {
                     $parent.removeClass('loading').addClass('failed');
                 }
+
             });
 
         },
@@ -66,6 +74,8 @@
         initNomineeForm();
     } else if ($('#admin .characters').length) {
         initCharactersForm();
+    } else if ($('#admin .stats').length) {
+        initStatsPage();
     }
 
 }());

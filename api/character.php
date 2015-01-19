@@ -73,7 +73,7 @@ namespace Api {
          */
         public function copyFromDbRow($row) {
             parent::copyFromDbRow($row);
-            $this->image = base_convert($this->id, 10, 36) . '.jpg';
+            $this->image = IMAGE_URL . '/' . base_convert($this->id, 10, 36) . '.jpg';
         }
 
         /**

@@ -11,18 +11,52 @@
         margin-bottom: 40px;
     }
 
-    .bracket-card .actions {
-        position: static;
-        li {
-            float: none;
+    .bracket-card {
+        h3 {
+            position: static;
+            margin: 0 0 10px;
         }
-        a {
-            text-transform: none;
+
+        .title {
+            position: absolute;
+            z-index: $BASE-INDEX + 2;
+            bottom: 116px;
+            left: 0;
+            right: 0;
+            margin: 20px;
+        }
+
+        .edit {
+            @include image-text($background: url(/static/images/edit.png), $width: 24px, $height: 24px);
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            z-index: $BASE-INDEX + 5;
+        }
+
+        h4 {
+            color: #fff;
+            margin: 0;
+        }
+
+        .actions {
+            position: static;
+            li {
+                float: none;
+                padding: 0;
+            }
+            a {
+                text-transform: none;
+            }
         }
     }
 
     .non-button {
         background: transparent;
+    }
+
+    #content {
+        overflow: hidden;
     }
 
     .form {
@@ -34,7 +68,9 @@
             margin-bottom: 10px;
         }
 
-        input[type="text"], textarea {
+        input[type="text"],
+        textarea,
+        select {
             font: 20px/1.2 'Roboto', sans-serif;
             padding: 5px;
             margin-bottom: 20px;
@@ -69,7 +105,8 @@
 
     }
 
-    .eliminations {
+    .eliminations,
+    .stats {
         h2 {
             margin-bottom: 5px;
         }
@@ -82,11 +119,13 @@
 
         label {
             font: 30px/1.2 'Roboto', sans-serif;
+            color: #fff;
         }
 
         p {
             font: 24px/1.2 'Roboto', sans-serif;
             margin-bottom: 20px;
+            color: #fff;
         }
 
         select {
@@ -135,6 +174,8 @@
             img {
                 display: block;
                 max-width: 150px;
+                min-width: 150px;
+                min-height: 150px;
             }
 
             button {
@@ -368,4 +409,10 @@
 
     }
 
+}
+
+#chart {
+    background: #fff;
+    padding: 25px;
+    @include border-box();
 }

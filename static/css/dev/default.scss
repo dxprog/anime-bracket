@@ -9,62 +9,66 @@ ul {
     list-style: none;
 }
 
-body {
-    font-size: 24px;
-}
-
 html {
     height: 100%;
 }
 
 body {
-    height: 100%;
+    font-size: 24px;
 
     max-width: 1240px;
     margin: 0 auto;
-    background: url(/static/images/argyle_bg.png);
+    background: url(/static/images/honey_bg.png);
+    &:after {
+        content: '';
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: $BASE-INDEX;
+        background-image: url(/static/images/squares_bg.png),
+            -webkit-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+            -webkit-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
 
-    padding: 40px;
-
-    h1 {
-        @include logo();
-        float: left;
-    }
-
-    #content {
-        padding-left: 360px;
+        background-image: url(/static/images/squares_bg.png),
+            -moz-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+            -moz-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
     }
 
 }
 
 h2 {
     @include heading();
-    margin-bottom: 40px;
 }
 
-.button {
-    font: bold 1.5rem/1 'Roboto Condensed', sans-serif;
-    color: #fff;
-    padding: 15px 20px;
-    background: #e1ac94;
-    text-decoration: none;
-    display: inline-block;
-    border: 0;
-    cursor: pointer;
+#content {
+    z-index: $BASE-INDEX + 1;
+    position: relative;
 }
 
-footer {
-    margin: 60px 0;
+.logo {
+    position: relative;
+    z-index: $BASE-INDEX + 1;
+    display: block;
+    margin: 40px 0 20px;
 
-    p {
-        font: 1em/1 'Roboto', sans-serif;
-        color: #fff;
-        margin-bottom: 10px;
+    h1 {
+        @include logo();
     }
 
+}
+
+footer p {
+    position: relative;
+    z-index: $BASE-INDEX + 1;
+    margin: 100px 0 20px;
+    text-align: center;
+    @include body-copy();
+    color: #fff;
     a {
-        color: #e1ac94;
-        text-decoration: none;
+        color: $standard;
     }
 }
 
@@ -87,6 +91,10 @@ footer {
         display: none;
     }
 
+}
+
+.button {
+    @include button();
 }
 
 @media screen and (max-width: 1280px), screen and (max-height: 768px) {

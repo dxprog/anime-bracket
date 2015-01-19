@@ -33,6 +33,8 @@ namespace Controller\Admin {
 
                     if ($bracket->sync()) {
                         $bracket->addUser(self::$_user);
+
+                        // Clear the generic bracket related caches
                         header('Location: /me/?created');
                         exit;
                     }

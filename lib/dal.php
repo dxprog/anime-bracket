@@ -73,8 +73,9 @@ namespace Lib {
                 $retVal = Db::Query($query, $params);
 
                 // Save the ID for insert
-                if ($retVal > 0 && 'INSERT' === $method) {
-                    $this->$primaryKey = $retVal;
+                if ('INSERT' === $method && isset($retVal->insertId)) {
+                    $this->$primaryKey = $retVal->insertId;
+                    $retVal = $retVal->count;
                 }
 
             }
@@ -267,7 +268,7 @@ namespace Lib {
             $retVal = null;
             if (self::_verifyProperties($this)) {
                 if (is_numeric($id)) {
-                    $cacheKey = $this->_dbTable . '_getById_' . $id;
+                    $cacheKey = 'Lib:Dal:' . $this->_dbTable . '_getById_' . $id;
                     $retVal = Cache::Get($cacheKey);
 
                     if (!$retVal) {

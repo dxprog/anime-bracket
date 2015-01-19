@@ -1,11 +1,13 @@
 $darkGrey: #494a4c;
-$medTurk: #96bcb1;
+$MED_TURK: #96bcb1;
 $blue: #7b8fa8;
 $lightBlue: #e6fff7;
 
-$dark: #9b5231;
-$standard: #ce8665;
-$light: #e1ac94;
+$dark: #697e77;
+$standard: #96bcb1;
+$light: #c4e6dd;
+
+$BASE-INDEX: 1;
 
 @mixin heading($hasSubHead: false) {
   font: bold 48px/1 'Roboto Condensed', sans-serif;
@@ -16,6 +18,10 @@ $light: #e1ac94;
   } @else {
     margin-bottom: 40px;
   }
+}
+
+@mixin font-light($size: 24px) {
+  font: 300 $size/1 'Roboto', sans-serif;
 }
 
 @mixin sub-heading() {
@@ -73,21 +79,20 @@ $light: #e1ac94;
 
 @mixin button() {
     display: inline-block;
-    padding: 16px 25px;
-    font: 24px/1 'Helvetica Condensed Bold', sans-serif;
-    @include gradient(#829d94, #697e77);
-    border-radius: 5px;
-    text-transform: uppercase;
+    padding: 15px 40px;
+    @include font-light(36px);
+    border-radius: 2px;
+    background: $MED_TURK;
     color: #fff;
     text-decoration: none;
     border: 0;
-    box-shadow: 0 3px 1px rgba(0, 0, 0, .25);
+    cursor: pointer;
 }
 
 @mixin logo($type: light) {
   @if $type == dark {
-    @include image-text($background: url(/static/images/logo_dark.png), $width: 242px, $height: 118px);
+    @include image-text($background: url(/static/images/logo_dark.png), $width: 311px, $height: 117px);
   } @else {
-    @include image-text($background: url(/static/images/logo_light.png), $width: 242px, $height: 118px);
+    @include image-text($background: url(/static/images/logo_light.png), $width: 311px, $height: 117px);
   }
 }

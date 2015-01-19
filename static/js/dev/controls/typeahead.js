@@ -79,7 +79,7 @@
 
                             loadingDataset = dataset;
                             $.ajax({
-                                url: '/typeahead/?q=' + dataset + '&bracketId=6',
+                                url: '/typeahead/?q=' + dataset + '&bracketId=' + bracketId,
                                 dataType: 'json',
                                 success: dataCallback
                             });

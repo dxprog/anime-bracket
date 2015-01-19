@@ -29,6 +29,14 @@ namespace Controller\Admin {
                         $bracket->advanceHour = $advanceHour;
 
                         if ($bracket->sync()) {
+
+                            // Clear the generic bracket related caches
+                            Lib\Cache::setDisabled(true);
+                            Api\Bracket::getAll();
+                            \Controller\Brackets::generate([ 'past' ]);
+                            \Controller\Brackets::generate([]);
+                            Lib\Cache::setDisabled(false);
+
                             header('Location: /me/?edited');
                             exit;
                         }
@@ -36,7 +44,6 @@ namespace Controller\Admin {
                     }
 
                 }
-
 
                 $bracket->times = self::_generateAdvanceTimes($bracket->advanceHour);
                 Lib\Display::renderAndAddKey('content', 'admin/bracket', $bracket);

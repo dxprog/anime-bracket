@@ -100,9 +100,9 @@ namespace Api {
          * Override for getAll to include the winner character object
          */
         public static function getAll($force = false) {
-            $cacheKey = 'Api:Bracket:getAll_' . implode('_', [ $force ? 'true' : 'false', BRACKET_SOURCE ]);
+            $cacheKey = 'Api:Bracket:getAll_' . implode('_', [ BRACKET_SOURCE ]);
             $retVal = Lib\Cache::Get($cacheKey);
-            if (false === $retVal) {
+            if (false === $retVal || $force) {
                 $brackets = parent::queryReturnAll([ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ]);
                 $retVal = [];
                 foreach ($brackets as $bracket) {
@@ -430,6 +430,9 @@ namespace Api {
                 // Change the state to standard bracket voting
                 $this->state = BS_VOTING;
                 $this->sync();
+
+                // Force update the results cache
+                $this->getResults(true);
 
             }
 

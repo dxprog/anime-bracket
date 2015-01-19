@@ -73,7 +73,7 @@ namespace Api {
             if (false === $retVal && $this->id) {
 
                 $retVal = null;
-                $result = Lib\Db::Query('SELECT i.* FROM mal_xref x INNER JOIN mal_items i ON i.item_id = x.mal_parent WHERE x.mal_child = :id ORDER BY x.mal_parent DESC', [ ':id' => $this->id ]);
+                $result = Lib\Db::Query('SELECT i.* FROM mal_xref x INNER JOIN mal_items i ON i.item_id = x.mal_parent WHERE x.mal_child = :id ORDER BY x.mal_parent ASC', [ ':id' => $this->id ]);
                 if ($result && $result->count) {
 
                     $retVal = [];

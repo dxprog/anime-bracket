@@ -31,15 +31,17 @@ namespace Controller {
                     $out->bracket = $bracket;
                     $template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
 
-                    $entrantSwap = Lib\TestBucket::get('entrantSwap');
-                    if ($entrantSwap !== 'control') {
-                        foreach ($out->round as $round) {
-                            // Interesting side effect that I had not considered before:
-                            // When TestBucket initializes, it's setting the random seed for the entire RNG (duh).
-                            // That means the following random line will produce a static set of results, so the
-                            // user experience won't be wonky.
-                            if ($entrantSwap === 'flip' || ($entrantSwap === 'random' && rand() % 2 === 0)) {
-                                $round = self::_flipEntrants($round);
+                    if ($bracket->state != BS_ELIMINATIONS) {
+                        $entrantSwap = Lib\TestBucket::get('entrantSwap');
+                        if ($entrantSwap !== 'control') {
+                            foreach ($out->round as $round) {
+                                // Interesting side effect that I had not considered before:
+                                // When TestBucket initializes, it's setting the random seed for the entire RNG (duh).
+                                // That means the following random line will produce a static set of results, so the
+                                // user experience won't be wonky.
+                                if ($entrantSwap === 'flip' || ($entrantSwap === 'random' && rand() % 2 === 0)) {
+                                    $round = self::_flipEntrants($round);
+                                }
                             }
                         }
                     }

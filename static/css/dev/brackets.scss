@@ -1,29 +1,21 @@
 @import "globals";
 
-#page-brackets {
+$BASE-INDEX: 1;
 
-    max-width: 1240px;
-    margin: 0 auto;
-    background: url(/static/images/argyle_bg.png);
+#page-brackets {
 
     padding: 40px;
 
-    h1 {
-        @include logo();
-        float: left;
-    }
-
-    #content {
-        padding-left: 360px;
-    }
-
     h2 {
-        @include heading();
         margin-bottom: 40px;
     }
 
     footer {
         position: static;
+    }
+
+    .brackets {
+        overflow: hidden;
     }
 
 }
@@ -32,12 +24,25 @@
  * Global bracket card pattern
  */
 .bracket-card {
-    width: 700px;
-    height: 300px;
+    width: 350px;
+    height: 416px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
     background: rgba(255, 255, 255, .8);
     position: relative;
     margin-bottom: 40px;
+    margin-right: 40px;
+    float: left;
+
+    &:after {
+        content: '';
+        position: absolute;
+        height: 165px;
+        bottom: 116px;
+        left: 0;
+        right: 0;
+        z-index: $BASE-INDEX;
+        @include gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .5));
+    }
 
     .info {
         padding: 20px;
@@ -45,7 +50,13 @@
 
     h3 {
         font: 36px/1 'Roboto', sans-serif;
-        margin-bottom: 20px;
+        margin: 20px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 116px;
+        color: #fff;
+        z-index: $BASE-INDEX + 1;
     }
 
     h4 {
@@ -64,17 +75,13 @@
     .card-image {
         width: 350px;
         height: 300px;
-        float: left;
-        padding-right: 20px;
     }
 
     .card-entrants {
-        float: left;
         width: 350px;
         height: 300px;
         overflow: hidden;
         position: relative;
-        margin-right: 20px;
 
         .inner {
             position: absolute;
@@ -99,7 +106,6 @@
             bottom: 0;
             right: 0;
             background: url(/static/images/vignette.png);
-            z-index: 10;
         }
 
     }

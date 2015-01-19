@@ -22,12 +22,16 @@ namespace Lib {
 
 		private static $_memcache;
 		private static $_redis;
+		private static $_disabled = false;
 
 		public static function Connect($host = 'localhost', $port = 11211) {
 			self::$_memcache = new Memcache();
 			if (!self::$_memcache->pconnect($host, $port)) {
 				self::$_memcache = null;
 			}
+
+			self::setDisabled(isset($_GET['flushCache']));
+
 		}
 
 		public static function Set($key, $val, $expiration = 600) {
@@ -40,14 +44,15 @@ namespace Lib {
 
 		public static function Get($key, $forceCacheGet = false) {
 			$retVal = false;
-			if (null != self::$_memcache && is_string($key) && (!isset($_GET['flushCache']) || $forceCacheGet)) {
+			$fetchFromCache = null != self::$_memcache && is_string($key) && ($forceCacheGet || !self::$_disabled);
+			if ($fetchFromCache) {
 				$retVal = self::$_memcache->get(CACHE_PREFIX . ':' . $key);
 			}
 			return $retVal;
 		}
 
-		public static function Flush() {
-			// self::$_memcache->flush();
+		public static function setDisabled($disabled) {
+			self::$_disabled = $disabled;
 		}
 
 		/**
@@ -83,7 +88,7 @@ namespace Lib {
 		public static function fetchLongCache($method, $cacheKey, $force = false) {
 			self::_redisConnect();
 			$retVal = self::$_redis->get($cacheKey);
-			if (null === $retVal || $force) {
+			if (null === $retVal || $force || self::$_disabled) {
 				$retVal = $method();
 				self::setLongCache($cacheKey, $retVal);
 			} else {
@@ -99,7 +104,7 @@ namespace Lib {
 
 		private static function _redisConnect() {
 			if (!self::$_redis) {
-				self::$_redis = new Predis\Client();
+				self::$_redis = new Predis\Client(REDIS_SERVER);
 			}
 		}
 

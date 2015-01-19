@@ -3,6 +3,7 @@
 #page-vote {
 
     h2 {
+        @include heading();
         margin-bottom: 10px;
     }
 
@@ -12,10 +13,23 @@
 
     p {
         @include body-copy();
+        color: #fff;
     }
 
     label {
         cursor: pointer;
+    }
+
+    #content {
+        padding-left: 340px;
+    }
+
+    #ad {
+
+    }
+
+    .entrant1 {
+        clear: both;
     }
 
     .character-input {
