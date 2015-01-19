@@ -73,17 +73,24 @@ namespace Controller {
             $image = Lib\Url::Post('image');
 
             if ($bracketId && $nomineeName && $nomineeSource && $image) {
-                $nominee = new Api\Nominee();
-                $nominee->bracketId = $bracketId;
-                $nominee->name = $nomineeName;
-                $nominee->source = $nomineeSource;
-                $nominee->created = time();
-                $nominee->image = $image;
-                if ($nominee->sync()) {
-                    $out->success = true;
+
+                // Verify the image first
+                if (self::_verifyImage($image)) {
+                    $nominee = new Api\Nominee();
+                    $nominee->bracketId = $bracketId;
+                    $nominee->name = $nomineeName;
+                    $nominee->source = $nomineeSource;
+                    $nominee->created = time();
+                    $nominee->image = $image;
+                    if ($nominee->sync()) {
+                        $out->success = true;
+                    } else {
+                        $out->message = 'Unable to save to database';
+                    }
                 } else {
-                    $out->message = 'Unable to save to database';
+                    $out->message = 'Invalid image';
                 }
+
             } else {
                 $out->message = 'Missing fields';
                 $out->data = $_POST;
@@ -152,6 +159,7 @@ namespace Controller {
                                 Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
                                 Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_all_' . $user->id, false);
                                 Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
+                                $bracket->getVotesForUser($user, true);
                             } else {
                                 $out->message = 'There was an unexpected error. Please try again in a few moments.';
                             }
@@ -174,6 +182,11 @@ namespace Controller {
 
             return $out;
 
+        }
+
+        private static function _verifyImage($url) {
+            $headers = @get_headers($url, true);
+            return isset($headers['Content-Type']) && strpos($headers['Content-Type'], 'image/') !== false;
         }
 
     }
