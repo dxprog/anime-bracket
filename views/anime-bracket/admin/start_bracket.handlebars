@@ -1,7 +1,7 @@
 <div class="eliminations">
     <h2>Begin Bracket</h2>
     <h3>{{bracket.name}}</h3>
-    <form action="/admin/{{bracket.perma}}/start/voting/" method="post">
+    <form action="/me/start/{{bracket.perma}}/voting/" method="post">
         <label for="entrants">How many entrants would you like in this bracket?</label>
         <select id="entrants" name="entrants">
             {{#each entrants}}

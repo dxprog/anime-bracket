@@ -10,10 +10,9 @@ namespace Controller {
 
         public static function generate(array $params) {
 
-            self::_checkLogin();
+            $user = self::_checkLogin();
             self::_enableAd();
 
-            $user = (object)[ 'id' => 5 ];
             $perma = array_shift($params);
             $bracket = Api\Bracket::getBracketByPerma($perma);
 
@@ -31,7 +30,7 @@ namespace Controller {
                 if ($out) {
                     $out->bracket = $bracket;
                     $template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
-/*
+
                     $entrantSwap = Lib\TestBucket::get('entrantSwap');
                     if ($entrantSwap !== 'control') {
                         foreach ($out->round as $round) {
@@ -44,12 +43,25 @@ namespace Controller {
                             }
                         }
                     }
-*/
+
                     Lib\Display::addKey('page', 'vote');
                     Lib\Display::renderAndAddKey('content', $template, $out);
                 }
             }
 
+        }
+
+        // Honestly surprised PHP doesn't have a swap_var function when they've got shit for suntimes >_>
+        private static function _flipEntrants(Api\Round $round) {
+            $char = $round->character1;
+            $charId = $round->character1Id;
+            $charVotes = $round->character1Votes;
+            $round->character1 = $round->character2;
+            $round->character1Id = $round->character2Id;
+            $round->character1Votes = $round->character2Votes;
+            $round->character2 = $char;
+            $round->character2Id = $charId;
+            $round->character2Votes = $charVotes;
         }
 
         private static function _getGroupName($rounds) {

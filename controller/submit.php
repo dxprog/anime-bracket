@@ -112,7 +112,7 @@ namespace Controller {
                 $state = $bracket ? (int) $bracket->state : null;
 
                 if ($bracket->isLocked()) {
-                    $out->message = 'The bracket is currently advancing to the next round. Please refresh and try voting again in a few moments.';
+                    $out->message = 'Voting is closed for this round. Please refresh to see the latest round.';
                 } else if ($state === BS_ELIMINATIONS || $state === BS_VOTING) {
 
                     // Break the votes down into an array of round/character objects

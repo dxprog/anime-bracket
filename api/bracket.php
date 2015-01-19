@@ -122,13 +122,13 @@ namespace Api {
         /**
          * Returns brackets owned by the passed user
          */
-        public static function getUserOwnedBrackets($user) {
+        public static function getUserOwnedBrackets($user, $force = false) {
             $retVal = null;
 
             if ($user instanceof User) {
-                $retVal = Lib\Cache::fetch(function() use ($user) {
-
-                    $retVal = null;
+                $cacheKey = 'Api:Bracket:getUserOwnedBrackets_' . implode('_', [ $user->id, BRACKET_SOURCE ]);
+                $retVal = Lib\Cache::get($cacheKey);
+                if (false === $retVal || $force) {
 
                     // Admins get all the fun
                     if ($user->admin) {
@@ -143,9 +143,9 @@ namespace Api {
                         }
                     }
 
-                    return $retVal;
+                    Lib\Cache::set($cacheKey, $retVal);
 
-                }, 'Api:Bracket:getUserOwnedBrackets_' . implode('_', [ $user->id, BRACKET_SOURCE ]));
+                }
             }
 
             return $retVal;
@@ -154,10 +154,10 @@ namespace Api {
         /**
          * Gets a bracket by perma lookup
          */
-        public static function getBracketByPerma($perma) {
+        public static function getBracketByPerma($perma, $force = false) {
             $cacheKey = 'Api:Bracket:getBracketByPerma_' . $perma;
             $retVal = Lib\Cache::Get($cacheKey);
-            if (false === $retVal) {
+            if (false === $retVal || $force) {
                 $result = Lib\Db::Query('SELECT * FROM `bracket` WHERE `bracket_perma` = :perma', [ ':perma' => $perma ]);
                 if ($result && $result->count) {
                     $retVal = new Bracket(Lib\Db::Fetch($result));
@@ -287,8 +287,9 @@ namespace Api {
                     break;
             }
 
-            // Force update the results
+            // Force update various cached things
             $this->getResults(true);
+            Round::getCurrentRounds($this->id, true);
 
             // Unlock. Keep this on a short cache since it'll default back to false anyways
             Lib\Cache::set($cacheKey, false, CACHE_SHORT);

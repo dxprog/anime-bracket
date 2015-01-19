@@ -1,22 +1,11 @@
-<div class="eliminations">
+<div class="stats">
     <h2>Round Voting Statistics</h2>
     <h3>{{bracket.name}}</h3>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Round</th>
-                <th>Group</th>
-                <th>Votes</th>
-            </tr>
-        </thead>
-        {{#each stats}}
-            <tr>
-                <td>{{tier}}</td>
-                <td>{{group}}</td>
-                <td>{{total}}</td>
-            </tr>
-        {{/each}}
-    </table>
+    <canvas id="chart" height="500"></canvas>
+
+    <script>
+        window.statsData = {{{jsonBlob stats}}};
+    </script>
 
 </div>

@@ -5,7 +5,7 @@
 {{/if}}
 
 <div class="top-actions">
-    <a href="/admin/create/" class="button">Create a New Bracket</a>
+    <a href="/me/create/" class="button">Create a New Bracket</a>
 </div>
 <ul class="brackets">
     {{#each brackets}}
@@ -13,40 +13,43 @@
             <li class="bracket-card">
                 {{>_card_image}}
                 <div class="info">
-                    <h3>{{name}}</h3>
-                    <h4>
-                        {{#hasNotStarted .}}Not started{{/hasNotStarted}}
-                        {{#isBracketVoting .}}Voting{{/isBracketVoting}}
-                        {{#isBracketEliminations .}}Eliminations{{/isBracketEliminations}}
-                        {{#isBracketNominations .}}Nominations{{/isBracketNominations}}
-                        {{#isBracketFinal .}}Final{{/isBracketFinal}}
-                    </h4>
+                    <div class="title">
+                        <h3>{{name}}</h3>
+                        <h4>
+                            {{#hasNotStarted .}}Not started{{/hasNotStarted}}
+                            {{#isBracketVoting .}}Voting{{/isBracketVoting}}
+                            {{#isBracketEliminations .}}Eliminations{{/isBracketEliminations}}
+                            {{#isBracketNominations .}}Nominations{{/isBracketNominations}}
+                            {{#isBracketFinal .}}Finished{{/isBracketFinal}}
+                        </h4>
+                        <a href="/me/edit/{{perma}}/" class="edit">Edit</a>
+                    </div>
                     <ul class="actions">
                         {{#hasNotStarted .}}
-                            <li><a href="/admin/{{perma}}/start/nominations/">Start Nominations</a></li>
+                            <li><a href="/me/start/{{perma}}/nominations/">Start Nominations</a></li>
                         {{/hasNotStarted}}
                         {{#isBracketNominations .}}
-                            <li><a href="/admin/{{perma}}/process/nominations/">Process Nominees</a></li>
-                            <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
-                            <li><a href="/admin/{{perma}}/start/eliminations/">Begin Eliminations</a></li>
+                            <li><a href="/me/process/{{perma}}/nominations/">Process Nominees</a></li>
+                            <li><a href="/me/process/{{perma}}/characters/">Edit Entrants</a></li>
+                            <li><a href="/me/start/{{perma}}/eliminations/">Begin Eliminations</a></li>
                         {{/isBracketNominations}}
                         {{#isBracketEliminations .}}
-                            <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
+                            <li><a href="/me/process/{{perma}}/characters/">Edit Entrants</a></li>
                             {{#if showAdvance}}
-                                <li><a href="/admin/{{perma}}/advance/">Advance to Next Round</a></li>
+                                <li><a href="/me/advance/{{perma}}/">Advance to Next Round</a></li>
                             {{/if}}
                             {{#if showStart}}
-                                <li><a href="/admin/{{perma}}/start/voting/">Begin Bracket</a></li>
+                                <li><a href="/me/start/{{perma}}/voting/">Begin Bracket</a></li>
                             {{/if}}
-                            <li><a href="/admin/{{perma}}/stats/">Voting Stats</a></li>
+                            <li><a href="/me/stats/{{perma}}/">Voting Stats</a></li>
                         {{/isBracketEliminations}}
                         {{#isBracketVoting .}}
-                            <li><a href="/admin/{{perma}}/advance/">Advance to Next Round</a></li>
-                            <li><a href="/admin/{{perma}}/process/characters/">Edit Characters</a></li>
-                            <li><a href="/admin/{{perma}}/stats/">Voting Stats</a></li>
+                            <li><a href="/me/advance/{{perma}}/">Advance to Next Round</a></li>
+                            <li><a href="/me/process/{{perma}}/characters/">Edit Entrants</a></li>
+                            <li><a href="/me/stats/{{perma}}/">Voting Stats</a></li>
                         {{/isBracketVoting}}
                         {{#isBracketFinal .}}
-                            <li><a href="/admin/{{perma}}/stats/">Voting Stats</a></li>
+                            <li><a href="/me/stats/{{perma}}/">Voting Stats</a></li>
                         {{/isBracketFinal}}
                     </ul>
                 </div>

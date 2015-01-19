@@ -4,6 +4,7 @@ namespace Controller\Admin {
 
     use Api;
     use Lib;
+    use stdClass;
 
     class Start extends \Controller\Me {
 
@@ -40,7 +41,11 @@ namespace Controller\Admin {
                 }
             }
 
-            return self::_main($message);
+            // Clear rollup page caches
+            Lib\Cache::set('Controller::Brackets_displayBrackets_active', false, CACHE_SHORT);
+            Lib\Cache::set('Controller::Brackets_displayBrackets_completed', false, CACHE_SHORT);
+
+            return self::_main($message, true);
 
         }
 

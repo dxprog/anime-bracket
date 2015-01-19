@@ -4,7 +4,7 @@
 
 <div class="nominee">
 
-    <form action="/admin/{{bracket.perma}}/process/nominee/" method="post" enctype="multipart/form-data">
+    <form action="/me/process/{{bracket.perma}}/nominee/" method="post" enctype="multipart/form-data">
         <dl class="form">
             <dt>Image</dt>
             <dd class="image">
@@ -23,7 +23,9 @@
                 <input type="text" name="source" id="source" value="{{nominee.source}}" />
             </dd>
         </dl>
-        
+
+        {{#if hasSimilar}}
+
         <table>
             <thead>
                 <tr>
@@ -36,7 +38,7 @@
 
         {{#if thisBracketCharacters}}
             <tr>
-                <td colspan="4"><h3>Similar Characters in this Bracket</h3></td>
+                <td colspan="4"><h3>Has this character already been entered in this bracket?</h3></td>
             </tr>
             {{#each thisBracketCharacters}}
                 <tr>
@@ -45,14 +47,16 @@
                     </td>
                     <td>{{name}}</td>
                     <td>{{source}}</td>
-                    <td class="action"></td>
+                    <td class="action">
+                        <button type="button" class="button same" value="ignore">Same Character</button>
+                    </td>
                 </tr>
             {{/each}}
         {{/if}}
 
         {{#if otherBracketCharacters}}
             <tr>
-                <td colspan="4"><h3>Similar Characters From Other Brackets</h3></td>
+                <td colspan="4"><h3>Maybe you can copy some info from a different bracket</h3></td>
             </tr>
             {{#each otherBracketCharacters}}
                 <tr>
@@ -73,7 +77,7 @@
 
         {{#if similar}}
             <tr>
-                <td colspan="4"><h3>Similar Nominees</h3></td>
+                <td colspan="4"><h3>Are these nominees the same?</h3></td>
             </tr>
             {{#each similar}}
                 <tr>
@@ -91,6 +95,8 @@
         {{/if}}
 
         </table>
+
+        {{/if}}
 
         <input type="hidden" name="id" value="{{nominee.id}}" />
         <input type="hidden" name="bracketId" value="{{bracket.id}}" />

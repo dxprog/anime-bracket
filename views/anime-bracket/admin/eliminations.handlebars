@@ -2,7 +2,7 @@
     <h2>Begin Eliminations</h2>
     <h3>{{name}}</h3>
 
-    <form action="/admin/{{perma}}/start/eliminations/" method="post" class="eliminations">
+    <form action="/me/start/{{perma}}/eliminations/" method="post" class="eliminations">
         <label for="days">How many rounds of eliminations would you like to run?</label>
         <p class="info">There are currently <strong>{{count}}</strong> entrants in the bracket</p>
         <select name="days" id="days">

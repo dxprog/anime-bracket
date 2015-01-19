@@ -23,21 +23,39 @@ namespace Controller {
                 self::$_user = $user;
                 Lib\Display::addKey('user', $user);
 
+                $message = null;
+                $force = false;
+                if (Lib\Url::GetBool('created')) {
+                    $message = [
+                        'message' => 'Bracket was created successfully!',
+                        'type' => 'success'
+                    ];
+                    $force = true;
+                }
+
+                if (Lib\Url::GetBool('edited')) {
+                    $message = [
+                        'message' => 'Bracket was updated successfully!',
+                        'type' => 'success'
+                    ];
+                    $force = true;
+                }
+
                 // If there's an action, check for that page controller and use it
                 if ($action && class_exists('Controller\\Admin\\' . $action, true)) {
                     call_user_func([ 'Controller\\Admin\\' . $action, 'generate' ], $params);
                 } else {
                     // Show the rollup page
-                    self::_main();
+                    self::_main($message, $force);
                 }
 
             }
 
         }
 
-        protected static function _main($message = null) {
+        protected static function _main($message = null, $force = false) {
             $out = new stdClass;
-            $out->brackets = Api\Bracket::getUserOwnedBrackets(self::$_user);
+            $out->brackets = Api\Bracket::getUserOwnedBrackets(self::$_user, $force);
 
             if ($out->brackets) {
 
@@ -90,7 +108,7 @@ namespace Controller {
         protected static function _getBracket($perma) {
             if ($perma) {
                 $brackets = Api\Bracket::getUserOwnedBrackets(self::$_user);
-                $bracket = Api\Bracket::getBracketByPerma($perma);
+                $bracket = Api\Bracket::getBracketByPerma($perma, true);
 
                 if ($brackets && $bracket) {
                     // Make sure the user is an owner of the bracket before continuing
@@ -103,6 +121,52 @@ namespace Controller {
 
             }
             return null;
+        }
+
+        /**
+         * Returns the list of times for the edit/create forms
+         */
+        protected static function _generateAdvanceTimes($selectedTime = -1) {
+            $retVal = [
+                (object)[
+                    'label' => 'I want to manage this manually',
+                    'value' => -1
+                ]
+            ];
+
+            $offset = Lib\Url::GetInt('utcOffset', 0, $_COOKIE);
+            $offset /= 60;
+
+            for ($i = 0; $i < 24; $i++) {
+
+                // Offset for the user's timezone
+                $hour = $i + $offset;
+                if ($hour > 23) {
+                    $hour -= 24;
+                } else if ($hour < 0) {
+                    $hour += 24;
+                }
+
+                // gross...
+                if ($i === 0) {
+                    $label = '12am';
+                } else if ($i < 12) {
+                    $label = $i . 'am';
+                } else if ($i === 12) {
+                    $label = $i . 'pm';
+                } else {
+                    $label = ($i - 12) . 'pm';
+                }
+
+                $retVal[] = (object)[
+                    'label' => $label,
+                    'value' => $hour,
+                    'selected' => $hour == $selectedTime
+                ];
+            }
+
+            return $retVal;
+
         }
 
         protected static function _createMessage($type, $message) {

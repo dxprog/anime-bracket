@@ -1,17 +1,24 @@
-<h2>{{#if bracketId}}Edit{{else}}Create{{/if}} Bracket</h2>
-<form action="/admin/create/" method="post" class="form">
+<h2>{{#if id}}Edit{{else}}Create{{/if}} Bracket</h2>
+<form action="/me/{{#if id}}edit/{{perma}}{{else}}create{{/if}}/" method="post" class="form">
 
     <label for="bracketName">Bracket Name:</label>
-    <input type="text" name="bracketName" id="bracketName" value="{{bracketName}}" />
+    <input type="text" name="bracketName" id="bracketName" value="{{name}}" />
 
     <label for="rules">Rules/Intro text:</label>
     <p class="foot">You may use <a href="https://help.github.com/articles/markdown-basics" target="_blank">simple markdown</a> for formatting</p>
     <textarea name="rules" id="rules">{{rules}}</textarea>
 
-    {{#if bracketId}}
-        <input type="hidden" name="bracketId" value="{{bracketId}}" />
+    <label for="advanceHour">When would you like bracket rounds to advance (for eliminations and bracket voting)?</label>
+    <select name="advanceHour" id="advanceHour">
+        {{#each times}}
+            <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+        {{/each}}
+    </select>
+
+    {{#if id}}
+        <input type="hidden" name="bracketId" value="{{id}}" />
     {{/if}}
 
-    <button class="button" type="submit">{{#if bracketId}}Update{{else}}Create{{/if}} Bracket</button>
+    <button class="button" type="submit">{{#if id}}Update{{else}}Create{{/if}} Bracket</button>
 
 </form>
