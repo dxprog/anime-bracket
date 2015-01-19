@@ -18,9 +18,11 @@
             <h2>{{phrase}}</h2>
             <nav>
                 <ul class="nav">
+                    {{!
                     <li>
                         <a href="/me/" class="button">Start a Bracket</a>
                     </li>
+                    !}}
                     <li>
                         <a href="/brackets/" class="button">Current Brackets</a>
                     </li>
@@ -31,6 +33,9 @@
             </nav>
         </div>
         <div id="hexes"></div>
+        <footer>
+            <p>animebracket.com by <a href="http://dxprog.com/" target="_blank">Matt Hackmann</a>. Source code available on <a href="https://github.com/dxprog/anime-bracket" target="_blank">GitHub</a></p>
+        </footer>
         <script>
             window.rounds = {{{jsonBlob rounds}}};
         </script>
