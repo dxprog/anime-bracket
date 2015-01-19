@@ -17,7 +17,8 @@ define('REDDIT_MINAGE', 2592000);
 define('IMAGE_LOCATION', '/path/to/images');
 define('IMAGE_URL', 'http://url.to/images');
 
-define('CACHE_PREFIX', 'AwwnimeBracket');
+define('REDIS_SERVER', 'tcp://127.0.0.1:6379');
+define('CACHE_PREFIX', 'AnimeBracket');
 
 define('CSS_VERSION', '20140816');
 define('JS_VERSION', '20131109');
