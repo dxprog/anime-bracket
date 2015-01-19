@@ -7,9 +7,9 @@ namespace Controller {
 
     use stdClass;
 
-    class User implements Page {
+    class User extends Page {
 
-        public static function render() {
+        public static function generate(array $params) {
 
             $code = Lib\Url::Get('code', null);
 

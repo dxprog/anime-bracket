@@ -11,7 +11,7 @@ namespace Controller {
                                      'Invite your friends! And then never speak to them again...',
                                      'Battle Royale, internet style.' ];
 
-        public static function generate() {
+        public static function generate(array $params) {
             Lib\Display::setLayout('landing');
             Lib\Display::addKey('rounds', Api\Round::getRandomCompletedRounds(30));
             Lib\Display::addKey('phrase', static::$_phrases[rand() % count(static::$_phrases)]);
