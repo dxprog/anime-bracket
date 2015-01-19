@@ -4,7 +4,7 @@ namespace Lib {
 
     use stdClass;
 
-    define('SESSION_NAME', 'GRAB_SESS');
+    define('SESSION_NAME', 'AB_SESS');
     define('SESSION_EXPIRE', 86400 * 365); // session lasts for a year
 
     class Session {
@@ -17,7 +17,7 @@ namespace Lib {
 
             if (!self::$_id) {
                 self::$_id = bin2hex(openssl_random_pseudo_bytes(32));
-                setcookie(SESSION_NAME, self::$_id, time() + SESSION_EXPIRE, '/', '.awwni.me');
+                setcookie(SESSION_NAME, self::$_id, time() + SESSION_EXPIRE, '/', SESSION_DOMAIN);
             }
             self::$_sess = Cache::Get(SESSION_NAME . '_' . self::$_id, true);
         }

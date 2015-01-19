@@ -21,3 +21,5 @@ define('CACHE_PREFIX', 'AwwnimeBracket');
 
 define('CSS_VERSION', '20140816');
 define('JS_VERSION', '20131109');
+
+define('SESSION_DOMAIN', '.brakk.it');
