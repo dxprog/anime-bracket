@@ -78,12 +78,12 @@ footer p {
     padding: 15px 20px;
     margin-bottom: 20px;
     &.error {
-        color: #a94442;
+        color: #a94442 !important;
         background: #f2dede;
     }
 
     &.success {
-        color: #3c763d;
+        color: #3c763d !important;
         background: #dff0d8;
     }
 
