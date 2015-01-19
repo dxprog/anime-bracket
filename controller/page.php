@@ -20,6 +20,7 @@ namespace Controller {
             Lib\Display::addKey('CSS_VERSION', CSS_VERSION);
             Lib\Display::addKey('JS_VERSION', JS_VERSION);
             Lib\Display::addKey('USE_MIN', USE_MIN);
+            Lib\Display::addKey('user', Api\User::getCurrentUser());
 
             // Kick off page specific rendering
             static::generate($params);

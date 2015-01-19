@@ -1,0 +1,15 @@
+<header id="nav-header">
+    <a href="/"><h1>AnimeBracket</h1></a>
+    <nav>
+        <ul>
+            {{#if user}}
+                <li><a href="/me/">My Brackets</a></li>
+            {{else}}
+                <li><a href="/user/login/?redirect=%2Fme%2F">Login</li>
+            {{/if}}
+            <li><a href="/brackets/">Current Brackets</a></li>
+            <li><a href="/brackets/past/">Past Brackets</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+    </nav>
+</header>

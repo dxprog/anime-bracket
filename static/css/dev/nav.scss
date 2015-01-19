@@ -1,0 +1,37 @@
+@import "globals";
+
+$NAV_BG: #1b1e24;
+
+#nav-header {
+    background: $NAV_BG;
+    padding: 23px 30px;
+    position: absolute;
+    z-index: $BASE-INDEX + 5;
+    left: 0;
+    top: 0;
+    right: 0;
+
+    h1 {
+        @include image-text($background: url(/static/images/nav_logo.png), $width: 352px, $height: 36px);
+        float: left;
+    }
+
+    ul {
+        float: right;
+        li {
+            a {
+                color: #fff;
+                text-decoration: none;
+            }
+            display: inline-block;
+            padding: 4px 15px 0;
+            @include font-light();
+            color: #fff;
+        }
+    }
+
+    & + #content {
+        padding-top: 100px;
+    }
+
+}

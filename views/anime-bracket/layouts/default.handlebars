@@ -7,15 +7,18 @@
         <link rel="stylesheet" type="text/css" href="/static/css/anime-bracket{{#if USE_MIN}}.min{{/if}}.css?{{CSS_VERSION}}" />
     </head>
     <body id="page-{{page}}">
-        <a href="/">
-            <h1>The Great Awwnime Bracket</h1>
-        </a>
+        {{>_nav}}
         <div id="content">
             {{{content}}}
+
+            {{#if showAd}}
+                {{>_ad}}
+            {{/if}}
+
         </div>
+
         <footer>
-            <p>Site created by <a href="http://dxprog.com/">Matt Hackmann</a></p>
-            <p>Character Tsukiko Tsutsukakushi owned by Sou Sagara and Kantoku</p>
+            <p>animebracket.com by <a href="http://dxprog.com/" target="_blank">Matt Hackmann</a>. Source code available on <a href="https://github.com/dxprog/anime-bracket" target="_blank">GitHub</a></p>
         </footer>
         <script type="text/javascript" src="/static/js/anime-bracket{{#if USE_MIN}}.min{{/if}}.js?{{JS_VERSION}}"></script>
         {{>_google_analytics}}

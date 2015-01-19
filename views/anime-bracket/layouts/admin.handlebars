@@ -8,14 +8,12 @@
         <link rel="stylesheet" type="text/css" href="/static/css/jquery.Jcrop.min.css" />
     </head>
     <body id="admin">
-        <a href="/">
-            <h1>The Great Awwnime Bracket</h1>
-        </a>
+        {{>_nav}}
         <div id="content">
             {{{content}}}
         </div>
         <footer>
-            <p>Site created by <a href="http://dxprog.com/">Matt Hackmann</a></p>
+            <p>animebracket.com by <a href="http://dxprog.com/" target="_blank">Matt Hackmann</a>. Source code available on <a href="https://github.com/dxprog/anime-bracket" target="_blank">GitHub</a></p>
         </footer>
         <script type="text/javascript" src="/static/js/anime-bracket{{#if USE_MIN}}.min{{/if}}.js?{{JS_VERSION}}"></script>
         {{>_google_analytics}}
