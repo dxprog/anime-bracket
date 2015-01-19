@@ -3,7 +3,7 @@
     <head>
         <title>{{title}}</title>
         <link href="http://fonts.googleapis.com/css?family=Roboto:400,300" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="/static/css/anime-bracket.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/anime-bracket{{#if USE_MIN}}.min{{/if}}.css?{{CSS_VERSION}}" />
     </head>
     <body id="page-landing">
         <svg class="defs">
@@ -39,6 +39,7 @@
         <script>
             window.rounds = {{{jsonBlob rounds}}};
         </script>
-        <script src="/static/js/anime-bracket.js"></script>
+        <script type="text/javascript" src="/static/js/anime-bracket{{#if USE_MIN}}.min{{/if}}.js?{{JS_VERSION}}"></script>
+        {{>_google_analytics}}
     </body>
 </html>
