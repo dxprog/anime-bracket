@@ -1,8 +1,7 @@
 @import "globals";
 
 #page-results {
-    
-    background: url(/static/images/main_bg.png);
+
     margin: 0;
 
     h1 {
@@ -17,31 +16,27 @@
         display: none;
     }
 
+    #nav-header {
+        position: fixed;
+    }
+
 }
 
 $ENTRANT_HEIGHT: 75px;
 $ENTRANT_SPACING: 25px;
 
 .results {
+
+    position: relative;
+    z-index: $BASE-INDEX + 1;
     margin: 100px 20px 20px;
 
     header {
         position: fixed;
-        top: 0;
+        top: 80px;
         left: 0;
         right: 0;
         z-index: 9001;
-
-        &:before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 0;
-            right: 0;
-            height: 150px;
-            @include gradient(rgba(236, 134, 101, .25), rgba(0, 0, 0, 0));
-            z-index: 9000;
-        }
 
         .title {
             @include heading();

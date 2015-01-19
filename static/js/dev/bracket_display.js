@@ -156,7 +156,7 @@
             }
 
             $header
-                .find('ul')
+                .find('ul.groups')
                 .prepend(Templates['views/groupPicker']({ groups:out }))
                 .on('click', 'li', handleGroupChange)
                 .find('[data-group="' + selectedGroup + '"]')
