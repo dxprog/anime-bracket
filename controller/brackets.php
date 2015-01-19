@@ -46,7 +46,8 @@ namespace Controller {
             }, 'Controller::Brackets_displayBrackets_' . ($active ? 'active' : 'completed'));
 
             Lib\Display::addKey('page', 'brackets');
-            Lib\Display::renderAndAddKey('content', 'bracketsView', $brackets);
+            $title = $active ? 'Current Brackets' : 'Past Brackets';
+            Lib\Display::renderAndAddKey('content', 'bracketsView', [ 'brackets' => $brackets, 'title' => $title ]);
 
         }
 
