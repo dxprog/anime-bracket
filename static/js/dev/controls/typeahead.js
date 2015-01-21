@@ -16,6 +16,7 @@
             currentDataset = '',
             loadingDataset = false,
             listVisible = false,
+            itemSelected = false,
 
             $container = null,
 
@@ -94,6 +95,7 @@
 
             handleItemClick = function(evt) {
                 selectItem(evt.currentTarget.getAttribute('data-index'));
+                itemSelected = true;
             },
 
             selectItem = function(index) {
@@ -143,6 +145,16 @@
 
             },
 
+            handleBlur = function(evt) {
+                // NOOP for a moment to see if a click event was fired
+                setTimeout(function() {
+                    if (!itemSelected) {
+                        hideList();
+                    }
+                    itemSelected = false;
+                }, 100);
+            },
+
             hideList = function() {
                 $container.hide();
                 listVisible = false;
@@ -160,7 +172,7 @@
                 $el
                     .on('keydown', handleKeyDown)
                     .on('keyup', handleKeypress)
-                    .on('blur', hideList);
+                    .on('blur', handleBlur);
                 $container = $('<ul id="typeahead"></ul>')
                     .hide()
                     .on('click', 'li', handleItemClick)
