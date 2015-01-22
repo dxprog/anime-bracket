@@ -4,6 +4,7 @@
         $txtName = $('#txtName'),
         $txtSource = $('#txtSource'),
         $txtPic = $('#txtPic'),
+        $verified = $('[name="verified"]'),
         $form = $nominate.find('form'),
         $message = $form.find('.message'),
         bracketId = $form.find('[name="bracketId"]').val(),
@@ -20,6 +21,7 @@
             displayMessage(data.success ? '"' + $txtName.val() + '" was successfully nominated!' : data.message, data.success);
             $txtName.focus().val(data.success ? '' : $txtName.val());
             $txtSource.val(data.success ? '' : $txtSource.val());
+            $txtPic.val(data.success ? '' : $txtPic.val());
             $txtPic.val(data.success ? '' : $txtPic.val());
             verified = data.success ? false : verified;
             setFormState(true);
@@ -76,24 +78,20 @@
             } else {
                 setFormState(false);
                 // Verified characters (one that has been nominated or added to the bracket already) get NOOPs
-                if (!verified) {
-                    verifyImage().done(function() {
-                        $.ajax({
-                            url:'/submit/?action=nominate',
-                            dataType:'json',
-                            type:'POST',
-                            data: $form.serialize(),
-                            success:nomineeCallback
-                        });
-                    }).fail(function() {
-                        displayMessage('Invalid picture', false);
-                        $txtPic.addClass('error');
-                        setFormState(true);
+                verifyImage().done(function() {
+                    $verified.val(verified ? 'true' : 'false');
+                    $.ajax({
+                        url:'/submit/?action=nominate',
+                        dataType:'json',
+                        type:'POST',
+                        data: $form.serialize(),
+                        success: nomineeCallback
                     });
-
-                } else {
-                    nomineeCallback({ success: true });
-                }
+                }).fail(function() {
+                    displayMessage('Invalid picture', false);
+                    $txtPic.addClass('error');
+                    setFormState(true);
+                });
 
             }
         },

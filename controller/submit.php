@@ -70,6 +70,7 @@ namespace Controller {
             $bracketId = Lib\Url::Post('bracketId', true);
             $nomineeName = Lib\Url::Post('nomineeName');
             $nomineeSource = Lib\Url::Post('nomineeSource');
+            $verified = Lib\Url::Post('verified') === 'true';
             $image = Lib\Url::Post('image');
 
             if ($bracketId && $nomineeName && $nomineeSource && $image) {
@@ -82,6 +83,8 @@ namespace Controller {
                     $nominee->source = $nomineeSource;
                     $nominee->created = time();
                     $nominee->image = $image;
+                    $nominee->processed = $verified ? 1 : null;
+
                     if ($nominee->sync()) {
                         $out->success = true;
                     } else {
