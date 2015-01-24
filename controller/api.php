@@ -1,20 +1,19 @@
 <?php
 
 namespace Controller {
-    
+
     use Lib;
-    use Api;
 
-    class JsonApi implements Page {
+    class Api extends Page {
 
-        public static function render() {
+        public static function generate(array $params) {
 
             $retVal = null;
-            $action = Lib\Url::Get('action', null);
+            $action = array_shift($params);
 
             switch ($action) {
                 case 'brackets':
-                    $retVal = Api\Bracket::getAll();
+                    $retVal = \Api\Bracket::getAll();
                     break;
                 case 'bracket':
                     $retVal = self::_getBracket();
@@ -23,10 +22,10 @@ namespace Controller {
                     $retVal = self::_getCurrentRounds();
                     break;
                 case 'login':
-                    header('Location: ' . str_replace('authorize', 'authorize.compact', Api\User::getLoginUrl('/')));
+                    header('Location: ' . str_replace('authorize', 'authorize.compact', \Api\User::getLoginUrl('/')));
                     exit;
                 case 'user':
-                    $retVal = Api\User::getCurrentUser();
+                    $retVal = \Api\User::getCurrentUser();
                     break;
                 case 'characters':
                     $retVal = self::_getBracketCharacters();
@@ -43,7 +42,7 @@ namespace Controller {
             $retVal = null;
             $bracketId = Lib\Url::GetInt('bracketId', null);
             if ($bracketId) {
-                $bracket = Api\Bracket::getById($bracketId);
+                $bracket = \Api\Bracket::getById($bracketId);
                 if ($bracket) {
                     $retVal = $bracket->getResults();
                 }
@@ -55,7 +54,7 @@ namespace Controller {
             $retVal = null;
             $bracketId = Lib\Url::GetInt('bracketId', null);
             if ($bracketId) {
-                $retVal = Api\Round::getCurrentRounds($bracketId);
+                $retVal = \Api\Round::getCurrentRounds($bracketId);
             }
             return $retVal;
         }
@@ -64,7 +63,7 @@ namespace Controller {
             $retVal = null;
             $bracketId = Lib\Url::GetInt('bracketId', null);
             if ($bracketId) {
-                $retVal = Api\Character::getByBracketId($bracketId);
+                $retVal = \Api\Character::getByBracketId($bracketId);
             }
             return $retVal;
         }
