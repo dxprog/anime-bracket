@@ -253,6 +253,34 @@ namespace Lib {
             }
         }
 
+        /**
+         * Deletes the object from the database
+         */
+        public function delete() {
+
+            $retVal = false;
+
+            if ($this->_verifyProperties()) {
+                $primaryKey = $this->_dbPrimaryKey;
+                if ($this->$primaryKey) {
+                    $query = 'DELETE FROM ' . $this->_dbTable . ' WHERE ' . $this->_dbMap[$primaryKey] . ' = :id';
+                    $params = array( ':id' => $this->$primaryKey );
+                    $retVal = Db::Query($query, $params);
+                }
+            }
+
+            return $retVal;
+
+        }
+
+        /**
+         * Deletes an object record from the database based on ID
+         */
+        public static function deleteById($id) {
+            $retVal = self::_instantiateThisObject();
+            $retVal->id = $id;
+            return $retVal->delete();
+        }
 
         public static function getById($id) {
             $obj = self::_instantiateThisObject();
