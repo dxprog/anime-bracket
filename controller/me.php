@@ -169,6 +169,26 @@ namespace Controller {
 
         }
 
+        /**
+         * Refreshes various generic caches. This is expensive; use sparingly
+         */
+        protected static function _refreshCaches($perma = null) {
+            Lib\Cache::setDisabled(true);
+
+            // Refresh the main collections
+            Api\Bracket::getAll();
+            Api\Bracket::getUserOwnedBrackets(self::$_user);
+            \Controller\Brackets::generate([ 'past' ]);
+            \Controller\Brackets::generate([]);
+
+            // Refresh a single bracket if specified
+            if ($perma) {
+                Api\Bracket::getBracketByPerma($perma);
+            }
+
+            Lib\Cache::setDisabled(false);
+        }
+
         protected static function _createMessage($type, $message) {
             $retVal = new stdClass;
             $retVal->type = $type;

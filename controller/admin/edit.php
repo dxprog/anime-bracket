@@ -31,11 +31,7 @@ namespace Controller\Admin {
                         if ($bracket->sync()) {
 
                             // Clear the generic bracket related caches
-                            Lib\Cache::setDisabled(true);
-                            Api\Bracket::getAll();
-                            \Controller\Brackets::generate([ 'past' ]);
-                            \Controller\Brackets::generate([]);
-                            Lib\Cache::setDisabled(false);
+                            self::_refreshCaches();
 
                             header('Location: /me/?edited');
                             exit;
