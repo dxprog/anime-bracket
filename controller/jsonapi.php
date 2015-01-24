@@ -63,8 +63,15 @@ namespace Controller {
         private static function _getBracketCharacters() {
             $retVal = null;
             $bracketId = Lib\Url::GetInt('bracketId', null);
+            $count = Lib\Url::GetInt('count', null);
             if ($bracketId) {
-                $retVal = Api\Character::getByBracketId($bracketId);
+                //If $count has a value, get random characters from the given bracket
+                if ($count) {
+                    $bracket = Api\Bracket::getById($bracketId);
+                    $retVal = Api\Character::getRandomCharacters($bracket, $count);
+                } else {
+                   $retVal = Api\Character::getByBracketId($bracketId); 
+                }
             }
             return $retVal;
         }
