@@ -263,15 +263,12 @@ namespace Api {
                     if ((int) $row->votes > $highestVotes) {
                         $highestVotes = (int) $row->votes;
                         $winner = (int) $row->character_id;
-                    // Tie breakers are determined by the number of votes they received in the eliminations round
-                    // If we're already checking against eliminations, first person to have received a vote wins
+
+                    // Seed determines the outcome of a tie
                     } else if ((int) $row->votes === $highestVotes && !$useEliminations) {
-                        $winner = $this->getWinner(true);
-
-                        // This results in an extra call to the database to fetch the character information again,
-                        // but I'm feeling particularly lazy this evening
-                        $winner = $winner->id;
-
+                        $character1 = Character::getById($this->character1Id);
+                        $character2 = Character::getById($this->character2Id);
+                        $winner = $character1->seed < $character2->seed ? $character1->id : $character2->id;
                     }
                 }
                 $retVal = Character::getById($winner);
