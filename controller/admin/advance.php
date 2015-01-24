@@ -3,6 +3,7 @@
 namespace Controller\Admin {
 
     use Api;
+    use Lib;
     use stdClass;
 
     class Advance extends \Controller\Me {
