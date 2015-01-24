@@ -68,7 +68,9 @@ namespace Controller {
                 //If $count has a value, get random characters from the given bracket
                 if ($count) {
                     $bracket = Api\Bracket::getById($bracketId);
-                    $retVal = Api\Character::getRandomCharacters($bracket, $count);
+                    if($bracket) { //3 levels of IFs. This is getting rediculous
+                        $retVal = Api\Character::getRandomCharacters($bracket, $count);
+                    }
                 } else {
                    $retVal = Api\Character::getByBracketId($bracketId); 
                 }
