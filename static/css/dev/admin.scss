@@ -27,9 +27,18 @@
         }
 
         .edit {
-            @include image-text($background: url(/static/images/edit.png), $width: 24px, $height: 24px);
+            @include image-text($background: url(/static/images/admin_icons.png), $width: 24px, $height: 24px);
             position: absolute;
             right: 0;
+            bottom: 0;
+            z-index: $BASE-INDEX + 5;
+        }
+
+        .delete {
+            @include image-text($background: url(/static/images/admin_icons.png), $width: 24px, $height: 24px);
+            background-position: -24px 0;
+            position: absolute;
+            right: 29px;
             bottom: 0;
             z-index: $BASE-INDEX + 5;
         }

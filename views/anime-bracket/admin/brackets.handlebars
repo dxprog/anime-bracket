@@ -23,6 +23,9 @@
                             {{#isBracketFinal .}}Finished{{/isBracketFinal}}
                         </h4>
                         <a href="/me/edit/{{perma}}/" class="edit">Edit</a>
+                        {{#isBracketFinal .}}{{else}}
+                            <a href="/me/delete/{{perma}}/" class="delete">Delete</a>
+                        {{/isBracketFinal}}
                     </div>
                     <ul class="actions">
                         {{#hasNotStarted .}}

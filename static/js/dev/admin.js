@@ -64,6 +64,14 @@
 
         },
 
+        deleteConfirmation = function(evt) {
+            var retVal = window.confirm('All nominee, characters, and votes will be deleted. Do you wish to continue?');
+            if (!retVal) {
+                evt.preventDefault();
+            }
+            return retVal;
+        },
+
         initCharactersForm = function() {
             $('.characters').on('click', 'button', _updateCharacter);
         };
@@ -76,6 +84,8 @@
         initCharactersForm();
     } else if ($('#admin .stats').length) {
         initStatsPage();
+    } else {
+        $('.bracket-card .delete').on('click', deleteConfirmation);
     }
 
 }());
