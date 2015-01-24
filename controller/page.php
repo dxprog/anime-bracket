@@ -68,6 +68,11 @@ namespace Controller {
                 $bracket = $context->get($args);
                 if ($bracket instanceof Api\Bracket && ($bracket->state == BS_VOTING || $bracket->state == BS_FINAL)) {
                     $retVal = $template->render($context);
+                } else {
+                    $template->setStopToken('else');
+                    $template->discard($context);
+                    $template->setStopToken(false);
+                    $retVal = $template->render($context);
                 }
                 return $retVal;
             });
@@ -77,9 +82,20 @@ namespace Controller {
         protected static function _bracketStateIs($template, $context, $args, $state) {
             $retVal = '';
             $bracket = $context->get($args);
+
+            $context->push($context->last());
             if ($bracket instanceof Api\Bracket && $bracket->state == $state) {
+                $template->setStopToken('else');
+                $retVal = $template->render($context);
+                $template->setStopToken(false);
+                $template->discard($context);
+            } else {
+                $template->setStopToken('else');
+                $template->discard($context);
+                $template->setStopToken(false);
                 $retVal = $template->render($context);
             }
+
             return $retVal;
         }
 
