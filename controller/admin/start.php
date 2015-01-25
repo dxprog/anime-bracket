@@ -122,22 +122,6 @@ namespace Controller\Admin {
             }
         }
 
-        private static function _refreshCaches(Api\Bracket $bracket) {
-            // Refresh caches
-            Lib\Cache::setDisabled(true);
-            Api\Bracket::getAll();
-            Api\Bracket::getBracketByPerma($bracket->perma);
-
-            if ($bracket->state == BS_VOTING) {
-                Api\Round::getCurrentRounds($bracket->id);
-                $bracket->getResults();
-            }
-
-            \Controller\Brackets::generate([ 'past' ]);
-            \Controller\Brackets::generate([]);
-            Lib\Cache::setDisabled(false);
-        }
-
     }
 
 }

@@ -172,7 +172,7 @@ namespace Controller {
         /**
          * Refreshes various generic caches. This is expensive; use sparingly
          */
-        protected static function _refreshCaches($perma = null) {
+        protected static function _refreshCaches(Api\Bracket $bracket = null) {
             Lib\Cache::setDisabled(true);
 
             // Refresh the main collections
@@ -182,8 +182,10 @@ namespace Controller {
             \Controller\Brackets::generate([]);
 
             // Refresh a single bracket if specified
-            if ($perma) {
-                Api\Bracket::getBracketByPerma($perma);
+            if ($bracket) {
+                Api\Bracket::getBracketByPerma($bracket->perma);
+                Api\Round::getCurrentRounds($bracket->id);
+                $bracket->getResults();
             }
 
             Lib\Cache::setDisabled(false);
