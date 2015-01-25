@@ -4,6 +4,9 @@
  * dxprog.com PHP library
  */
 
+require_once('app-config.php');
+chdir('/var/www/brakkit/');
+
 // Used to keep track of page generation time
 $_begin = microtime (true);
 
