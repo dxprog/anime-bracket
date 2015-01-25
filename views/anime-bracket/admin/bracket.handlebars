@@ -15,6 +15,17 @@
         {{/each}}
     </select>
 
+    <h3>Nomination Fields:</h3>
+    <label for="nameLabel">"Character name" field label:</label>
+    <input type="text" id="nameLabel" name="nameLabel" value="{{#if nameLabel}}{{nameLabel}}{{else}}Character name{{/if}}" />
+
+    <input type="checkbox" name="hideSource" id="hideSource" {{#if sourceHidden}}checked{{/if}} />
+    <div class="source">
+        <label for="sourceLabel">"Source" field label:</label>
+        <label for="hideSource" class="toggle"><span class="hide">Hide</span><span class="show">Show</span> source field</label>
+        <input type="text" id="sourceLabel" name="sourceLabel" value="{{#if sourceLabel}}{{sourceLabel}}{{else}}Source{{/if}}" />
+    </div>
+
     {{#if id}}
         <input type="hidden" name="bracketId" value="{{id}}" />
     {{/if}}

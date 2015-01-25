@@ -57,7 +57,7 @@
 
         nomineeSubmit = function(e) {
 
-            var submit = $txtName.val().length && $txtSource.val().length && $txtPic.val().length;
+            var submit = $txtName.val().length && (!$txtSource.length || $txtSource.val().length) && $txtPic.val().length;
 
             if (null != e) {
                 e.preventDefault();
@@ -69,7 +69,7 @@
                 if (!$txtName.val().length) {
                     $txtName.addClass('error');
                 }
-                if (!$txtSource.val().length) {
+                if ($txtSource.length && !$txtSource.val().length) {
                     $txtSource.addClass('error');
                 }
                 if (!$txtPic.val().length) {

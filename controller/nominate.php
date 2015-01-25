@@ -12,6 +12,11 @@ namespace Controller {
             $bracket = Api\Bracket::getBracketByPerma(array_shift($params));
             self::_enableAd();
             if ($bracket) {
+
+                $bracket->nameLabel = $bracket->nameLabel ?: 'Character name';
+                $bracket->sourceLabel = $bracket->sourceLabel ?: 'Source';
+                $bracket->sourceLabel = $bracket->sourceLabel === 'NO_SOURCE' ? false : $bracket->sourceLabel;
+
                 $out = (object)[
                     'rules' => Lib\Michelf\Markdown::defaultTransform($bracket->rules),
                     'bracket' => $bracket

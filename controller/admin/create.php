@@ -21,6 +21,10 @@ namespace Controller\Admin {
                     $bracket->state = 0;
                     $bracket->start = time();
                     $bracket->generatePerma();
+                    $bracket->nameLabel = Lib\Url::Post('nameLabel');
+
+                    $sourceOn = Lib\Url::Post('hideSource') === 'on';
+                    $bracket->sourceLabel = $sourceOn ? Lib\Url::Post('sourceLabel') : 'NO_SOURCE';
 
                     $advanceHour = Lib\Url::Post('advanceHour', true);
                     if ($advanceHour !== null) {

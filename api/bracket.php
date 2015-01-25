@@ -28,7 +28,9 @@ namespace Api {
             'winnerCharacterId' => 'winner_character_id',
             'rules' => 'bracket_rules',
             'source' => 'bracket_source',
-            'advanceHour' => 'bracket_advance_hour'
+            'advanceHour' => 'bracket_advance_hour',
+            'nameLabel' => 'bracket_name_label',
+            'sourceLabel' => 'bracket_source_label'
         );
 
         /**
@@ -95,6 +97,16 @@ namespace Api {
          * Whether this bracket should auto advance and at what hour to do so
          */
         public $advanceHour;
+
+        /**
+         * The label for the "name" box in nominations
+         */
+        public $nameLabel;
+
+        /**
+         * THe label for the "source" box in nominations
+         */
+        public $sourceLabel;
 
         /**
          * Override for getAll to include the winner character object

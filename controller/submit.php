@@ -73,7 +73,7 @@ namespace Controller {
             $verified = Lib\Url::Post('verified') === 'true';
             $image = Lib\Url::Post('image');
 
-            if ($bracketId && $nomineeName && $nomineeSource && $image) {
+            if ($bracketId && $nomineeName && $image) {
 
                 // Verify the image first
                 if (self::_verifyImage($image)) {

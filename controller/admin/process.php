@@ -84,7 +84,7 @@ namespace Controller\Admin {
             $nominees = Lib\Url::Post('nominee');
             $nominees = $nominees ?: [];
 
-            if ((($name && $source && $imageFile) || $ignore) && $nomineeId) {
+            if ((($name && $imageFile) || $ignore) && $nomineeId) {
 
                 if (!$ignore) {
 
@@ -126,6 +126,8 @@ namespace Controller\Admin {
                     Api\Nominee::markAsProcessed($nominees);
                 }
 
+            } else {
+                $out->message = 'Some fields were not filled out correctly';
             }
 
             Lib\Display::renderJson($out);

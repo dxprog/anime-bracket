@@ -10,13 +10,15 @@
 
     <p class="message hidden"></p>
 
-    <label for="txtName">Character Name:</label>
+    <label for="txtName">{{bracket.nameLabel}}:</label>
     <input type="text" name="nomineeName" id="txtName" autocomplete="off" />
 
-    <label for="txtSource">Source:</label>
-    <input type="text" name="nomineeSource" id="txtSource" autocomplete="off" />
+    {{#if bracket.sourceLabel}}
+        <label for="txtSource">{{bracket.sourceLabel}}:</label>
+        <input type="text" name="nomineeSource" id="txtSource" autocomplete="off" />
+    {{/if}}
 
-    <label for="txtPic">Link to Character Picture:</label>
+    <label for="txtPic">Link to Picture:</label>
     <input type="text" name="image" id="txtPic" autocomplete="off" />
 
     <input type="hidden" name="bracketId" value="{{bracket.id}}" />
