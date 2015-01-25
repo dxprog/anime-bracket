@@ -1,0 +1,32 @@
+@import "globals";
+
+#page-static {
+
+    #content {
+        position: relative;
+        z-index: $BASE-INDEX + 1;
+        background: rgba(255, 255, 255, .9);
+        padding: 120px 40px 40px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        @include sub-heading();
+        color: $dark;
+        margin: 20px 0 10px;
+    }
+
+    li, p {
+        margin-bottom: 10px;
+        @include body-copy();
+    }
+
+    ul {
+        list-style: disc;
+        margin-left: 25px;
+    }
+
+}
