@@ -12,7 +12,6 @@ namespace Api {
 	 * @package DXAPI
 	 * @license GPLv3
 	 */
-	require_once($_apiPath . 'config.php');
 
 	/**
 	 * Data return types

@@ -1,5 +1,6 @@
 <?php
 
+define('CORE_LOCATION', '/var/www/brakkit');
 define('BRACKET_SOURCE', 1);
 
 define('REDDIT_TOKEN', 'reddit_token');

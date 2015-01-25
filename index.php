@@ -4,8 +4,10 @@
  * dxprog.com PHP library
  */
 
+// Load the client specific configs, then boot over to where the core lives
 require_once('app-config.php');
-chdir('/var/www/brakkit/');
+chdir(CORE_LOCATION);
+require_once('config.php');
 
 // Used to keep track of page generation time
 $_begin = microtime (true);
