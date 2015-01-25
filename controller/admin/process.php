@@ -149,7 +149,7 @@ namespace Controller\Admin {
             $name = Lib\Url::Post('name');
             $source = Lib\Url::Post('source');
             $action = Lib\Url::Post('action');
-            if ($id && $name && $source && $action) {
+            if ($id && $name && $action) {
                 $out->action = $action;
                 $character = Api\Character::getById($id);
                 if ($character && $character->bracketId == $bracket->id) {
