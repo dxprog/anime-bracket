@@ -1,5 +1,6 @@
 <?php
 
+require('config.php');
 require('lib/aal.php');
 
 // Disable caching
@@ -9,8 +10,10 @@ Lib\Cache::setDisabled(true);
 $brackets = Api\Bracket::queryReturnAll([ 'advanceHour' => gmdate('G'), 'state' => [ 'in' => [ BS_ELIMINATIONS, BS_VOTING ] ] ]);
 
 foreach ($brackets as $bracket) {
+    echo 'Advancing ', $bracket->name, '...';
     $bracket->advance();
     Api\Bracket::getBracketByPerma($bracket->perma);
+    echo 'DONE', PHP_EOL;
 }
 
 // Refresh caches
