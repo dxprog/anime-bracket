@@ -136,9 +136,11 @@ namespace Controller\Admin {
 
         private static function _displayCharacters(Api\Bracket $bracket) {
             $out = new stdClass;
+            Lib\Cache::setDisabled(true);
             $out->characters = Api\Character::getByBracketId($bracket->id);
             $out->bracket = $bracket;
             Lib\Display::renderAndAddKey('content', 'admin/characters', $out);
+            Lib\Cache::setDisabled(false);
         }
 
         private static function _updateCharacter(Api\Bracket $bracket) {
