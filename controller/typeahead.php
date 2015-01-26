@@ -47,8 +47,9 @@ namespace Controller {
             $retVal = [];
 
             foreach ($out as $suggestion) {
+                $obj = null;
                 if ($suggestion instanceof Api\Character || $suggestion instanceof Api\Nominee) {
-                    $retVal[] = [
+                    $obj = (object)[
                         'order' => 0, // database items take precedence over MAL
                         'id' => $suggestion->id,
                         'name' => $suggestion->name,
@@ -58,7 +59,7 @@ namespace Controller {
                         'verified' => true
                     ];
                 } else if ($suggestion instanceof Api\MalItem) {
-                    $retVal[] = [
+                    $obj = (object)[
                         'order' => 1,
                         'id' => $suggestion->id,
                         'name' => $suggestion->name,
@@ -68,9 +69,18 @@ namespace Controller {
                         'verified' => false
                     ];
                 }
+
+                // Dedupe
+                if ($obj) {
+                    $hash = md5($obj->name) . md5($obj->source);
+                    if (!isset($retVal[$hash]) || $obj->order < $retVal[$hash]->order) {
+                        $retVal[$hash] = $obj;
+                    }
+                }
+
             }
 
-            return $retVal;
+            return array_values($retVal);
         }
 
     }
