@@ -95,6 +95,7 @@ namespace Controller {
                 $template->setStopToken(false);
                 $retVal = $template->render($context);
             }
+            $context->pop();
 
             return $retVal;
         }
