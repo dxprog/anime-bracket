@@ -64,6 +64,14 @@
         background: transparent;
     }
 
+    .nominee-head {
+        margin-bottom: 10px;
+    }
+
+    .nominee-count {
+        @include sub-heading();
+    }
+
     #content {
         overflow: hidden;
     }

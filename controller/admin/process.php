@@ -44,6 +44,7 @@ namespace Controller\Admin {
                 $out->nominee = end($nominee);
                 $out->message = isset($message) ? $message : null;
                 $out->similar = $out->nominee->getSimilar($bracket);
+                $out->stats = Api\Nominee::getUnprocessedCount($bracket);
                 $characters = Api\Character::getBySimilarName($out->nominee->name, $bracket);
 
                 // Split characters up into this bracket and other brackets

@@ -160,6 +160,18 @@ namespace Api {
             }, 'Api::Nominee_searchBracketNominees_' . $query . '_' . $bracketId, CACHE_MEDIUM);
         }
 
+        /**
+         * Returns the number of unprocessed nominees and the number of unique names within that for a bracket
+         */
+        public static function getUnprocessedCount(Bracket $bracket) {
+            $retVal = (object)[ 'total' => 0, 'uniques' => 0 ];
+            $result = Lib\Db::Query('SELECT COUNT(1) AS total, COUNT(DISTINCT nominee_name) AS uniques FROM `nominee` WHERE bracket_id = :bracketId AND nominee_processed IS NULL', [ ':bracketId' => $bracket->id ]);
+            if ($result && $result->count) {
+                $retVal = Lib\Db::Fetch($result);
+            }
+            return $retVal;
+        }
+
     }
 
 }
