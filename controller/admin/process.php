@@ -66,6 +66,14 @@ namespace Controller\Admin {
                 $out->hasSimilar = (isset($out->thisBracketCharacters) && null !== $out->thisBracketCharacters) || (isset($out->otherBracketCharacters) && null !== $out->otherBracketCharacters) || null !== $out->similar;
 
                 $retVal = $jsonOnly ? $out : Lib\Display::renderAndAddKey('content', 'admin/nominee', $out);
+            } else if (!$jsonOut) {
+                $retVal = Lib\Display::renderAndAddKey('content', 'admin/nominee', [
+                    'bracket' => $bracket,
+                    'stats' => [
+                        'total' => 0,
+                        'uniques' => 0
+                    ]
+                ]);
             }
 
             return $retVal;
@@ -105,7 +113,6 @@ namespace Controller\Admin {
                             $image = Lib\ImageLoader::loadImage($imageFile);
                             imagejpeg($image->image, IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
                             imagedestroy($image->image);
-                            $out = self::_displayNominations($bracket, true);
                             $out->success = true;
                             $out->message = '"' . $character->name . '" successfully processed';
                         } else {
@@ -125,6 +132,7 @@ namespace Controller\Admin {
                 if ($out->success) {
                     $nominees[] = $nomineeId;
                     Api\Nominee::markAsProcessed($nominees);
+                    $out = self::_displayNominations($bracket, true);
                 }
 
             } else {

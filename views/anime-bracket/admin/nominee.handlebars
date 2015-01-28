@@ -1,126 +1,132 @@
 <h2 class="nominee-head">Process Nominees</h2>
 <h3 class="nominee-count">{{stats.total}} remaining</h3>
 
-<p class="message hidden">{{message}}</p>
+{{#if nominee}}
 
-<div class="nominee">
+    <p class="message hidden">{{message}}</p>
 
-    <form action="/me/process/{{bracket.perma}}/nominee/" method="post" enctype="multipart/form-data">
-        <dl class="form">
-            <dt>Image</dt>
-            <dd class="image">
-                <img src="{{nominee.image}}" />
-                <button type="button" id="changeImage">Change Image</button>
-            </dd>
+    <div class="nominee">
 
-            <dt>Name</dt>
-            <dd class="name">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" value="{{nominee.name}}" />
-            </dd>
-            <dt>Source</dt>
-            <dd class="source">
-                <label for="source">Source</label>
-                <input type="text" name="source" id="source" value="{{nominee.source}}" />
-            </dd>
-        </dl>
-
-        {{#if hasSimilar}}
-
-        <table>
-            <thead>
-                <tr>
-                    <th class="thumb"></th>
-                    <th class="name">Name</th>
-                    <th class="source">Source</th>
-                    <th></th>
-                </tr>
-            </thead>
-
-        {{#if thisBracketCharacters}}
-            <tr>
-                <td colspan="4"><h3>Has this character already been entered in this bracket?</h3></td>
-            </tr>
-            {{#each thisBracketCharacters}}
-                <tr>
-                    <td>
-                        <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
-                    </td>
-                    <td>{{name}}</td>
-                    <td>{{source}}</td>
-                    <td class="action">
-                        <button type="button" class="button same" value="ignore">Same Character</button>
-                    </td>
-                </tr>
-            {{/each}}
-        {{/if}}
-
-        {{#if otherBracketCharacters}}
-            <tr>
-                <td colspan="4"><h3>Maybe you can copy some info from a different bracket</h3></td>
-            </tr>
-            {{#each otherBracketCharacters}}
-                <tr>
-                    <td>
-                        <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
-                    </td>
-                    <td>
-                        {{name}}
-                        <span class="bracket-name">{{bracket.name}}</span>
-                    </td>
-                    <td>{{source}}</td>
-                    <td class="action">
-                        <button type="button" class="button copy" data-name="{{name}}" data-source="{{source}}" data-image="{{image}}">Use Character</button>
-                    </td>
-                </tr>
-            {{/each}}
-        {{/if}}
-
-        {{#if similar}}
-            <tr>
-                <td colspan="4"><h3>Are these nominees the same?</h3></td>
-            </tr>
-            {{#each similar}}
-                <tr>
-                    <td>
-                        <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
-                    </td>
-                    <td>{{name}}</td>
-                    <td>{{source}}</td>
-                    <td class="action">
-                        <label for="nominee-{{id}}" class="button">Is Duplicate</label>
-                        <input type="checkbox" id="nominee-{{id}}" name="nominee[]" value="{{id}}" />
-                    </td>
-                </tr>
-            {{/each}}
-        {{/if}}
-
-        </table>
-
-        {{/if}}
-
-        <input type="hidden" name="id" value="{{nominee.id}}" />
-        <input type="hidden" name="bracketId" value="{{bracket.id}}" />
-        <input type="hidden" name="imageFile" value="{{nominee.image}}" />
-
-        <div class="buttons">
-            <button class="button">Add Character</button>
-            <button class="button non-button" value="ignore">Delete Nominee</button>
-        </div>
-
-        <div class="overlay">
-            <div class="cropper">
-                <div class="crop">
+        <form action="/me/process/{{bracket.perma}}/nominee/" method="post" enctype="multipart/form-data">
+            <dl class="form">
+                <dt>Image</dt>
+                <dd class="image">
                     <img src="{{nominee.image}}" />
-                </div>
-                <div class="side">
-                    <h3>Edit Image</h3>
-                    <p>All images must be 150x150 px. Use the tool to the left to crop your picture or upload a custom one.</p>
-                    <label for="upload" class="button">Upload Image</label>
-                    <input type="file" name="upload" id="upload" />
-                    <button type="button" class="button crop-submit">Done</button>
+                    <button type="button" id="changeImage">Change Image</button>
+                </dd>
+
+                <dt>Name</dt>
+                <dd class="name">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" value="{{nominee.name}}" />
+                </dd>
+                <dt>Source</dt>
+                <dd class="source">
+                    <label for="source">Source</label>
+                    <input type="text" name="source" id="source" value="{{nominee.source}}" />
+                </dd>
+            </dl>
+
+            {{#if hasSimilar}}
+
+            <table>
+                <thead>
+                    <tr>
+                        <th class="thumb"></th>
+                        <th class="name">Name</th>
+                        <th class="source">Source</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+            {{#if thisBracketCharacters}}
+                <tr>
+                    <td colspan="4"><h3>Has this character already been entered in this bracket?</h3></td>
+                </tr>
+                {{#each thisBracketCharacters}}
+                    <tr>
+                        <td>
+                            <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
+                        </td>
+                        <td>{{name}}</td>
+                        <td>{{source}}</td>
+                        <td class="action">
+                            <button type="button" class="button same" value="ignore">Same Character</button>
+                        </td>
+                    </tr>
+                {{/each}}
+            {{/if}}
+
+            {{#if otherBracketCharacters}}
+                <tr>
+                    <td colspan="4"><h3>Maybe you can copy some info from a different bracket</h3></td>
+                </tr>
+                {{#each otherBracketCharacters}}
+                    <tr>
+                        <td>
+                            <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
+                        </td>
+                        <td>
+                            {{name}}
+                            <span class="bracket-name">{{bracket.name}}</span>
+                        </td>
+                        <td>{{source}}</td>
+                        <td class="action">
+                            <button type="button" class="button copy" data-name="{{name}}" data-source="{{source}}" data-image="{{image}}">Use Character</button>
+                        </td>
+                    </tr>
+                {{/each}}
+            {{/if}}
+
+            {{#if similar}}
+                <tr>
+                    <td colspan="4"><h3>Are these nominees the same?</h3></td>
+                </tr>
+                {{#each similar}}
+                    <tr>
+                        <td>
+                            <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
+                        </td>
+                        <td>{{name}}</td>
+                        <td>{{source}}</td>
+                        <td class="action">
+                            <label for="nominee-{{id}}" class="button">Is Duplicate</label>
+                            <input type="checkbox" id="nominee-{{id}}" name="nominee[]" value="{{id}}" />
+                        </td>
+                    </tr>
+                {{/each}}
+            {{/if}}
+
+            </table>
+
+            {{/if}}
+
+            <input type="hidden" name="id" value="{{nominee.id}}" />
+            <input type="hidden" name="bracketId" value="{{bracket.id}}" />
+            <input type="hidden" name="imageFile" value="{{nominee.image}}" />
+
+            <div class="buttons">
+                <button class="button">Add Character</button>
+                <button class="button non-button" value="ignore">Delete Nominee</button>
+            </div>
+
+            <div class="overlay">
+                <div class="cropper">
+                    <div class="crop">
+                        <img src="{{nominee.image}}" />
+                    </div>
+                    <div class="side">
+                        <h3>Edit Image</h3>
+                        <p>All images must be 150x150 px. Use the tool to the left to crop your picture or upload a custom one.</p>
+                        <label for="upload" class="button">Upload Image</label>
+                        <input type="file" name="upload" id="upload" />
+                        <button type="button" class="button crop-submit">Done</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
+
+{{else}}
+    <p class="message success">There are currently no nominees to be processed.</p>
+{{/if}}
