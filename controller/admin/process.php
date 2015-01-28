@@ -66,14 +66,18 @@ namespace Controller\Admin {
                 $out->hasSimilar = (isset($out->thisBracketCharacters) && null !== $out->thisBracketCharacters) || (isset($out->otherBracketCharacters) && null !== $out->otherBracketCharacters) || null !== $out->similar;
 
                 $retVal = $jsonOnly ? $out : Lib\Display::renderAndAddKey('content', 'admin/nominee', $out);
-            } else if (!$jsonOut) {
-                $retVal = Lib\Display::renderAndAddKey('content', 'admin/nominee', [
+            } else {
+                $retVal = (object)[
                     'bracket' => $bracket,
                     'stats' => [
                         'total' => 0,
                         'uniques' => 0
                     ]
-                ]);
+                ];
+
+                if (!$jsonOnly) {
+                    $retVal = Lib\Display::renderAndAddKey('content', 'admin/nominee', $retVal);
+                }
             }
 
             return $retVal;
@@ -132,7 +136,10 @@ namespace Controller\Admin {
                 if ($out->success) {
                     $nominees[] = $nomineeId;
                     Api\Nominee::markAsProcessed($nominees);
-                    $out = self::_displayNominations($bracket, true);
+                    $nominee = self::_displayNominations($bracket, true);
+                    $nominee->success = $out->success;
+                    $nominee->message = $out->message;
+                    $out = $nominee;
                 }
 
             } else {
