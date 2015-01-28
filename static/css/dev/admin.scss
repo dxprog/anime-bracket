@@ -60,6 +60,17 @@
         }
     }
 
+    .nominee-actions {
+        position: absolute;
+        right: 0;
+        top: 100px;
+        a {
+            @include button();
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+    }
+
     .non-button {
         background: transparent;
     }

@@ -20,6 +20,9 @@ namespace Controller\Admin {
                     case 'nominee':
                         self::_processNominee($bracket);
                         break;
+                    case 'auto_process':
+                        self::_autoProcessNominees($bracket);
+                        break;
                     case 'characters':
                         self::_displayCharacters($bracket);
                         break;
@@ -31,7 +34,7 @@ namespace Controller\Admin {
 
         }
 
-        public static function _displayNominations(Api\Bracket $bracket, $jsonOnly = false) {
+        public static function _displayNominations(Api\Bracket $bracket, $jsonOnly = false, $message = null) {
             $retVal = null;
 
             Lib\Cache::setDisabled(true);
@@ -148,6 +151,87 @@ namespace Controller\Admin {
 
             Lib\Display::renderJson($out);
 
+        }
+
+        private static function _autoProcessNominees(Api\Bracket $bracket) {
+            
+            // Get all characters and nominees in this bracket
+            $characters = Api\Character::queryReturnAll([ 'bracketId' => $bracket->id ]);
+            $nominees = Api\Nominee::queryReturnAll([ 'bracketId' => $bracket->id ]);
+            $count = 0;
+
+            if ($characters && $nominees) {
+                
+                // Hash maps for fast tracking of nominees/characters entered
+                // The hash id is Name + Source
+                $verifiedHash = [];
+                $nomineesHash = [];
+
+                foreach ($characters as $character) {
+                    $key = self::_normalizeString($character->name) . '_' . self::_normalizeString($character->source);
+                    $verifiedHash[$key] = true;
+                }
+
+                foreach ($nominees as $nominee) {
+
+                    $key = self::_normalizeString($nominee->name) . '_' . self::_normalizeString($nominee->source);
+
+                    // If this nominee is marked as processed, add it to the verified hash
+                    if ($nominee->processed) {
+                        $verifiedHash[$key] = true;
+                    } else {
+
+                        // First, check to see if this has a verified counterpart
+                        if (isset($verifiedHash[$key])) {
+                            if (!isset($nomineesHash[$key])) {
+                                $nomineesHash[$key] = [ $nominee->id ];
+                                $count++;
+                            }
+                        } else {
+
+                            // See if there's another nominee similar to this one.
+                            // If so, add this nominee to the IDs to mark as processed.
+                            // Otheriwse, note that this name has turned up, but we want to leave this one unprocessed
+                            if (isset($nomineesHash[$key])) {
+                                $nomineesHash[$key][] = $nominee->id;
+                                $count++;
+                            } else {
+                                $nomineesHash[$key] = [];
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                if (count($nomineesHash)) {
+
+                    // Merge all the ID arrays down to one array of IDs
+                    $nomineeIds = [];
+                    foreach ($nomineesHash as $key => $ids) {
+                        $nomineeIds = array_merge($nomineeIds, $ids);
+                    }
+
+                    // Mark as processed
+                    Api\Nominee::markAsProcessed($nomineeIds);
+
+                }
+
+            }
+
+            self::_displayNominations($bracket, false, $count . ' duplicate nominee' . ($count !== 1 ? 's' : '') . ' were processed');
+
+        }
+
+        private static function _normalizeString($string) {
+            $string = preg_replace('/[^A-Za-z0-9\s]/', ' ', $string);
+            $newString = str_replace('  ', ' ', $string);
+            while ($newString !== $string) {
+                $string = $newString;
+                $newString = str_replace('  ', ' ', $string);
+            }
+            return strtolower($string);
         }
 
         private static function _displayCharacters(Api\Bracket $bracket) {

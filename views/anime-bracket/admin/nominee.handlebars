@@ -1,9 +1,13 @@
 <h2 class="nominee-head">Process Nominees</h2>
 <h3 class="nominee-count">{{stats.total}} remaining</h3>
 
+<div class="nominee-actions">
+    <a href="/me/process/{{bracket.perma}}/auto_process/">Clean Duplicates</a>
+</div>
+
 {{#if nominee}}
 
-    <p class="message hidden">{{message}}</p>
+    <p class="message {{#if message}}success{{else}}hidden{{/if}}">{{message}}</p>
 
     <div class="nominee">
 
