@@ -36,32 +36,45 @@
         _updateCharacter = function(evt) {
             var $target = $(evt.currentTarget),
                 $parent = $target.closest('tr'),
-                $table = $parent.closest('table');
+                $table = $parent.closest('table'),
+                perma = $table.data('bracket'),
+                type = $table.data('type'),
+                payload = null;
 
             $parent.addClass('loading');
 
-            $.ajax({
-                url: '/me/process/' + $table.data('bracket') + '/character/',
-                type: 'POST',
-                dataType: 'json',
-                data: {
+            if ('nominee' === type) {
+                payload = {
+                    id: $parent.data('id'),
+                    ignore: 'true'
+                };
+            } else if ('character' === type) {
+                payload = {
                     name: $parent.find('[name="name"]').val(),
                     source: $parent.find('[name="source"]').val(),
                     characterId: $parent.data('id'),
                     action: $target.val()
-                }
-            }).done(function(data) {
-                if (data.success) {
-                    $parent.removeClass('loading').addClass('success');
-                    if (data.action === 'delete') {
-                        $parent.remove();
+                };
+            }
+
+            if (payload) {
+                $.ajax({
+                    url: '/me/process/' + $table.data('bracket') + '/' + type + '/',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: payload
+                }).done(function(data) {
+                    if (data.success) {
+                        $parent.removeClass('loading').addClass('success');
+                        if (data.action === 'delete' || 'nominee' === type) {
+                            $parent.remove();
+                        }
+                    } else {
+                        $parent.removeClass('loading').addClass('failed');
                     }
-                } else {
-                    $parent.removeClass('loading').addClass('failed');
-                }
 
-            });
-
+                });
+            }
         },
 
         deleteConfirmation = function(evt) {

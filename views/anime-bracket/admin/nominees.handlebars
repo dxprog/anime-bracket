@@ -1,8 +1,8 @@
 <div class="characters">
-    <h2>Edit Entrants</h2>
+    <h2>Unprocessed Nominees</h2>
     <h3>{{bracket.name}}</h3>
 
-    <table data-bracket="{{bracket.perma}}" data-type="character">
+    <table data-bracket="{{bracket.perma}}" data-type="nominee">
         <thead>
             <th></th>
             <th>Name</th>
@@ -10,7 +10,7 @@
             <th>
         </thead>
         <tbody>
-            {{#each characters}}
+            {{#each nominees}}
                 <tr data-id="{{id}}">
                     <td class="image">
                         <img src="{{image}}" alt="{{name}}" />
@@ -22,13 +22,7 @@
                         <input type="text" name="source" value="{{source}}" />
                     </td>
                     <td>
-                        <button class="update" name="action" value="update">Update</button>
-                        {{#isBracketNominations ../bracket}}
-                            <button class="delete" name="action" value="delete">Delete</button>
-                        {{/isBracketNominations}}
-                        {{#isBracketEliminations ../bracket}}
-                            <button class="delete" name="action" value="delete">Delete</button>
-                        {{/isBracketEliminations}}
+                        <button class="delete" name="action" value="delete">Delete</button>
                     </td>
                 </tr>
             {{/each}}

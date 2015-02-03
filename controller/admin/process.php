@@ -23,6 +23,9 @@ namespace Controller\Admin {
                     case 'auto_process':
                         self::_autoProcessNominees($bracket);
                         break;
+                    case 'nominees':
+                        self::_nomineeList($bracket);
+                        break;
                     case 'characters':
                         self::_displayCharacters($bracket);
                         break;
@@ -232,6 +235,15 @@ namespace Controller\Admin {
                 $newString = str_replace('  ', ' ', $string);
             }
             return strtolower($string);
+        }
+
+        private static function _nomineeList(Api\Bracket $bracket) {
+            Lib\Cache::setDisabled(true);
+            Lib\Display::renderAndAddKey('content', 'admin/nominees', [
+                'nominees' => Api\Nominee::queryReturnAll([ 'bracketId' => $bracket->id, 'processed' => [ 'null' => true ] ]),
+                'bracket' => $bracket
+            ]);
+            Lib\Cache::setDisabled(false);
         }
 
         private static function _displayCharacters(Api\Bracket $bracket) {
