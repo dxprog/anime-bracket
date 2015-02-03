@@ -1,5 +1,11 @@
 @import "globals";
 
+@mixin small-button() {
+    @include button();
+    font-size: 18px;
+    padding: 10px 20px;
+}
+
 #admin {
 
     footer {
@@ -65,9 +71,7 @@
         right: 0;
         top: 100px;
         a {
-            @include button();
-            font-size: 18px;
-            padding: 10px 20px;
+            @include small-button();
         }
     }
 
@@ -442,6 +446,15 @@
             th {
                 padding: 5px;
             }
+        }
+
+        button {
+            @include small-button();
+        }
+
+        button.delete {
+            background: #a94442;
+            color: #fff;
         }
 
         .error {
