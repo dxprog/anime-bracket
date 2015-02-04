@@ -34,4 +34,77 @@ $NAV_BG: #1b1e24;
         padding-top: 100px;
     }
 
+    //
+    // MOBILE STYLES
+    //
+
+    @media screen and (max-width: $MOBILE-WIDTH) {
+
+        padding: 20px 60px 10px 20px;
+
+        a {
+            display: block;
+        }
+
+        h1 {
+            max-width: 100%;
+            background-size: contain;
+            margin-right: 75px;
+            float: none;
+        }
+
+        nav {
+
+            &:before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 45px;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+
+            &:after {
+                content: '';
+                border: 7px solid transparent;
+                border-top-color: #fff;
+                position: absolute;
+                right: 15px;
+                top: 30px;
+            }
+
+            &.show {
+
+                &:before {
+                    background: $darkGrey;
+                }
+
+                ul {
+                    display: block;
+                    z-index: $BASE-INDEX + 20;
+                }
+
+            }
+
+        }
+
+        ul {
+            float: none;
+            display: none;
+            position: relative;
+
+            li {
+                display: block;
+                font-size: 18px;
+                padding: 10px 0;
+            }
+        }
+
+        & + #content {
+            padding-top: 60px;
+        }
+
+    }
+
 }

@@ -8,6 +8,7 @@ $standard: #96bcb1;
 $light: #c4e6dd;
 
 $BASE-INDEX: 1;
+$MOBILE-WIDTH: 414px;
 
 @mixin heading($hasSubHead: false) {
   font: bold 48px/1 'Roboto Condensed', sans-serif;

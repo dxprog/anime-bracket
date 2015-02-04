@@ -439,4 +439,19 @@ $ENTRANT_SPACING: 25px;
         }
 
     }
+
+    //
+    // MOBILE STYLES
+    //
+
+    @media screen and (max-width: $MOBILE-WIDTH) {
+        top: 60px;
+        margin-top: 50px;
+
+        header .title {
+            font-size: 30px;
+            margin-top: 0;
+        }
+    }
+
 }

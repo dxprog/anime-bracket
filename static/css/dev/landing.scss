@@ -72,6 +72,37 @@
         right: -9999px;
     }
 
+    //
+    // MOBILE STYLES
+    //
+
+    @media screen and (max-width: $MOBILE-WIDTH) {
+
+        overflow: visible;
+
+        #content {
+            width: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            width: auto;
+            margin: 20px 20px 0;
+            background-size: contain;
+        }
+
+        h2 {
+            font-size: 30px;
+            margin-bottom: 50px;
+        }
+
+        nav a {
+            font-size: 24px;
+            width: auto;
+        }
+
+    }
+
 }
 
 @keyframes hexFade {

@@ -84,4 +84,30 @@
 
     }
 
+    //
+    // MOBILE STYLES
+    //
+
+    @media screen and (max-width: $MOBILE-WIDTH) {
+
+        padding: 20px;
+
+        h2 {
+            font-size: 30px;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        #content {
+            padding-left: 0;
+        }
+    }
+
 }

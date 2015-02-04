@@ -27,4 +27,23 @@
         text-decoration: none;
     }
 
+    //
+    // MOBILE STYLES
+    //
+
+    @media screen and (max-width: $MOBILE-WIDTH) {
+
+        padding: 20px;
+
+        h2 {
+            font-size: 30px;
+        }
+
+        p,
+        li {
+            font-size: 18px;
+        }
+
+    }
+
 }

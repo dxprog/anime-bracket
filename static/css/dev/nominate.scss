@@ -26,7 +26,11 @@
 
         ul {
             list-style: disc;
-            padding-left:32px;
+        }
+
+        ul,
+        ol {
+            padding-left: 32px;
             margin-bottom: 20px;
             li {
                 width: 610px;
@@ -88,6 +92,45 @@
 
     }
 
+    //
+    // MOBILE STYLES
+    //
+
+    @media screen and (max-width: $MOBILE-WIDTH) {
+
+        padding: 20px;
+
+        #content {
+            padding-left: 0;
+
+            h2 {
+                font-size: 30px;
+            }
+
+            h3 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .form {
+                margin-top: 10px;
+            }
+
+            .info p,
+            ol li,
+            ul li {
+                width: auto;
+                font-size: 16px;
+            }
+
+            input[type="text"] {
+                width: auto;
+            }
+
+        }
+
+    }
+
 }
 
 #typeahead {
@@ -140,6 +183,14 @@
             transform: rotate(-45deg);
         }
 
+    }
+
+    //
+    // MOBILE STYLES
+    //
+
+    @media screen and (max-width: $MOBILE-WIDTH) {
+        max-width: 100%;
     }
 
 }
