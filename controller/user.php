@@ -25,6 +25,12 @@ namespace Controller {
             } else {
                 $obj = new stdClass;
                 $obj->loginUrl = Api\User::getLoginUrl(Lib\Url::Get('redirect'));
+
+                // Do a mobile check
+                if (preg_match('/iphone|android|windows phone/i', $_SERVER['HTTP_USER_AGENT'])) {
+                    $obj->loginUrl = str_replace('authorize', 'authorize.compact', $obj->loginUrl);
+                }
+
                 $obj->originalUrl = Lib\Url::Get('redirect');
                 Lib\Display::addKey('page', 'login');
                 Lib\Display::renderAndAddKey('content', 'login', $obj);
