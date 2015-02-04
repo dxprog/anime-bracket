@@ -61,14 +61,18 @@
 
         init = function() {
             var $window = $(window),
-                out = '';
+                out = '',
+                count = 0;
 
             cols = Math.floor(($window.width() - LEFT_PADDING) / HEX_WIDTH);
             rows = Math.floor(($window.height() - TOP_PADDING) / HEX_HEIGHT);
+            count = cols * rows;
             grid = new Array(cols * rows);
 
             data.forEach(function(item) {
-                out += placeHex(item);
+                if (count-- > -1) {
+                    out += placeHex(item);
+                }
             });
 
             $('#hexes').html(out);
