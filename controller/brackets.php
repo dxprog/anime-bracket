@@ -36,11 +36,6 @@ namespace Controller {
                     }
                 }
 
-                // Sort the brackets by reverse date
-                usort($brackets, function($a, $b) {
-                    return $a->start > $b->start ? -1 : 1;
-                });
-
                 return $brackets;
 
             }, 'Controller::Brackets_displayBrackets_' . ($active ? 'active' : 'completed'));

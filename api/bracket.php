@@ -115,7 +115,7 @@ namespace Api {
             $cacheKey = 'Api:Bracket:getAll_' . BRACKET_SOURCE;
             $retVal = Lib\Cache::Get($cacheKey);
             if (false === $retVal || $force) {
-                $brackets = parent::queryReturnAll([ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ]);
+                $brackets = parent::queryReturnAll([ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ], [ 'state' => 'desc', 'start' => 'desc' ]);
                 $retVal = [];
                 foreach ($brackets as $bracket) {
                     if ($bracket->winnerCharacterId) {
