@@ -18,13 +18,7 @@ namespace Controller\Admin {
                 $message->type = 'success';
                 $message->message = $bracket->name . ' has advanced to the next round';
 
-                Lib\Cache::setDisabled(true);
-                Api\Bracket::getAll();
-                Api\Bracket::getBracketByPerma($bracket->perma);
-                Api\Round::getCurrentRounds($bracket->id);
-                \Controller\Brackets::generate([ 'past' ]);
-                \Controller\Brackets::generate([]);
-                Lib\Cache::setDisabled(false);
+                self::_refreshCaches($bracket);
 
             }
 
