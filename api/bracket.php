@@ -30,7 +30,8 @@ namespace Api {
             'source' => 'bracket_source',
             'advanceHour' => 'bracket_advance_hour',
             'nameLabel' => 'bracket_name_label',
-            'sourceLabel' => 'bracket_source_label'
+            'sourceLabel' => 'bracket_source_label',
+            'score' => 'bracket_score'
         );
 
         /**
@@ -104,9 +105,14 @@ namespace Api {
         public $nameLabel;
 
         /**
-         * THe label for the "source" box in nominations
+         * The label for the "source" box in nominations
          */
         public $sourceLabel;
+
+        /**
+         * The bracket's popularity score
+         */
+        public $score;
 
         /**
          * Override for getAll to include the winner character object
@@ -115,7 +121,7 @@ namespace Api {
             $cacheKey = 'Api:Bracket:getAll_' . BRACKET_SOURCE;
             $retVal = Lib\Cache::Get($cacheKey);
             if (false === $retVal || $force) {
-                $brackets = parent::queryReturnAll([ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ], [ 'state' => 'desc', 'start' => 'desc' ]);
+                $brackets = parent::queryReturnAll([ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ], [ 'score' => 'desc', 'state' => 'desc', 'start' => 'desc' ]);
                 $retVal = [];
                 foreach ($brackets as $bracket) {
                     if ($bracket->winnerCharacterId) {
