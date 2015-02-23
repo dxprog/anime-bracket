@@ -22,3 +22,4 @@ There are indeed a few rules around creating brackets to keep this site an upsta
 
 - Images must be _mostly_ safe for work, meaning no pictures of exposed nipples or genitals. Any offending imagery will be removed and, if there's too much offending content, the bracket may be deleted outright.
 - Brackets _must_ be focused around Japanese media which includes (but is not limited to): anime, manga, light novels, visual novels, video games (of Japanese origin), and characters. Cosplay of any of the aforementioned items is also acceptable.
+- Brackets that have had no activity for 7 days will be marked as inactive.
