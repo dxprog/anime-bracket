@@ -23,6 +23,13 @@ namespace Api {
         public $ip;
         public $prizes;
 
+        public function __construct($row = null) {
+            parent::__construct($row);
+            if (is_object($row)) {
+                $this->admin = !!ord($row->user_admin);
+            }
+        }
+
         public static function getByName($userName) {
             $retVal = null;
             $result = Lib\Db::Query('SELECT * FROM users WHERE user_name = :userName', [ ':userName' => $userName ]);
@@ -34,9 +41,6 @@ namespace Api {
 
         public static function getCurrentUser() {
             $user = Lib\Session::get('user');
-            if ($user instanceof User) {
-                $user->admin = !!($user->admin & 0xff);
-            }
             return $user;
         }
 
