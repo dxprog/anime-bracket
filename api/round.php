@@ -340,6 +340,37 @@ namespace Api {
         }
 
         /**
+         * Returns the name of the active round for a bracket
+         */
+        public static function getBracketTitleForActiveRound(Bracket $bracket) {
+
+            $retVal = '';
+            if ($bracket->state == BS_NOMINATIONS) {
+                $retVal = 'Accepting Nominations';
+            } else {
+                $rounds = self::getCurrentRounds($bracket->id);
+                if ($rounds) {
+
+                    $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations, ' : 'Voting, Round ' . $rounds[0]->tier . ', ';
+
+                    $group = 'Group ' . chr($rounds[0]->group + 65);
+                    $lastGroup = $rounds[0]->group;
+                    foreach ($rounds as $round) {
+                        if ($round->group !== $lastGroup) {
+                            $group = 'All Groups';
+                        }
+                    }
+
+                    $retVal .= $group;
+
+                }
+            }
+
+            return $retVal;
+
+        }
+
+        /**
          * Gets a full dataset including characters for multiple rounds
          */
         private static function _getRoundsAndCharacters($query, $params = null) {

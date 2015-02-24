@@ -19,6 +19,7 @@ namespace Controller {
                 $brackets = [];
                 foreach ($allBrackets as $bracket) {
                     if ($active && ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING || $bracket->state == BS_NOMINATIONS)) {
+                        $bracket->title = Api\Round::getBracketTitleForActiveRound($bracket);
                         $brackets[] = $bracket;
                     }
 
