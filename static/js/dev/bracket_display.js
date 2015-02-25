@@ -116,7 +116,7 @@
             renderBracket(group, tier);
 
             if (typeof window.history.pushState === 'function') {
-                history.pushState(null, window.title, '/' + window.bracketData.perma + '/view/?group=' + (group + 1));
+                history.pushState(null, window.title, '/results/' + window.bracketData.perma + '/?group=' + (group + 1));
             }
 
         },
