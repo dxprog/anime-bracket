@@ -1,4 +1,4 @@
-<?php
+<?hh
 
 namespace Lib {
 
@@ -260,9 +260,10 @@ namespace Lib {
 
             $retVal = false;
 
-            if ($this->_verifyProperties()) {
+            if ($this->_verifyProperties($this)) {
                 $primaryKey = $this->_dbPrimaryKey;
-                if ($this->$primaryKey) {
+
+                if ($primaryKey) {
                     $query = 'DELETE FROM `' . $this->_dbTable . '` WHERE ' . $this->_dbMap[$primaryKey] . ' = :id';
                     $params = array( ':id' => $this->$primaryKey );
                     $retVal = Db::Query($query, $params);
