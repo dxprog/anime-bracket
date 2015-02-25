@@ -87,7 +87,7 @@ namespace Api {
                 if (false === $retVal) {
                     $retVal = null;
                     // TODO - make order by column configurable
-                    $retVal = Character::queryReturnAll([ 'bracketId' => $bracketId ], [ 'source' => 'ASC', 'name' => 'DESC' ]);
+                    $retVal = Character::queryReturnAll([ 'bracketId' => $bracketId ], [ 'source' => 'ASC', 'name' => 'ASC' ]);
                     Lib\Cache::Set($cacheKey, $retVal);
                 }
             }
