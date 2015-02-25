@@ -191,6 +191,19 @@ $ENTRANT_SPACING: 25px;
             color: $dark;
             position: relative;
 
+            &.user-voted dl:before {
+                content: '';
+                display: block;
+                position: absolute;
+                height: 25px;
+                border: 8px solid $dark;
+                border-bottom-color: transparent;
+                position: absolute;
+                right: 5px;
+                top: -2px;
+                @include border-box();
+            }
+
             &:before {
                 display: block;
                 position: absolute;
