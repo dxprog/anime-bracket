@@ -87,13 +87,7 @@ namespace Api {
                 if (false === $retVal) {
                     $retVal = null;
                     // TODO - make order by column configurable
-                    $result = Lib\Db::Query('SELECT * FROM `character` WHERE bracket_id = :id ORDER BY character_source', [ ':id' => $bracketId ]);
-                    if ($result && $result->count) {
-                        $retVal = [];
-                        while ($row = Lib\Db::Fetch($result)) {
-                            $retVal[] = new Character($row);
-                        }
-                    }
+                    $retVal = Character::queryReturnAll([ 'bracketId' => $bracketId ], [ 'source' => 'ASC', 'name' => 'DESC' ]);
                     Lib\Cache::Set($cacheKey, $retVal);
                 }
             }
