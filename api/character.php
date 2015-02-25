@@ -59,16 +59,6 @@ namespace Api {
         public $seed;
 
         /**
-         * Constructor
-         */
-        public function __construct($character = null) {
-            if (is_object($character)) {
-                parent::__construct($character);
-                $this->image = IMAGE_URL . '/' . base_convert($this->id, 10, 36) . '.jpg';
-            }
-        }
-
-        /**
          * Override for image
          */
         public function copyFromDbRow($row) {
