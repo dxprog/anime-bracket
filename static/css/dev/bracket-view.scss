@@ -203,6 +203,11 @@ $ENTRANT_SPACING: 25px;
                 top: -2px;
                 @include border-box();
             }
+            
+            .right &.user-voted dl:before {
+                left: 5px;
+                right: none;
+            }
 
             &:before {
                 display: block;
