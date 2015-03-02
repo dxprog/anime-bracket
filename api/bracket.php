@@ -390,6 +390,8 @@ namespace Api {
          */
         public function createBracketFromEliminations($entrants, $groups) {
 
+            $retVal = false;
+
             if (is_numeric($entrants)) {
 
                 // Generate the bracket template
@@ -406,53 +408,60 @@ namespace Api {
                 }
 
                 $characters = [];
-                $result = Lib\Db::Query('SELECT COUNT(1) AS total, c.*, r.round_group FROM votes v INNER JOIN `character` c ON c.character_id = v.character_id INNER JOIN round r ON r.round_id = v.round_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId GROUP BY v.character_id', [ ':bracketId' => $this->id ]);
-                while ($row = Lib\Db::Fetch($result)) {
-                    $obj = new Character($row);
+                $result = Lib\Db::Query('SELECT COUNT(1) AS total, c.*, r.round_group FROM `round` r INNER JOIN `character` c ON c.character_id = r.round_character1_id LEFT OUTER JOIN votes v ON v.character_id = c.character_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId GROUP BY c.character_id', [ ':bracketId' => $this->id ]);
 
-                    // Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
-                    // $obj->adjustedVotes = round(($obj->votes / $groups[$obj->group]) * $max);
-                    $obj->adjustedVotes = round(((int) $row->total / $groupCounts[(int) $row->round_group]) * $max);
+                // Ensure that we have characters and there are at least enough to meet the bracket constraints
+                if ($result && $result->count >= $entrants) {
+                    while ($row = Lib\Db::Fetch($result)) {
+                        $obj = new Character($row);
 
-                    $characters[] = $obj;
+                        // Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
+                        // $obj->adjustedVotes = round(($obj->votes / $groups[$obj->group]) * $max);
+                        $obj->adjustedVotes = round(((int) $row->total / $groupCounts[(int) $row->round_group]) * $max);
+
+                        $characters[] = $obj;
+                    }
+
+                    // Reorder by adjusted votes
+                    usort($characters, function($a, $b) {
+                        return $a->adjustedVotes < $b->adjustedVotes ? 1 : -1;
+                    });
+
+                    // Set up the rounds
+                    $groupSplit = $entrants / $groups;
+                    for ($i = 0; $i < $entrants; $i += 2) {
+                        $round = new Round();
+                        $round->bracketId = $this->id;
+                        $round->tier = 1;
+                        $round->order = ($i + 1) % $groupSplit;
+                        $round->group = floor($i / $groupSplit);
+
+                        // Get the correct character and save their seed
+                        $character1 = $characters[$seeding[$i] - 1];
+                        $character1->seed = $seeding[$i];
+                        $character1->sync();
+                        $character2 = $characters[$seeding[$i + 1] - 1];
+                        $character2->seed = $seeding[$i + 1];
+                        $character2->sync();
+
+                        $round->character1Id = $character1->id;
+                        $round->character2Id = $character2->id;
+                        $round->sync();
+
+                    }
+
+                    // Change the state to standard bracket voting
+                    $this->state = BS_VOTING;
+                    $retVal = $this->sync();
+
+                    // Force update the results cache
+                    $this->getResults(true);
+
                 }
-
-                // Reorder by adjusted votes
-                usort($characters, function($a, $b) {
-                    return $a->adjustedVotes < $b->adjustedVotes ? 1 : -1;
-                });
-
-                // Set up the rounds
-                $groupSplit = $entrants / $groups;
-                for ($i = 0; $i < $entrants; $i += 2) {
-                    $round = new Round();
-                    $round->bracketId = $this->id;
-                    $round->tier = 1;
-                    $round->order = ($i + 1) % $groupSplit;
-                    $round->group = floor($i / $groupSplit);
-
-                    // Get the correct character and save their seed
-                    $character1 = $characters[$seeding[$i] - 1];
-                    $character1->seed = $seeding[$i];
-                    $character1->sync();
-                    $character2 = $characters[$seeding[$i + 1] - 1];
-                    $character2->seed = $seeding[$i + 1];
-                    $character2->sync();
-
-                    $round->character1Id = $character1->id;
-                    $round->character2Id = $character2->id;
-                    $round->sync();
-
-                }
-
-                // Change the state to standard bracket voting
-                $this->state = BS_VOTING;
-                $this->sync();
-
-                // Force update the results cache
-                $this->getResults(true);
 
             }
+
+            return $retVal;
 
         }
 

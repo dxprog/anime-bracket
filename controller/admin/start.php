@@ -98,10 +98,14 @@ namespace Controller\Admin {
                     $groups = Lib\Url::Post('groups', true);
                     if ($entrants && $groups) {
                         $bracket->advance();
-                        $bracket->createBracketFromEliminations($entrants, $groups);
-                        $message = self::_createMessage('success', 'Voting for bracket "' . $bracket->name . '" has successfully started!');
-                        self::_refreshCaches($bracket);
-                        self::_main($message);
+                        if ($bracket->createBracketFromEliminations($entrants, $groups)) {
+                            $message = self::_createMessage('success', 'Voting for bracket "' . $bracket->name . '" has successfully started!');
+                            self::_refreshCaches($bracket);
+                            self::_main($message);
+                        } else {
+                            $message = self::_createMessage('error', 'There are not enough entrants to create a bracket of that size');
+                            self::_main($message);
+                        }
                     } else {
                         $message = self::_createMessage('error', 'There was an error starting the bracket');
                         self::_main($message);
