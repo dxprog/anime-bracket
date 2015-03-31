@@ -86,6 +86,11 @@ footer p {
     &.success {
         color: #3c763d !important;
         background: #dff0d8;
+
+        a {
+            color: #3c763d;
+        }
+
     }
 
     &.hidden {

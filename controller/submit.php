@@ -155,7 +155,10 @@ namespace Controller {
                             $query = substr($query, 0, strlen($query) - 1);
                             if (Lib\Db::Query($query, $params)) {
                                 $out->success = true;
-                                $out->message = 'Your votes were successfully submitted!';
+
+                                // I am vehemently against putting markup in the controller, but there's much refactor needed to make this right
+                                // So, that's a note that it will be changed in the future
+                                $out->message = 'Your votes were successfully submitted! <a href="/results/' . $bracket->perma . '">View Results</a>';
 
                                 // Clear any user related caches
                                 $round = Api\Round::getById($votes[0]->roundId);
