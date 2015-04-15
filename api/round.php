@@ -370,7 +370,7 @@ namespace Api {
 
                     // If no special title was generated, generate based on the group
                     if (!$retVal) {
-                        $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations, ' : 'Voting, Round ' . $rounds[0]->tier . ', ';
+                        $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations - ' : 'Voting - Round ' . $rounds[0]->tier . ', ';
 
                         $group = 'Group ' . chr($rounds[0]->group + 65);
                         $lastGroup = $rounds[0]->group;

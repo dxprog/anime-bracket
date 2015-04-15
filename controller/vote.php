@@ -23,7 +23,7 @@ namespace Controller {
                     $out->userId = $user->id;
                     $out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
                     $out->round = Api\Round::getCurrentRounds($bracket->id);
-                    $out->groupName = self::_getGroupName($out->round);
+                    $out->title = Api\Round::getBracketTitleForActiveRound($bracket);
                     return $out;
                 }, $cacheKey, CACHE_MEDIUM);
 
