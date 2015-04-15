@@ -351,17 +351,38 @@ namespace Api {
                 $rounds = self::getCurrentRounds($bracket->id);
                 if ($rounds) {
 
-                    $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations, ' : 'Voting, Round ' . $rounds[0]->tier . ', ';
-
-                    $group = 'Group ' . chr($rounds[0]->group + 65);
-                    $lastGroup = $rounds[0]->group;
-                    foreach ($rounds as $round) {
-                        if ($round->group !== $lastGroup) {
-                            $group = 'All Groups';
+                    // Get all other rounds in this tier to determine special titles
+                    $roundsInTier = self::getRoundsByTier($bracket->id, $rounds[0]->tier);
+                    $roundCount = count($roundsInTier);
+                    if ($bracket->state == BS_VOTING && $roundCount <= 4) {
+                        switch ($roundCount) {
+                            case 4:
+                                $retVal = 'Quarter Finals';
+                                break;
+                            case 2:
+                                $retVal = 'Semi Finals';
+                                break;
+                            case 1:
+                                $retVal = 'Title Match';
+                                break;
                         }
                     }
 
-                    $retVal .= $group;
+                    // If no special title was generated, generate based on the group
+                    if (!$retVal) {
+                        $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations, ' : 'Voting, Round ' . $rounds[0]->tier . ', ';
+
+                        $group = 'Group ' . chr($rounds[0]->group + 65);
+                        $lastGroup = $rounds[0]->group;
+                        foreach ($rounds as $round) {
+                            if ($round->group !== $lastGroup) {
+                                $group = 'All Groups';
+                                break;
+                            }
+                        }
+
+                        $retVal .= $group;
+                    }
 
                 }
             }
