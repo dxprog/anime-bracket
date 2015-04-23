@@ -21,5 +21,8 @@ if ($brackets && count($brackets)) {
 // Reorder the brackets based upon participation
 Lib\Db::Query('CALL proc_UpdateBracketScores');
 
+// Clean out old brackets
+Lib\Db::Query('CALL proc_CleanBrackets');
+
 // Refresh caches
 Api\Bracket::getAll();
