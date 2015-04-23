@@ -16,13 +16,13 @@ BEGIN
 
         SELECT
             v.`bracket_id`,
-            (LOG10(COUNT(1)) + (AVG(v.`vote_date`) - (UNIX_TIMESTAMP() - 2592000)) / 45000) * b.bracket_state AS score
+            (LOG10(COUNT(1)) + (AVG(v.`vote_date`) - (UNIX_TIMESTAMP() - 86400)) / 45000) * b.bracket_state AS score
         FROM
             `votes` v
         INNER JOIN
             `bracket` b ON b.`bracket_id` = v.`bracket_id`
         WHERE
-            v.`vote_date` >= (UNIX_TIMESTAMP() - 2592000)
+            v.`vote_date` >= (UNIX_TIMESTAMP() - 86400)
             AND b.`bracket_state` IN (2, 3)
         GROUP BY
             v.`bracket_id`
@@ -31,13 +31,13 @@ BEGIN
 
         SELECT
             n.`bracket_id`,
-            LOG10(COUNT(1)) + (b.bracket_start - (UNIX_TIMESTAMP() - 2592000)) / 45000 AS score
+            LOG10(COUNT(1)) + (b.bracket_start - (UNIX_TIMESTAMP() - 86400)) / 45000 AS score
         FROM
             `nominee` n
         INNER JOIN
             `bracket` b ON b.`bracket_id` = n.`bracket_id`
         WHERE
-            b.`bracket_start` >= (UNIX_TIMESTAMP() - 2592000)
+            b.`bracket_start` >= (UNIX_TIMESTAMP() - 86400)
             AND b.`bracket_state` = 1
         GROUP BY
             n.`bracket_id`;
