@@ -70,29 +70,37 @@ namespace Controller {
 
                 // Sort the brackets by reverse date
                 usort($out->brackets, function($a, $b) {
-                    return $a->start > $b->start ? -1 : 1;
+                    return $a->state == BS_FINAL || $a->state > $b->state ? 1 : -1;
                 });
 
-            }
+                // Decorate each bracket with some information about what phase it can
+                // safely move to. Mostly this is for eliminations
+                foreach ($out->brackets as $bracket) {
+                    $bracket->title = Api\Round::getBracketTitleForActiveRound($bracket);
 
-            // Decorate each bracket with some information about what phase it can
-            // safely move to. Mostyl this is for eliminations
-            foreach ($out->brackets as $bracket) {
-                if ($bracket->state == BS_ELIMINATIONS) {
-                    // Should query all the brackets at once, but I'm feeling lazy tonight...
-                    $result = Lib\Db::Query('SELECT MIN(round_group) AS current_group, MAX(round_group) AS last_group FROM `round` WHERE bracket_id = :bracketId AND round_final = 0', [ ':bracketId' => $bracket->id ]);
-                    if ($result && $result->count) {
-                        $row = Lib\Db::Fetch($result);
+                    // Get the title of the next round
+                    $nextRounds = Api\Round::getNextRounds($bracket);
+                    if ($nextRounds) {
+                        $bracket->nextTitle = str_replace([ 'Voting - ', 'Eliminations - ' ], '', Api\Round::getBracketTitleForRound($bracket, $nextRounds[0]));
+                    }
 
-                        // If the eliminations are on the last group, don't show the
-                        // advance button
-                        if ($row->current_group == $row->last_group) {
-                            $bracket->showStart = true;
-                        } else {
-                            $bracket->showAdvance = true;
+                    if ($bracket->state == BS_ELIMINATIONS) {
+                        // Should query all the brackets at once, but I'm feeling lazy tonight...
+                        $result = Lib\Db::Query('SELECT MIN(round_group) AS current_group, MAX(round_group) AS last_group FROM `round` WHERE bracket_id = :bracketId AND round_final = 0', [ ':bracketId' => $bracket->id ]);
+                        if ($result && $result->count) {
+                            $row = Lib\Db::Fetch($result);
+
+                            // If the eliminations are on the last group, don't show the
+                            // advance button
+                            if ($row->current_group == $row->last_group) {
+                                $bracket->showStart = true;
+                            } else {
+                                $bracket->showAdvance = true;
+                            }
                         }
                     }
                 }
+
             }
 
             if ($message) {

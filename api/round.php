@@ -238,6 +238,21 @@ namespace Api {
         }
 
         /**
+         * Gets the rounds to come after the active round
+         */
+        public static function getNextRounds(Bracket $bracket) {
+            $retVal = null;
+            if ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING) {
+                $result = Lib\Db::Query('CALL proc_GetNextRounds(:bracketId)', [ ':bracketId' => $bracket->id ]);
+                if ($result && $result->count) {
+                    $row = Lib\Db::Fetch($result);
+                    $retVal = self::getBracketRounds($bracket->id, $row->nextTier, $row->nextGroup);
+                }
+            }
+            return $retVal;
+        }
+
+        /**
          * Returns the character object for the winner of the current round
          */
         public function getWinner($useEliminations = false) {
@@ -354,41 +369,53 @@ namespace Api {
             } else {
                 $rounds = self::getCurrentRounds($bracket->id);
                 if ($rounds) {
-
-                    // Get all other rounds in this tier to determine special titles
-                    $roundsInTier = self::getRoundsByTier($bracket->id, $rounds[0]->tier);
-                    $roundCount = count($roundsInTier);
-                    if ($bracket->state == BS_VOTING && $roundCount <= 4) {
-                        switch ($roundCount) {
-                            case 4:
-                                $retVal = 'Quarter Finals';
-                                break;
-                            case 2:
-                                $retVal = 'Semi Finals';
-                                break;
-                            case 1:
-                                $retVal = 'Title Match';
-                                break;
-                        }
-                    }
-
-                    // If no special title was generated, generate based on the group
-                    if (!$retVal) {
-                        $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations - ' : 'Voting - Round ' . $rounds[0]->tier . ', ';
-
-                        $group = 'Group ' . chr($rounds[0]->group + 65);
-                        $lastGroup = $rounds[0]->group;
-                        foreach ($rounds as $round) {
-                            if ($round->group !== $lastGroup) {
-                                $group = 'All Groups';
-                                break;
-                            }
-                        }
-
-                        $retVal .= $group;
-                    }
-
+                    $retVal = self::getBracketTitleForRound($bracket, $rounds[0]);
                 }
+            }
+
+            return $retVal;
+
+        }
+
+        /**
+         * Returns the name for the provided rounds
+         */
+        public static function getBracketTitleForRound(Bracket $bracket, Round $round) {
+
+            $retVal = '';
+
+            // Get all other rounds (if none were provided) in this tier to determine special titles
+            $roundsInTier = self::getRoundsByTier($bracket->id, $round->tier);
+            $roundCount = count($roundsInTier);
+            if ($bracket->state == BS_VOTING && $roundCount <= 4) {
+                switch ($roundCount) {
+                    case 4:
+                        $retVal = 'Quarter Finals';
+                        break;
+                    case 2:
+                        $retVal = 'Semi Finals';
+                        break;
+                    case 1:
+                        $retVal = 'Title Match';
+                        break;
+                }
+            }
+
+            // If no special title was generated, generate based on the group
+            if (!$retVal) {
+                $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations - ' : 'Voting - Round ' . $round->tier . ', ';
+
+                $group = 'All Groups';
+                $groups = [];
+                foreach ($roundsInTier as $tierRound) {
+                    if (isset($groups[$tierRound->group])) {
+                        $group = 'Group ' . chr($round->group + 65);
+                        break;
+                    }
+                    $groups[$tierRound->group] = true;
+                }
+
+                $retVal .= $group;
             }
 
             return $retVal;

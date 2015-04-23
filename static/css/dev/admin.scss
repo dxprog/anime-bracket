@@ -17,55 +17,6 @@
         margin-bottom: 40px;
     }
 
-    .bracket-card {
-        h3 {
-            position: static;
-            margin: 0 0 10px;
-        }
-
-        .title {
-            position: absolute;
-            z-index: $BASE-INDEX + 2;
-            bottom: 116px;
-            left: 0;
-            right: 0;
-            margin: 20px;
-        }
-
-        .edit {
-            @include image-text($background: url(/static/images/admin_icons.png), $width: 24px, $height: 24px);
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            z-index: $BASE-INDEX + 5;
-        }
-
-        .delete {
-            @include image-text($background: url(/static/images/admin_icons.png), $width: 24px, $height: 24px);
-            background-position: -24px 0;
-            position: absolute;
-            right: 29px;
-            bottom: 0;
-            z-index: $BASE-INDEX + 5;
-        }
-
-        h4 {
-            color: #fff;
-            margin: 0;
-        }
-
-        .actions {
-            position: static;
-            li {
-                float: none;
-                padding: 0;
-            }
-            a {
-                text-transform: none;
-            }
-        }
-    }
-
     .nominee-actions {
         position: absolute;
         right: 0;
@@ -475,6 +426,52 @@
             padding: 5px;
             width: 100%;
             @include border-box();
+        }
+
+    }
+
+    .brackets {
+
+        background: rgba(255, 255, 255, 0.8);
+
+        img {
+            width: 100px;
+            height: 100px;
+            display: block;
+            float: left;
+            margin-right: 25px;
+            background: $darkGrey;
+        }
+
+        h3 {
+            @include body-copy();
+        }
+
+        h4 {
+            @include font-light();
+            strong {
+                @include body-copy();
+            }
+        }
+
+        li {
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        .edit,
+        .delete {
+            float: right;
+            margin-left: 5px;
+        }
+
+        .button {
+            @include small-button();
+        }
+
+        .delete {
+            background: #a94442;
+            color: #fff;
         }
 
     }
