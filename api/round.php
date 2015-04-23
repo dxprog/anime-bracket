@@ -349,6 +349,8 @@ namespace Api {
                 $retVal = 'Accepting Nominations';
             } else if ($bracket->state == BS_FINAL) {
                 $retVal = 'Final';
+            } else if ($bracket->state == BS_NOT_STARTED) {
+                $retVal = 'Not started';
             } else {
                 $rounds = self::getCurrentRounds($bracket->id);
                 if ($rounds) {
