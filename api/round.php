@@ -215,6 +215,16 @@ namespace Api {
         }
 
         /**
+         * Returns the number of rounds for a given tier
+         */
+        public static function getRoundCountForTier(Bracket $bracket, $tier) {
+            return Lib\Cache::fetch(function() use ($bracket, $tier) {
+                $row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE round_tier = :tier AND bracket_id = :bracketId', [ ':tier' => $tier, ':bracketId' => $bracket->id ]));
+                return (int) $row->total;
+            }, 'Api:Round:getRoundCountForTier_' . $bracket->id . '_' . $tier);
+        }
+
+        /**
          * Gets the highest tier set up in the bracket
          */
         public static function getCurrentRounds($bracketId, $ignoreCache = false) {

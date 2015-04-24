@@ -20,7 +20,7 @@
                 entrantsPerGroup = Math.floor(totalEntrants / numGroups);
 
             $entrants.empty();
-            while (i < entrantsPerGroup) {
+            while (i <= entrantsPerGroup) {
                 addEntrantOption(i, i == selectedVal);
                 i *= 2;
             }
@@ -37,6 +37,17 @@
         init = (function() {
             $groups.on('change', handleGroupsChange);
             $entrants.on('change', updateBracketSize);
+
+            // Remove any groups that exceed the number of entrants
+            $groups.find('option').each(function() {
+                var $this = $(this),
+                    val = $this.val();
+                // Validate against the group count times two since each group has to have at least two entrants
+                if (val * 2 > totalEntrants) {
+                    $this.remove();
+                }
+            });
+
             handleGroupsChange();
         }());
 

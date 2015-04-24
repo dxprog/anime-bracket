@@ -93,35 +93,47 @@ namespace Controller\Admin {
         public static function _generateBracket(Api\Bracket $bracket) {
             $retVal = null;
             if ($bracket) {
-                if (count($_POST) > 0) {
-                    $entrants = Lib\Url::Post('entrants', true);
-                    $groups = Lib\Url::Post('groups', true);
-                    if ($entrants && $groups) {
-                        $bracket->advance();
-                        if ($bracket->createBracketFromEliminations($entrants, $groups)) {
-                            $message = self::_createMessage('success', 'Voting for bracket "' . $bracket->name . '" has successfully started!');
-                            self::_refreshCaches($bracket);
-                            self::_main($message);
+
+                $availableEntrants = Api\Round::getRoundCountForTier($bracket, 0);
+
+                // Can't have much of a bracket with only two entrants...
+                if ($availableEntrants < 2) {
+                    $message = self::_createMessage('error', 'There are not enough entrants to generate a bracket :(');
+                    self::_main($message);
+                } else {
+                    if (count($_POST) > 0) {
+                        $entrants = Lib\Url::Post('entrants', true);
+                        $groups = Lib\Url::Post('groups', true);
+
+                        if ($entrants && $groups) {
+
+                            // Verify that the entrants/groups combo doesn't exceed to number of available entrants
+                            if ($entrants * $groups > $availableEntrants) {
+                                $message = self::_createMessage('error', 'Cannot generate a bracket of that size');
+                                self::_main($message);
+                            } else {
+                                $bracket->advance();
+                                if ($bracket->createBracketFromEliminations($entrants * $groups, $groups)) {
+                                    $message = self::_createMessage('success', 'Voting for bracket "' . $bracket->name . '" has successfully started!');
+                                    self::_refreshCaches($bracket);
+                                    self::_main($message);
+                                } else {
+                                    $message = self::_createMessage('error', 'There are not enough entrants to create a bracket of that size');
+                                    self::_main($message);
+                                }
+                            }
+
                         } else {
-                            $message = self::_createMessage('error', 'There are not enough entrants to create a bracket of that size');
+                            $message = self::_createMessage('error', 'There was an error starting the bracket');
                             self::_main($message);
                         }
                     } else {
-                        $message = self::_createMessage('error', 'There was an error starting the bracket');
-                        self::_main($message);
+                        $out = (object)[
+                            'bracket' => $bracket,
+                            'count' => $availableEntrants
+                        ];
+                        Lib\Display::renderAndAddKey('content', 'admin/start_bracket', $out);
                     }
-                } else {
-                    $count = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE round_tier = 0 AND bracket_id = :bracketId', [ ':bracketId' => $bracket->id ]));
-                    $i = 2;
-                    $count = (int) $count->total;
-                    $out = new stdClass;
-                    $out->bracket = $bracket;
-                    $out->entrants = [];
-                    while ($i <= $count) {
-                        $out->entrants[] = $i;
-                        $i *= 2;
-                    }
-                    Lib\Display::renderAndAddKey('content', 'admin/start_bracket', $out);
                 }
             }
         }
