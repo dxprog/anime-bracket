@@ -77,12 +77,16 @@ namespace Controller {
                 // safely move to. Mostly this is for eliminations
                 foreach ($out->brackets as $bracket) {
                     $bracket->title = Api\Round::getBracketTitleForActiveRound($bracket);
+                    $bracket->nextIsFinal = $bracket->title === 'Title Match';
 
                     // Get the title of the next round
                     $nextRounds = Api\Round::getNextRounds($bracket);
                     if ($nextRounds) {
                         $bracket->nextTitle = str_replace([ 'Voting - ', 'Eliminations - ' ], '', Api\Round::getBracketTitleForRound($bracket, $nextRounds[0]));
                     }
+
+                    // This is a dumb catch all while I work out issues in the stored procedure
+                    $bracket->nextTitle = $bracket->nextTitle ?: 'Next Round';
 
                     if ($bracket->state == BS_ELIMINATIONS) {
                         // Should query all the brackets at once, but I'm feeling lazy tonight...

@@ -33,10 +33,14 @@
                         <a href="/me/stats/{{perma}}/" class="button">Voting Stats</a>
                     {{/isBracketEliminations}}
                     {{#isBracketVoting .}}
-                        <a href="/me/advance/{{perma}}/" class="button">Advance to {{nextTitle}}</a>
+                        {{#if nextIsFinal}}
+                            <a href="/me/advance/{{perma}}/" class="button">Finalize Bracket</a>
+                        {{else}}
+                            <a href="/me/advance/{{perma}}/" class="button">Advance to {{nextTitle}}</a>
+                        {{/if}}
                         <a href="/me/process/{{perma}}/characters/" class="button">Edit Entrants</a>
                         <a href="/me/stats/{{perma}}/" class="button">Voting Stats</a>
-                        <a href="/me/rollback/{{perma}}/" class="button delete">Rollback</a>
+                        <!-- <a href="/me/rollback/{{perma}}/" class="button delete">Rollback</a> -->
                     {{/isBracketVoting}}
                     {{#isBracketFinal .}}
                         <a href="/me/stats/{{perma}}/" class="button">Voting Stats</a>
