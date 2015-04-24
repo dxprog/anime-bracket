@@ -33,6 +33,10 @@
             loadScripts([ '/static/js/Chart.min.js', '/static/js/stats.js' ]);
         },
 
+        initStartBracketForm = function() {
+            loadScripts([ '/static/js/start-bracket.js' ]);
+        },
+
         _updateCharacter = function(evt) {
             var $target = $(evt.currentTarget),
                 $parent = $target.closest('tr'),
@@ -97,6 +101,8 @@
         initCharactersForm();
     } else if ($('#admin .stats').length) {
         initStatsPage();
+    } else if ($('#admin .start-bracket').length) {
+        initStartBracketForm();
     } else {
         $('.bracket-card .delete').on('click', deleteConfirmation);
     }
