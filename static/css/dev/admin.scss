@@ -14,10 +14,6 @@
     }
 
     .top-actions {
-        margin-bottom: 40px;
-    }
-
-    .nominee-actions {
         position: absolute;
         right: 0;
         top: 100px;
@@ -432,6 +428,7 @@
 
     .brackets {
 
+        border-radius: 2px;
         background: rgba(255, 255, 255, 0.8);
 
         img {

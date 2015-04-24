@@ -4,8 +4,8 @@
     <p class="message {{message.type}}">{{message.message}}</p>
 {{/if}}
 
-<div class="top-actions">
-    <a href="/me/create/" class="button">Create a New Bracket</a>
+<div {{#if brackets}}class="top-actions"{{/if}}>
+    <a href="/me/create/" {{#unless brackets}}class="button"{{/unless}}>Create a New Bracket</a>
 </div>
 <ul class="brackets">
     {{#each brackets}}
