@@ -1,5 +1,5 @@
 (function(undefined) {
-    
+
     var ENTRANT_HEIGHT = 100,
 
         TIER_TMPL = Templates['views/tier'],
@@ -57,6 +57,7 @@
             }
             retVal.push(TIER_TMPL({ side:(split ? 'right' : 'left'), height: cellHeight, rounds: side }));
         } else {
+            console.log(arguments, rounds, this);
             retVal.push(TIER_TMPL({
                 side: 'left',
                 height: cellHeight,

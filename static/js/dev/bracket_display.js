@@ -98,25 +98,32 @@
         },
 
         handleGroupChange = function(e) {
-            var $target = $(e.currentTarget),
-                group = $target.attr('data-group'),
-                tier = null;
+            changeGroup($(e.currentTarget).data('group'));
+        },
+
+        changeGroup = function(group) {
+            var tier = null,
+                urlGroup = group;
 
             $header.find('.selected').removeClass('selected');
-            $target.addClass('selected');
+            $('[data-group="' + group + '"]').addClass('selected');
 
             if (group === 'finals') {
                 group = null;
 
                 // If there were no wild card rounds detected, display everything from the quarter finals up
                 tier = wildCardRound ? wildCardRound + 1 : count - 3;
+            } else if (group === 'full') {
+                group = null;
+                tier = 0;
             } else {
                 group = parseInt(group, 10);
+                urlGroup = group + 1;
             }
             renderBracket(group, tier);
 
             if (typeof window.history.pushState === 'function') {
-                history.pushState(null, window.title, '/results/' + window.bracketData.perma + '/?group=' + (group + 1));
+                history.pushState(null, window.title, '/results/' + window.bracketData.perma + '/?group=' + urlGroup);
             }
 
         },
@@ -146,10 +153,8 @@
 
         populateGroups = function() {
             var out = [],
-                i = 0,
-                selectedGroup = group;
+                i = 0;
 
-            selectedGroup = isNaN(selectedGroup - 1) ? selectedGroup : selectedGroup - 1;
 
             for (; i < groups; i++) {
                 out.push({ name:String.fromCharCode(i + 65), index:i });
@@ -158,9 +163,7 @@
             $header
                 .find('ul.groups')
                 .prepend(Templates['views/groupPicker']({ groups:out }))
-                .on('click', 'li', handleGroupChange)
-                .find('[data-group="' + selectedGroup + '"]')
-                .addClass('selected');
+                .on('click', 'li', handleGroupChange);
         },
 
         qs = parseQueryString(),
@@ -192,13 +195,7 @@
         // Increment by 1 because group IDs are 0 based
         groups = groups + 1;
 
-        if (group) {
-            if (group === 'finals') {
-                renderBracket(null, wildCardRound ? wildCardRound + 1 : count - 3);
-            } else {
-                renderBracket(parseInt(group, 10) - 1, null);
-            }
-        }
+        changeGroup(group);
 
         $body
             .on('mouseover', '.entrant-info', handleMouseOver)
