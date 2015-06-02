@@ -101,12 +101,12 @@
             changeGroup($(e.currentTarget).data('group'));
         },
 
-        changeGroup = function(group) {
+        changeGroup = function(group, ignoreHistory) {
             var tier = null,
                 urlGroup = group;
 
             $header.find('.selected').removeClass('selected');
-            $('[data-group="' + group + '"]').addClass('selected');
+            $header.find('[data-group="' + group + '"]').addClass('selected');
 
             if (group === 'finals') {
                 group = null;
@@ -122,7 +122,7 @@
             }
             renderBracket(group, tier);
 
-            if (typeof window.history.pushState === 'function') {
+            if (typeof window.history.pushState === 'function' && !ignoreHistory) {
                 history.pushState(null, window.title, '/results/' + window.bracketData.perma + '/?group=' + urlGroup);
             }
 
@@ -195,14 +195,15 @@
         // Increment by 1 because group IDs are 0 based
         groups = groups + 1;
 
-        changeGroup(group);
-
         $body
             .on('mouseover', '.entrant-info', handleMouseOver)
             .on('mouseout', '.entrant-info', handleMouseOut);
 
-        populateGroups();
         $header.find('.title').text(window.bracketData.name);
+
+        group = isNaN(group) ? group : group - 1;
+        populateGroups();
+        changeGroup(group, true);
 
     }
 
