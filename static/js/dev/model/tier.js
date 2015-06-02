@@ -27,23 +27,13 @@
     };
 
     Tier.prototype.render = function(tierOffset, group, split) {
-        var rounds = [],
+        var rounds = this.getRoundsForGroup(group),
             i = 0,
             count = this._rounds.length,
             halfCount = 0,
             side = [],
             retVal = [],
             cellHeight = Math.pow(2, tierOffset + 1) * ENTRANT_HEIGHT / 2;
-
-        if (undefined !== group && null !== group) {
-            for (; i < count; i++) {
-                if (this._rounds[i].group === group) {
-                    rounds.push(this._rounds[i]);
-                }
-            }
-        } else {
-            rounds = this._rounds;
-        }
 
         // Render such that when we're on the final round, each contestant is on opposite sides (for split render)
         count = rounds.length;
@@ -57,7 +47,6 @@
             }
             retVal.push(TIER_TMPL({ side:(split ? 'right' : 'left'), height: cellHeight, rounds: side }));
         } else {
-            console.log(arguments, rounds, this);
             retVal.push(TIER_TMPL({
                 side: 'left',
                 height: cellHeight,
@@ -95,6 +84,20 @@
 
         if (rounds.length > index) {
             retVal = rounds[index];
+        }
+        return retVal;
+    }
+
+    Tier.prototype.getRoundsForGroup = function(group) {
+        var retVal = [];
+        if (undefined !== group && null !== group) {
+            for (var i = 0, count = this._rounds.length; i < count; i++) {
+                if (this._rounds[i].group === group) {
+                    retVal.push(this._rounds[i]);
+                }
+            }
+        } else {
+            retVal = this._rounds;
         }
         return retVal;
     }

@@ -7,7 +7,6 @@
         $content = $('.bracket-display'),
         $body = $('body'),
         $header = $('header'),
-        wildCardRound = 0,
         tier = null,
         lastEntrantCount = 9999,
         groups = 0,
@@ -42,14 +41,13 @@
                 right = '',
                 temp = [],
                 columns = 0,
-                max = tier < wildCardRound ? wildCardRound : tier > wildCardRound ? count : roundsPerGroup(),
+                max = tiersForGroup(group),
                 lastRound = null,
                 bracketHeight = 0,
                 visibleTiers = 0,
                 winner = {};
 
             tier = tier || 0;
-            max = null != group && !wildCardRound ? max - 1 : max;
             bracketHeight = Math.pow(2, max - tier - 1) * 100;
 
             for (i = tier; i < max; i++) {
@@ -85,16 +83,11 @@
         },
 
         /**
-         * Returns the number of rounds that will be in a group
+         * Returns the number of tiers that will be in a group
          */
-        roundsPerGroup = function() {
-            var entrantsPerGroup = tiers[0]._rounds.length,
-                retVal = 0;
-            while (entrantsPerGroup % groups === 0) {
-                entrantsPerGroup /= 2;
-                retVal++;
-            }
-            return retVal + 1;
+        tiersForGroup = function(group, displayFinalRound) {
+            var rounds = tiers[0].getRoundsForGroup(group).length;
+            return Math.log(rounds) / Math.LN2 + 1;
         },
 
         handleGroupChange = function(e) {
@@ -103,24 +96,25 @@
 
         changeGroup = function(group, ignoreHistory) {
             var tier = null,
-                urlGroup = group;
+                urlGroup = group,
+                displayFinalRound = false;
 
             $header.find('.selected').removeClass('selected');
             $header.find('[data-group="' + group + '"]').addClass('selected');
 
             if (group === 'finals') {
                 group = null;
-
-                // If there were no wild card rounds detected, display everything from the quarter finals up
-                tier = wildCardRound ? wildCardRound + 1 : count - 3;
+                displayFinalRound = true;
+                tier = count - 3;
             } else if (group === 'full') {
                 group = null;
+                displayFinalRound = true;
                 tier = 0;
             } else {
                 group = parseInt(group, 10);
                 urlGroup = group + 1;
             }
-            renderBracket(group, tier);
+            renderBracket(group, tier, displayFinalRound);
 
             if (typeof window.history.pushState === 'function' && !ignoreHistory) {
                 history.pushState(null, window.title, '/results/' + window.bracketData.perma + '/?group=' + urlGroup);
@@ -185,9 +179,6 @@
         for (; i < count; i++) {
             tier = new Tier(bracketData.results[i]);
             groups = tier.groups > groups ? tier.groups : groups;
-            if (tier.entrants > lastEntrantCount) {
-                wildCardRound = i;
-            }
             lastEntrantCount = tier.entrants;
             tiers.push(tier);
         }
