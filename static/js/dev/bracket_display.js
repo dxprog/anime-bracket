@@ -106,7 +106,7 @@
                 group = null;
                 displayFinalRound = true;
                 tier = count - 3;
-            } else if (group === 'full') {
+            } else if (group === 'all') {
                 group = null;
                 displayFinalRound = true;
                 tier = 0;
