@@ -20,11 +20,11 @@ namespace Controller\Admin {
                 $cacheKey = 'Controller::Admin::Advance_bracketAdvanceTime_' . $bracket->id;
                 $lastBracketAdvance = Lib\Cache::Get($cacheKey);
                 if (!$lastBracketAdvance || $lastBracketAdvance + self::BRACKET_ADVANCE_DELAY < time()) {
+                    Lib\Cache::Set($cacheKey, time());
                     $bracket->advance();
                     $message = new stdClass;
                     $message->type = 'success';
                     $message->message = $bracket->name . ' has advanced to the next round';
-                    Lib\Cache::Set($cacheKey, time());
                     self::_refreshCaches($bracket);
                 } else {
                     $message = new stdClass;
