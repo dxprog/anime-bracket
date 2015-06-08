@@ -118,10 +118,10 @@ namespace Api {
 			$retVal = false;
 			$obj = $this->_doPost('submit/', array('sr'=>$subreddit, 'title' => $title, 'kind'=>$type, ($type == 'self' ? 'text' : 'url')=>$data, 'uh'=>$this->_hash, 'api_type' => 'json'), $this->_cookie);
 			if (is_string($obj)) {
-				$obj = json_encode($obj);
+				$obj = json_decode($obj);
 				if ($obj && isset($obj->json)) {
 					$out = $obj->json;
-					$retVal = count($obj->json->$errors) === 0;
+					$retVal = count($obj->json->errors) === 0;
 				}
 			}
 			return $retVal;

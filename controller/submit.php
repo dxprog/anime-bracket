@@ -161,7 +161,7 @@ namespace Controller {
                                 $out->message = 'Your votes were successfully submitted! <a href="/results/' . $bracket->perma . '">View Results</a>';
                                 // Oops, I did it again...
                                 if ($bracket->externalId) {
-                                    $out->message .=  ' or <a href="http://redd.it/' . $bracket->externalId . '">discuss on reddit</a>.';
+                                    $out->message .=  ' or <a href="http://redd.it/' . $bracket->externalId . '" target="_blank">discuss on reddit</a>.';
                                 }
 
                                 // Clear any user related caches

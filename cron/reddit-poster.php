@@ -18,10 +18,15 @@ foreach ($brackets as $bracket) {
     $fullTitle = $bracket->name . ' - ' . $title;
     $message = '[Vote on today\'s round](http://animebracket.com/vote/' . $bracket->perma . ')' . PHP_EOL . PHP_EOL . '[View bracket results](http://animebracket.com/results/' . $bracket->perma . ')';
     $out = null;
+    echo 'Creating post for "', $fullTitle, '"... ';
     if ($bot->Submit($fullTitle, $message, 'r/AnimeBracket', 'self', $out)) {
       $bracket->externalId = $out->data->id;
       $bracket->sync();
+      echo $bracket->externalId;
+    } else {
+      echo 'FAIL';
     }
+    echo PHP_EOL;
     sleep(10);
   }
   Lib\Cache::Set($cacheKey, $title, 3600);
