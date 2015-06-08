@@ -159,6 +159,10 @@ namespace Controller {
                                 // I am vehemently against putting markup in the controller, but there's much refactor needed to make this right
                                 // So, that's a note that it will be changed in the future
                                 $out->message = 'Your votes were successfully submitted! <a href="/results/' . $bracket->perma . '">View Results</a>';
+                                // Oops, I did it again...
+                                if ($bracket->externalId) {
+                                    $out->message .=  ' or <a href="http://redd.it/' . $bracket->externalId . '">discuss on reddit</a>.';
+                                }
 
                                 // Clear any user related caches
                                 $round = Api\Round::getById($votes[0]->roundId);

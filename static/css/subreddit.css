@@ -1,0 +1,147 @@
+body {
+  background: url(%%honey-bg%%);
+}
+
+body:after {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+
+  background-image: url(%%squares-bg%%),
+    -moz-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+    -moz-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
+
+  background-image: url(%%squares-bg%%),
+    -webkit-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+    -webkit-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
+}
+
+#header {
+  background: #1b1e24;
+  color: #fff;
+  border-bottom: 0 !important;
+}
+
+#header-img {
+  padding: 10px;
+}
+
+.pagename {
+  display: none;
+}
+
+#header .tabmenu {
+  position: relative;
+  top: -18px;
+}
+
+#header .tabmenu a {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  background-color: transparent !important;
+  color: #fff !important;
+  font-size: 18px;
+  padding: 5px !important;
+  border: 0 !important;
+}
+
+#header .tabmenu a[href*="/r/AnimeBracket/wiki"],
+#header .tabmenu a[href*="/promoted"],
+#header .tabmenu a[href*="/r/AnimeBracket/ads"] {
+  display: none;
+}
+
+/* Who the fuck taught the reddit guys how to CSS? */
+.side {
+  z-index: 2;
+  position: relative;
+}
+
+body > div.content {
+  z-index: 1;
+  position: relative;
+  margin-right: 320px !important;
+}
+
+.side {
+  background: transparent !important;
+  color: #fff;
+}
+
+.side .sidecontentbox,
+.side .linkinfo,
+.side .titlebox {
+  padding: 10px;
+  background: #fff;
+  color: #000;
+  border: 1px solid #96bcb1;
+  border-radius: 3px;
+}
+
+.side .sidecontentbox .title h1 {
+  font: 300 18px/1 Roboto, sans-serif;
+  color: #697e77;
+}
+
+.side .sidecontentbox .content {
+  border: 0;
+}
+
+.morelink {
+  padding: 10px 20px;
+  font: 300 18px/1 Roboto, sans-serif;
+  border-radius: 2px;
+  background: #96bcb1 !important;
+  color: #fff;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  background-image: none !important;
+  height: auto !important;
+}
+
+.morelink a {
+  color: #fff;
+}
+
+.morelink .nub {
+  display: none;
+}
+
+.content div.RES-keyNav-activeElement {
+  background-color: transparent !important;
+}
+
+.entry .title {
+  font: 500 24px/1 Roboto, sans-serif;
+  color: #fff !important;
+}
+
+.listing-page .entry a {
+  color: #fff !important;
+}
+
+.entry .tagline {
+  color: #ddd;
+}
+
+.thumbnail {
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+.commentarea {
+  background: #fff;
+  padding: 10px;
+  border: 1px solid #96bcb1;
+  border-radius: 3px;
+}
+
+.md a {
+  color: #0079d3;
+}

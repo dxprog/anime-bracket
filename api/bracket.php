@@ -31,7 +31,8 @@ namespace Api {
             'advanceHour' => 'bracket_advance_hour',
             'nameLabel' => 'bracket_name_label',
             'sourceLabel' => 'bracket_source_label',
-            'score' => 'bracket_score'
+            'score' => 'bracket_score',
+            'externalId' => 'bracket_external_id'
         );
 
         /**
@@ -113,6 +114,11 @@ namespace Api {
          * The bracket's popularity score
          */
         public $score;
+
+        /**
+         * ID to the latest reddit post
+         */
+        public $externalId;
 
         /**
          * Override for getAll to include the winner character object
