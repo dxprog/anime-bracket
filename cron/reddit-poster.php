@@ -17,7 +17,8 @@ for ($i = 0, $count = count($brackets); $i < $count; $i++) {
   $oldTitle = Lib\Cache::Get($cacheKey);
   if ($title != $oldTitle) {
     $fullTitle = $bracket->name . ' - ' . $title;
-    $message = '[Vote on today\'s round](http://animebracket.com/vote/' . $bracket->perma . ')' . PHP_EOL . PHP_EOL . '[View bracket results](http://animebracket.com/results/' . $bracket->perma . ')';
+    $url = $bracket->state == BS_NOMINATIONS ? 'nominate' : 'vote';
+    $message = '[Vote on today\'s round](http://animebracket.com/' . $url . '/' . $bracket->perma . ')' . PHP_EOL . PHP_EOL . '[View bracket results](http://animebracket.com/results/' . $bracket->perma . ')';
     $out = null;
     echo 'Creating post for "', $fullTitle, '"... ';
     if ($bot->Submit($fullTitle, $message, 'r/AnimeBracket', 'self', $out)) {
