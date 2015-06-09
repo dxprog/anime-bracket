@@ -10,7 +10,8 @@ $brackets = Api\Bracket::queryReturnAll([ 'state' => [ 'in' => [ BS_NOMINATIONS,
 
 $bot = new Api\Reddit(RB_BOT);
 
-foreach ($brackets as $bracket) {
+for ($i = 0, $count = count($brackets); $i < $count; $i++) {
+  $bracket = $brackets[$i];
   $cacheKey = 'CRON::reddit-poster_' . $bracket->id;
   $title = Api\Round::getBracketTitleForActiveRound($bracket);
   $oldTitle = Lib\Cache::Get($cacheKey);
@@ -24,10 +25,15 @@ foreach ($brackets as $bracket) {
       $bracket->sync();
       echo $bracket->externalId;
     } else {
-      echo 'FAIL';
+      if (isset($out->ratelimit)) {
+        echo 'RATE LIMIT';
+        sleep(ceil($out->ratelimit));
+        $i--;
+      } else {
+        echo 'FAIL';
+      }
     }
     echo PHP_EOL;
-    sleep(10);
   }
   Lib\Cache::Set($cacheKey, $title, 3600);
 }
