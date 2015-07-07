@@ -1,4 +1,4 @@
-<?hh
+<?php
 
 namespace Lib {
 
@@ -308,7 +308,7 @@ namespace Lib {
                         if (null !== $result && $result->count === 1) {
                             $this->copyFromDbRow(Db::Fetch($result));
                         }
-                        Cache::Set($cacheKey, $retVal);
+                        Cache::Set($cacheKey, $this);
                     }
                 } else {
                     throw new Exception('ID must be a number');
