@@ -2,7 +2,7 @@
 
     'use strict';
 
-    var
+    var $admin = $('body#admin'),
 
         /**
          * Multiple script loader
@@ -93,18 +93,20 @@
             $('.characters').on('click', 'button', _updateCharacter);
         };
 
-    loadScripts([ '/static/js/adminTemplates.js' ]);
+    if ($admin.length) {
+        loadScripts([ '/static/js/adminTemplates.js' ]);
 
-    if ($('body#admin .nominee').length) {
-        initNomineeForm();
-    } else if ($('#admin .characters').length) {
-        initCharactersForm();
-    } else if ($('#admin .stats').length) {
-        initStatsPage();
-    } else if ($('#admin .start-bracket').length) {
-        initStartBracketForm();
-    } else {
-        $('.bracket-card .delete').on('click', deleteConfirmation);
+        if ($admin.find('.nominee').length) {
+            initNomineeForm();
+        } else if ($admin.find('.characters').length) {
+            initCharactersForm();
+        } else if ($admin.find('.stats').length) {
+            initStatsPage();
+        } else if ($admin.find('.start-bracket').length) {
+            initStartBracketForm();
+        } else {
+            $('.bracket-card .delete').on('click', deleteConfirmation);
+        }
     }
 
 }());
