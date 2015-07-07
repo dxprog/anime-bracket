@@ -81,6 +81,7 @@ namespace Controller {
 
                     // Get the title of the next round
                     $nextRounds = Api\Round::getNextRounds($bracket);
+                    $bracket->nextTitle = null;
                     if ($nextRounds) {
                         $bracket->nextTitle = str_replace([ 'Voting - ', 'Eliminations - ' ], '', Api\Round::getBracketTitleForRound($bracket, $nextRounds[0]));
                     }
