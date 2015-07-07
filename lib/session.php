@@ -38,6 +38,10 @@ namespace Lib {
             Cache::Set(SESSION_NAME . '_' . self::$_id, self::$_sess, SESSION_EXPIRE);
         }
 
+        public static function isSessionKey($key) {
+            return strpos($key, SESSION_NAME) === 0;
+        }
+
     }
 
 }
