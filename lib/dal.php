@@ -306,10 +306,15 @@ namespace Lib {
 
                         $result = Db::Query($query, [ ':id' => $id ]);
                         if (null !== $result && $result->count === 1) {
-                            $this->copyFromDbRow(Db::Fetch($result));
+                            $retVal = Db::Fetch($result);
+                            Cache::Set($cacheKey, $retVal);
                         }
-                        Cache::Set($cacheKey, $this);
                     }
+
+                    if ($retVal) {
+                        $this->copyFromDbRow($retVal);
+                    }
+
                 } else {
                     throw new Exception('ID must be a number');
                 }
