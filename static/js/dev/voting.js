@@ -29,7 +29,7 @@
                 type: 'POST'
             }).done(function(data) {
                 setMessage(data.message, data.success);
-                
+
                 if (data.success) {
                     // Disable all the rounds the user voted on
                     $('input:checked').each(function() {
@@ -45,8 +45,8 @@
 
     if ($('#page-vote').length) {
         // For deselected an already selected radio
-        $('form').on('click', '[type="radio"]:not([disabled]) + label', deselectEntrant);
-        $('form').on('submit', formSubmit);
+        $('#vote-form').on('click', '[type="radio"]:not([disabled]) + label', deselectEntrant);
+        $('#vote-form').on('submit', formSubmit);
     }
 
 }(jQuery));
