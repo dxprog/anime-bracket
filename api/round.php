@@ -139,7 +139,7 @@ namespace Api {
 
                     // Check to see how many rounds there are in the group total. If there's only one, come back and get them all
                     $row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_group = :group', [ ':bracketId' => $bracketId, ':tier' => $tier, ':group' => $group ]));
-                    if ((int)$row->total == 1) {
+                    if (is_object($row) && (int)$row->total == 1) {
                         $retVal = self::getBracketRounds($bracketId, $tier, false, $ignoreCache);
                         $result = null;
                     } else {
@@ -152,6 +152,9 @@ namespace Api {
                 if ($result && $result->count > 0) {
                     $retVal = [];
 
+                    // Hashmap of characters to retrieve in the next step
+                    $characters = [];
+
                     while ($row = Lib\Db::Fetch($result)) {
                         $round = new Round($row);
 
@@ -161,19 +164,39 @@ namespace Api {
                             return null;
                         }
 
-                        $round->character1 = Character::getById($row->round_character1_id);
-                        $round->character2 = Character::getById($row->round_character2_id);
-
-                        if ($round->votedCharacterId) {
-                            if ($round->votedCharacterId == $round->character1->id) {
-                                $round->character1->voted = true;
-                            } else {
-                                $round->character2->voted = true;
-                            }
-                        }
+                        // Save off the character IDs for retrieval later
+                        $characters[$row->round_character1_id] = true;
+                        $characters[$row->round_character2_id] = true;
 
                         $retVal[] = $round;
                     }
+
+                    // Retrieve the characters
+                    $result = Character::query([ 'id' => [ 'in' => array_keys($characters) ] ]);
+                    if ($result && $result->count) {
+                        while ($row = Lib\Db::Fetch($result)) {
+                            $character = new Character($row);
+                            $characters[$character->id] = $character;
+                        }
+
+                        // Replace all the instances for the rounds
+                        foreach ($retVal as $round) {
+                            $round->character1 = $characters[$round->character1Id];
+                            $round->character2 = $characters[$round->character2Id];
+
+                            // Flag the character the user voted for if the voted
+                            if ($round->votedCharacterId) {
+                                if ($round->votedCharacterId == $round->character1->id) {
+                                    $round->character1->voted = true;
+                                } else {
+                                    $round->character2->voted = true;
+                                }
+                            }
+
+                        }
+
+                    }
+
                 }
                 Lib\Cache::Set($cacheKey, $retVal);
             }
