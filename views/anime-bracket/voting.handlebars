@@ -3,6 +3,16 @@
 
 <p class="message hidden"></p>
 
+<div class="votes-code">
+    <button type="button" class="small-button copy-votes">Get My Votes as Text</button>
+    <div class="overlay">
+        <div class="code-form">
+            <label for="votes_markdown">Use the code below to paste your votes into reddit.</label>
+            <textarea id="votes_markdown"></textarea>
+        </div>
+    </div>
+</div>
+
 <form action="/submit/?action=vote" method="post" id="vote-form">
     <ul class="voting mini-card-container">
         {{#each round}}
