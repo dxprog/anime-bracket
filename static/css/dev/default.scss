@@ -103,6 +103,10 @@ footer p {
     @include button();
 }
 
+.small-button {
+    @include small-button();
+}
+
 @media screen and (max-width: 1280px), screen and (max-height: 768px) {
     body {
         font-size: 18px;
