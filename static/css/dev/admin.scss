@@ -1,11 +1,5 @@
 @import "globals";
 
-@mixin small-button() {
-    @include button();
-    font-size: 18px;
-    padding: 10px 20px;
-}
-
 #admin {
 
     footer {

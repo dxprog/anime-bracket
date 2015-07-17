@@ -90,6 +90,12 @@ $MOBILE-WIDTH: 414px;
     cursor: pointer;
 }
 
+@mixin small-button() {
+    @include button();
+    font-size: 18px;
+    padding: 10px 20px;
+}
+
 @mixin logo($type: light) {
   @if $type == dark {
     @include image-text($background: url(/static/images/logo_dark.png), $width: 311px, $height: 117px);
