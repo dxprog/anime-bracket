@@ -83,6 +83,11 @@
         $votesCode.on('click', 'button', showMarkdownModal);
         $overlay.on('click', hideMarkdownModal);
 
+        // If the user has already voted, show the markdown button
+        if ($('input:checked').length) {
+            $votesCode.show();
+        }
+
     }
 
     if ($('#page-vote').length) {
