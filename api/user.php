@@ -13,15 +13,13 @@ namespace Api {
             'id' => 'user_id',
             'name' => 'user_name',
             'admin' => 'user_admin',
-            'ip' => 'user_ip',
-            'prizes' => 'user_prizes'
+            'ip' => 'user_ip'
         ];
 
         public $id = 0;
         public $name;
         public $admin = false;
         public $ip;
-        public $prizes;
 
         public function __construct($row = null) {
             parent::__construct($row);

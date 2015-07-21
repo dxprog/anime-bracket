@@ -21,7 +21,6 @@ namespace Controller {
                 $out = Lib\Cache::fetch(function() use ($user, $bracket) {
                     $out = new stdClass;
                     $out->userId = $user->id;
-                    $out->prizes = isset($user->prizes) && $user->prizes ? 1 : 0;
                     $out->round = Api\Round::getCurrentRounds($bracket->id);
                     $out->title = Api\Round::getBracketTitleForActiveRound($bracket);
                     return $out;
