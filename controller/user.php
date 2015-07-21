@@ -12,6 +12,15 @@ namespace Controller {
         public static function generate(array $params) {
 
             $code = Lib\Url::Get('code', null);
+            $action = array_shift($params);
+
+            if ($action === 'logout') {
+                $user = Api\User::getCurrentUser();
+                if ($user) {
+                    $user->logout();
+                    header('Location: /brackets/');
+                }
+            }
 
             if ($code) {
                 $success = Api\User::authenticateUser($code);

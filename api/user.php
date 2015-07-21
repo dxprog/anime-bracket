@@ -26,7 +26,7 @@ namespace Api {
         public function __construct($row = null) {
             parent::__construct($row);
             if (is_object($row)) {
-                $this->admin = !!ord($row->user_admin);
+                $this->admin = ((int) $row->user_admin) === 1;
             }
         }
 
@@ -55,6 +55,10 @@ namespace Api {
                 'state' => $redirect,
                 'redirect_uri' => REDDIT_HANDLER
             ]);
+        }
+
+        public function logout() {
+            Lib\Session::set('user', null);
         }
 
        /**
