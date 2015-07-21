@@ -211,6 +211,18 @@ namespace Controller {
             return $retVal;
         }
 
+        protected static function _generateAges($selectedAge) {
+            $selectedAge = (int) $selectedAge;
+            return [
+                (object)[ 'title' => 'No minimum age requirement', 'value' => 0, 'selected' => $selectedAge === 0  ],
+                (object)[ 'title' => '1 month or older', 'value' => 2592000, 'selected' => $selectedAge === 2592000 ],
+                (object)[ 'title' => '2 months or older', 'value' => 5184000, 'selected' => $selectedAge === 5184000 ],
+                (object)[ 'title' => '3 months or older', 'value' => 7776000, 'selected' => $selectedAge === 7776000 ],
+                (object)[ 'title' => '6 months or older', 'value' => 15552000, 'selected' => $selectedAge === 15552000 ],
+                (object)[ 'title' => '1 year or older', 'value' => 31104000, 'selected' => $selectedAge === 31104000 ]
+            ];
+        }
+
     }
 
 }

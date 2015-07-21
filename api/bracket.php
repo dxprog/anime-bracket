@@ -32,7 +32,8 @@ namespace Api {
             'nameLabel' => 'bracket_name_label',
             'sourceLabel' => 'bracket_source_label',
             'score' => 'bracket_score',
-            'externalId' => 'bracket_external_id'
+            'externalId' => 'bracket_external_id',
+            'minAge' => 'bracket_min_age'
         );
 
         /**
@@ -119,6 +120,11 @@ namespace Api {
          * ID to the latest reddit post
          */
         public $externalId;
+
+        /**
+         * The age a reddit account must be to vote
+         */
+        public $minAge;
 
         /**
          * Override for getAll to include the winner character object

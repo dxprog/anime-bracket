@@ -28,12 +28,13 @@ namespace Controller\Admin {
                         $sourceOn = Lib\Url::Post('hideSource') !== 'on';
                         $bracket->sourceLabel = $sourceOn ? Lib\Url::Post('sourceLabel') : 'NO_SOURCE';
 
+                        $bracket->minAge = Lib\Url::Post('minAge', true);
+
                         $advanceHour = Lib\Url::Post('advanceHour', true);
                         $advanceHour = null !== $advanceHour ? $advanceHour : -1;
                         $bracket->advanceHour = $advanceHour;
 
                         if ($bracket->sync()) {
-
                             // Clear the generic bracket related caches
                             self::_refreshCaches($bracket);
                             header('Location: /me/?edited');
@@ -46,6 +47,7 @@ namespace Controller\Admin {
 
                 $bracket->sourceHidden = $bracket->sourceLabel === 'NO_SOURCE';
                 $bracket->times = self::_generateAdvanceTimes($bracket->advanceHour);
+                $bracket->ages = self::_generateAges($bracket->minAge);
                 Lib\Display::renderAndAddKey('content', 'admin/bracket', $bracket);
 
             }

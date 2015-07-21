@@ -13,13 +13,15 @@ namespace Api {
             'id' => 'user_id',
             'name' => 'user_name',
             'admin' => 'user_admin',
-            'ip' => 'user_ip'
+            'ip' => 'user_ip',
+            'age' => 'user_age'
         ];
 
         public $id = 0;
         public $name;
         public $admin = false;
         public $ip;
+        public $age;
 
         public function __construct($row = null) {
             parent::__construct($row);
@@ -76,18 +78,20 @@ namespace Api {
 
                         $user = self::getByName($data->name);
                         if (!$user) {
-                            // Block out new user accounts
-                            if ((int) $data->created > time() - REDDIT_MINAGE) {
-                                $retVal = false;
-                            } else {
-                                $user = new User;
-                                $user->name = $data->name;
-                                $user->ip = $_SERVER['REMOTE_ADDR'];
-                                if ($user->sync()) {
-                                    $retVal = true;
-                                }
+                            $user = new User;
+                            $user->name = $data->name;
+                            $user->age = (int) $data->created;
+                            $user->ip = $_SERVER['REMOTE_ADDR'];
+                            if ($user->sync()) {
+                                $retVal = true;
                             }
                         } else {
+
+                            // This is to update any records that were created before age was tracked
+                            if (!$user->age) {
+                                $user->age = (int) $data->created;
+                                $user->sync();
+                            }
                             $retVal = true;
                         }
 

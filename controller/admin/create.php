@@ -11,7 +11,7 @@ namespace Controller\Admin {
             // Create the bracket on POST
             if ($_POST) {
 
-                $name = Lib\Url::Post('bracketName');
+                $name = Lib\Url::Post('name');
                 $rules = Lib\Url::Post('rules');
 
                 if ($name && $rules) {
@@ -22,6 +22,7 @@ namespace Controller\Admin {
                     $bracket->start = time();
                     $bracket->generatePerma();
                     $bracket->nameLabel = Lib\Url::Post('nameLabel');
+                    $bracket->minAge = Lib\Url::Post('minAge', true);
 
                     $sourceOn = Lib\Url::Post('hideSource') === 'on';
                     $bracket->sourceLabel = $sourceOn ? Lib\Url::Post('sourceLabel') : 'NO_SOURCE';
@@ -51,6 +52,7 @@ namespace Controller\Admin {
 
             // Or display the form
             $_POST['times'] = self::_generateAdvanceTimes();
+            $_POST['ages'] = self::_generateAges(REDDIT_MINAGE);
             Lib\Display::renderAndAddKey('content', 'admin/bracket', $_POST);
         }
 

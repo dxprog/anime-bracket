@@ -2,7 +2,7 @@
 <form action="/me/{{#if id}}edit/{{perma}}{{else}}create{{/if}}/" method="post" class="form">
 
     <label for="bracketName">Bracket Name:</label>
-    <input type="text" name="bracketName" id="bracketName" value="{{name}}" />
+    <input type="text" name="name" id="bracketName" value="{{name}}" />
 
     <label for="rules">Rules/Intro text:</label>
     <p class="foot">You may use <a href="https://help.github.com/articles/markdown-basics" target="_blank">simple markdown</a> for formatting</p>
@@ -12,6 +12,14 @@
     <select name="advanceHour" id="advanceHour">
         {{#each times}}
             <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+        {{/each}}
+    </select>
+
+    <h3>Account age restriction:</h3>
+    <label for="minAge">Restrict voting to users with reddit accounts of the following age or older:</label>
+    <select name="minAge" id="minAge">
+        {{#each ages}}
+            <option value="{{value}}" {{#if selected}}selected{{/if}}>{{title}}</option>
         {{/each}}
     </select>
 
