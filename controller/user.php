@@ -33,6 +33,7 @@ namespace Controller {
 
                 $obj->originalUrl = Lib\Url::Get('redirect');
                 Lib\Display::addKey('page', 'login');
+                Lib\Display::addKey('title', 'Login' . DEFAULT_TITLE_SUFFIX);
                 Lib\Display::renderAndAddKey('content', 'login', $obj);
             }
 

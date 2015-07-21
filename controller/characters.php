@@ -10,6 +10,7 @@ namespace Controller {
             $bracket = Api\Bracket::getBracketByPerma(array_shift($params));
             if ($bracket) {
                 Lib\Display::addKey('page', 'characters');
+                Lib\Display::addKey('title', $bracket->name . ' Entrants' . DEFAULT_TITLE_SUFFIX);
                 $content = Lib\Display::renderAndAddKey('content', 'characters', (object) [
                     'bracket' => $bracket,
                     'characters' => Api\Character::getByBracketId($bracket->id)

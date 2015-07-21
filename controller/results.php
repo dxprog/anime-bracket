@@ -18,6 +18,7 @@ namespace Controller {
                     $bracket->userVotes = $bracket->getVotesForUser($user);
                 }
                 Lib\Display::addKey('page', 'results');
+                Lib\Display::addKey('title', $bracket->name . ' Results' . DEFAULT_TITLE_SUFFIX);
                 Lib\Display::renderAndAddKey('content', 'results', $bracket);
             }
 
