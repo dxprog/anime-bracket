@@ -213,7 +213,7 @@ namespace Controller {
         }
 
         private static function _verifyAccountAge(Api\User $user, Api\Bracket $bracket) {
-            return $user->age <= time() - $bracket->minAge;
+            return (int) $bracket->minAge === 0 || $user->age <= time() - $bracket->minAge;
         }
 
     }
