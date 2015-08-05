@@ -1,0 +1,40 @@
+<h2>{{bracket.name}}</h2>
+<h3>Entrant Statistics</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Entrant</th>
+      <th class="votes">Votes</th>
+      <th>Closest Match</th>
+      <th>Lost To</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each entrants}}
+      <tr class="entrant-row">
+        <td>
+          {{>_entrantImage character}}
+          <h4>{{character.name}}</h4>
+          <h5>Group {{group}}</h5>
+        </td>
+        <td>
+          {{totalVotes}}
+        </td>
+        <td>
+          {{>_entrantImage closestRound.character}}
+          <h4>{{closestRound.character.name}}</h4>
+          <h5>Round {{closestRound.round.tier}}</h5>
+          <h5>{{closestRound.difference}} vote difference</h5>
+        </td>
+        <td>
+          {{#if lostTo}}
+            {{>_entrantImage lostTo.character}}
+            <h4>{{lostTo.character.name}}</h4>
+            <h5>Round {{lostTo.round.tier}}</h5>
+            <h5>Lost by {{lostTo.lostBy}} votes</h5>
+          {{/if}}
+        </td>
+      </td>
+    {{/each}}
+  </tbody>
+</table>
