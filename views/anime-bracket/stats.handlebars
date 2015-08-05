@@ -30,7 +30,7 @@
         </td>
         <td>
           {{#if lostTo}}
-            <a href="#entrant-{{closestRound.character.id}}">
+            <a href="#entrant-{{lostTo.character.id}}">
               {{>_entrantImage lostTo.character}}
               <h4>{{lostTo.character.name}}</h4>
               <h5>Round {{lostTo.round.tier}}</h5>
