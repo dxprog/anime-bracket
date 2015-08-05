@@ -27,13 +27,10 @@
         font-family: 'Roboto Condensed';
         color: $dark;
         text-align: left;
+        padding-left: 10px;
         &.votes {
             padding-right: 50px;
         }
-    }
-
-    td {
-        @include body-copy();
     }
 
     h4,
@@ -48,8 +45,13 @@
 
     .entrant-row {
         td {
-            padding: 5px 0;
+            padding: 15px 10px;
+            @include body-copy();
             vertical-align: middle;
+        }
+
+        &:nth-child(2n) td {
+            background: #fff;
         }
 
         &:hover td {
