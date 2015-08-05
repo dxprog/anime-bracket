@@ -105,7 +105,7 @@ namespace Api {
                             ];
                         }
 
-                        $lost = ($isCharacter1 && $round->character1Votes < $round->character2Votes) || $round->character2Votes < $round->character1Votes;
+                        $lost = ($isCharacter1 && $round->character1Votes < $round->character2Votes) || (!$isCharacter1 && $round->character2Votes < $round->character1Votes);
                         $lostTo = $lost ? (object)[
                             'character' => $isCharacter1 ? $round->character2 : $round->character1,
                             'lostBy' => $diff,
@@ -126,16 +126,8 @@ namespace Api {
 
                 return $retVal;
 
-            }, self::_generateCacheKeyForPerformaceStats($bracket), $force);
+            }, 'Stats::PerformanceStats_' . $bracket->id, $force);
 
-        }
-
-        public static function invalidateEntrantPerformanceStats(Bracket $bracket) {
-            Lib\Cache::Set(self::_generateCacheKeyForPerformaceStates($bracket), false);
-        }
-
-        private static function _generateCacheKeyForPerformaceStats(Bracket $bracket) {
-            return 'Stats::PerformanceStats_' . $bracket->id;
         }
 
         private static function _addRoundToCharacterRounds(Round $round, $characterId, array &$characterRounds) {
