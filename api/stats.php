@@ -88,23 +88,37 @@ namespace Api {
                     $lostTo = null;
                     $totalVotes = 0;
                     foreach ($roundsForCharacter as $round) {
+                        // Heheheh... so gross
+                        $isCharacter1 = $round->character1Id == $character->id;
+                        $totalVotes += $isCharacter1 ? $round->character1Votes : $round->character2Votes;
+
                         $diff = abs($round->character1Votes - $round->character2Votes);
                         if ($diff < $closestDiff || $closestDiff === -1) {
                             $closestDiff = $diff;
-                            $closestRound = $round;
+                            // This case should be small enough that re-instantiating through a loop
+                            // shouldn't prove too much of a performance concern (especially since
+                            // it's generated only once per new round). Will monitor in production
+                            $closestRound = (object)[
+                                'character' => $isCharacter1 ? $round->character2 : $round->character1,
+                                'difference' => $closestDiff,
+                                'round' => $round
+                            ];
                         }
 
-                        // Heheheh... so gross
-                        $isCharacter1 = $round->character1Id == $character->id;
                         $lost = ($isCharacter1 && $round->character1Votes < $round->character2Votes) || $round->character2Votes < $round->character1Votes;
-                        $lostTo = $lost ? $characters[$isCharacter1 ? $round->character2Id : $round->character1Id] : null;
-                        $totalVotes += $isCharacter1 ? $round->character1Votes : $round->character2Votes;
+                        $lostTo = $lost ? (object)[
+                            'character' => $isCharacter1 ? $round->character2 : $round->character1,
+                            'lostBy' => $diff,
+                            'round' => $round
+                        ] : null;
+
                     }
 
                     $retVal[] = (object)[
                         'character' => $character,
                         'closestRound' => $closestRound,
                         'lostTo' => $lostTo,
+                        'totalVotes' => $totalVotes,
                         'group' => chr(65 + $roundsForCharacter[0]->group)
                     ];
 
