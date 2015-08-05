@@ -314,6 +314,7 @@ namespace Api {
                     break;
                 case BS_VOTING:
                     $this->_advanceBracket();
+                    Stats::getEntrantPerformanceStats($this, true);
                     break;
             }
 
