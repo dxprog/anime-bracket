@@ -11,7 +11,7 @@
   </thead>
   <tbody>
     {{#each entrants}}
-      <tr class="entrant-row">
+      <tr class="entrant-row" id="entrant-{{character.id}}">
         <td>
           {{>_entrantImage character}}
           <h4>{{character.name}}</h4>
@@ -21,17 +21,21 @@
           {{totalVotes}}
         </td>
         <td>
-          {{>_entrantImage closestRound.character}}
-          <h4>{{closestRound.character.name}}</h4>
-          <h5>Round {{closestRound.round.tier}}</h5>
-          <h5>{{closestRound.difference}} vote difference</h5>
+          <a href="#entrant-{{closestRound.character.id}}">
+            {{>_entrantImage closestRound.character}}
+            <h4>{{closestRound.character.name}}</h4>
+            <h5>Round {{closestRound.round.tier}}</h5>
+            <h5>{{closestRound.difference}} vote difference</h5>
+          </a>
         </td>
         <td>
           {{#if lostTo}}
-            {{>_entrantImage lostTo.character}}
-            <h4>{{lostTo.character.name}}</h4>
-            <h5>Round {{lostTo.round.tier}}</h5>
-            <h5>Lost by {{lostTo.lostBy}} votes</h5>
+            <a href="#entrant-{{closestRound.character.id}}">
+              {{>_entrantImage lostTo.character}}
+              <h4>{{lostTo.character.name}}</h4>
+              <h5>Round {{lostTo.round.tier}}</h5>
+              <h5>Lost by {{lostTo.lostBy}} votes</h5>
+            </a>
           {{/if}}
         </td>
       </td>
