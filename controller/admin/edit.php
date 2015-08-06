@@ -17,7 +17,7 @@ namespace Controller\Admin {
                 if ($_POST) {
 
                     $id = Lib\Url::Post('bracketId', true);
-                    $name = Lib\Url::Post('bracketName');
+                    $name = Lib\Url::Post('name');
                     $rules = Lib\Url::Post('rules');
 
                     if ($name && $rules) {
@@ -25,8 +25,8 @@ namespace Controller\Admin {
                         $bracket->rules = $rules;
                         $bracket->nameLabel = Lib\Url::Post('nameLabel');
 
-                        $sourceOn = Lib\Url::Post('hideSource') !== 'on';
-                        $bracket->sourceLabel = $sourceOn ? Lib\Url::Post('sourceLabel') : 'NO_SOURCE';
+                        $hideSource = Lib\Url::Post('hideSource') === 'on';
+                        $bracket->sourceLabel = $hideSource ? 'NO_SOURCE' : Lib\Url::Post('sourceLabel');
 
                         $bracket->minAge = Lib\Url::Post('minAge', true);
 
@@ -38,6 +38,9 @@ namespace Controller\Admin {
                             // Clear the generic bracket related caches
                             self::_refreshCaches($bracket);
                             header('Location: /me/?edited');
+                            exit;
+                        } else {
+                            print_r(Lib\Db::$lastError);
                             exit;
                         }
 

@@ -24,8 +24,8 @@ namespace Controller\Admin {
                     $bracket->nameLabel = Lib\Url::Post('nameLabel');
                     $bracket->minAge = Lib\Url::Post('minAge', true);
 
-                    $sourceOn = Lib\Url::Post('hideSource') === 'on';
-                    $bracket->sourceLabel = $sourceOn ? Lib\Url::Post('sourceLabel') : 'NO_SOURCE';
+                    $hideSource = Lib\Url::Post('hideSource') === 'on';
+                    $bracket->sourceLabel = $hideSource ? 'NO_SOURCE' : Lib\Url::Post('sourceLabel');
 
                     $advanceHour = Lib\Url::Post('advanceHour', true);
                     if ($advanceHour !== null) {
