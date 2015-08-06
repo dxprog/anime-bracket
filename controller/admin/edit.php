@@ -39,9 +39,6 @@ namespace Controller\Admin {
                             self::_refreshCaches($bracket);
                             header('Location: /me/?edited');
                             exit;
-                        } else {
-                            print_r(Lib\Db::$lastError);
-                            exit;
                         }
 
                     }
