@@ -358,8 +358,8 @@ namespace Api {
                 for ($i = 0, $count = count($rounds); $i < $count; $i += 2) {
 
                     // Get the round winners
-                    $winner1 = $rounds[$i]->getWinner();
-                    $winner2 = $rounds[$i + 1]->getWinner();
+                    $winner1 = $rounds[$i]->getWinnerId();
+                    $winner2 = $rounds[$i + 1]->getWinnerId();
 
                     // Create the round for the next tier
                     $newRound = new Round();
@@ -367,8 +367,8 @@ namespace Api {
                     $newRound->tier = $rounds[$i]->tier + 1;
                     $newRound->group = $rounds[$i]->group;
                     $newRound->order = $i / 2;
-                    $newRound->character1Id = $winner1->id;
-                    $newRound->character2Id = $winner2->id;
+                    $newRound->character1Id = $winner1;
+                    $newRound->character2Id = $winner2;
                     $newRound->sync();
 
                     // Finalize the current tier
