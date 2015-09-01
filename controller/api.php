@@ -18,6 +18,9 @@ namespace Controller {
                 case 'bracket':
                     $retVal = self::_getBracket();
                     break;
+                case 'results':
+                    $retVal = self::_getResults();
+                    break;
                 case 'rounds':
                     $retVal = self::_getCurrentRounds();
                     break;
@@ -39,6 +42,15 @@ namespace Controller {
         }
 
         private static function _getBracket() {
+            $retVal = null;
+            $bracketId = Lib\Url::GetInt('bracketId', null);
+            if ($bracketId) {
+                $retVal = \Api\Bracket::getById($bracketId);
+            }
+            return $retVal;
+        }
+
+        private static function _getResults() {
             $retVal = null;
             $bracketId = Lib\Url::GetInt('bracketId', null);
             if ($bracketId) {
