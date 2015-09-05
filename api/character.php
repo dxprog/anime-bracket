@@ -63,6 +63,9 @@ namespace Api {
          */
         public function copyFromDbRow($row) {
             parent::copyFromDbRow($row);
+            $this->id = (int) $this->id;
+            $this->bracketId = (int) $this->bracketId;
+            $this->seed = (int) $this->seed;
             $this->image = IMAGE_URL . '/' . base_convert($this->id, 10, 36) . '.jpg';
         }
 
@@ -77,7 +80,7 @@ namespace Api {
                 if (false === $retVal) {
                     $retVal = null;
                     // TODO - make order by column configurable
-                    $retVal = Character::queryReturnAll([ 'bracketId' => $bracketId ], [ 'source' => 'ASC', 'name' => 'ASC' ]);
+                    $retVal = Character::queryReturnAll([ 'bracketId' => $bracketId ], [ 'name' => 'ASC' ]);
                     Lib\Cache::Set($cacheKey, $retVal);
                 }
             }
