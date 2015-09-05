@@ -1,17 +1,31 @@
 <h2>{{bracket.name}}</h2>
-<h3>Character Roster - {{characters.length}} entrants</h3>
 
-<ul class="characters mini-card-container">
-    {{#each characters}}
-        <li class="mini-card">
-            <dl>
-                <dt>Image</dt>
-                <dd class="image"><img src="{{image}}" alt="{{name}}" /></dd>
-                <dt>Name</dt>
-                <dd class="name">{{name}}</dd>
-                <dt>Source</dt>
-                <dd class="source">{{source}}</dd>
-            </dl>
+{{#if hasSorter}}
+  <ul class="sorter">
+      <li class="label">Sort By:</li>
+      <li>
+          <input type="radio" name="sort" id="nameSort" value="name" checked="checked" />
+          <label for="nameSort">Character Name</label>
+      </li>
+      {{#if hasSeed}}
+        <li>
+            <input type="radio" name="sort" id="seedSort" value="seed" />
+            <label for="seedSort">Seed</label>
         </li>
-    {{/each}}
-</ul>
+      {{/if}}
+      {{#if hasSource}}
+        <li>
+            <input type="radio" name="sort" id="sourceSort" value="source" />
+            <label for="sourceSort">{{bracket.sourceLabel}}</label>
+        </li>
+      {{/if}}
+  </ul>
+{{/if}}
+
+<div id="roster">
+    {{>_characterList}}
+</div>
+
+<script>
+    window._characters = {{{jsonBlob characters}}};
+</script>

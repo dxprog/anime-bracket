@@ -1,19 +1,51 @@
 @import "globals";
 
 #page-characters {
-    
+
     h2 {
         margin-bottom: 10px;
     }
 
     h3 {
         font: 30px/1 'Roboto Condensed', sans-serif;
-        margin-bottom: 40px;
+        margin: 30px 0 10px;
         color: #fff;
     }
 
     footer {
         position: static;
+    }
+
+    .sorter {
+        overflow: hidden;
+        li {
+            float: left;
+            margin-right: 10px;
+        }
+
+        .label {
+            @include small-button();
+            font: 24px/1 'Roboto Condensed', sans-serif;
+            background: transparent;
+            color: #fff;
+            padding-left: 0;
+        }
+
+        input {
+            display: none;
+            &:checked + label {
+                @include small-button();
+                border: 1px solid transparent;
+            }
+        }
+
+        label {
+            @include small-button();
+            background: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+
     }
 
 }
@@ -70,6 +102,19 @@
             left: auto;
             right: 0;
         }
+    }
+
+    .seed {
+        border: 1px solid $dark;
+        position: absolute;
+        bottom: 0;
+        width: 22px;
+        text-align: center;
+        right: 280px;
+        padding: 2px;
+        font: 12px/1 'Roboto', sans-serif;
+        background: $dark;
+        color: #fff;
     }
 
     //

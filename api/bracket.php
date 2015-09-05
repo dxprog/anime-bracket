@@ -517,6 +517,13 @@ namespace Api {
         }
 
         /**
+         * Returns whether or not this bracket has a source label
+         */
+        public function hasSourceLabel() {
+            return $this->sourceLabel !== 'NO_SOURCE';
+        }
+
+        /**
          * Assigns this bracket to a user
          */
         public function addUser(User $user) {

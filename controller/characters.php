@@ -11,9 +11,14 @@ namespace Controller {
             if ($bracket) {
                 Lib\Display::addKey('page', 'characters');
                 Lib\Display::addKey('title', $bracket->name . ' Entrants' . DEFAULT_TITLE_SUFFIX);
+                $hasSource = $bracket->hasSourceLabel();
+                $hasSeed = $bracket->state == BS_VOTING || $bracket->state == BS_FINAL;
                 $content = Lib\Display::renderAndAddKey('content', 'characters', (object) [
                     'bracket' => $bracket,
-                    'characters' => Api\Character::getByBracketId($bracket->id)
+                    'characters' => Api\Character::getByBracketId($bracket->id),
+                    'hasSource' => $hasSource,
+                    'hasSeed' => $hasSeed,
+                    'hasSorter' => $hasSource || $hasSeed
                 ]);
             }
 
