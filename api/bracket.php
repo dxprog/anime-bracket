@@ -142,19 +142,24 @@ namespace Api {
                 $this->id = (int) $this->id;
                 $this->state = (int) $this->state;
                 $this->start = (int) $this->start;
-                $this->winnerCharacterId = (int) $this->winnerCharacterId;
-                $this->hidden = (int) $this->hidden === 1;
+                $this->winnerCharacterId = $this->winnerCharacterId ? (int) $this->winnerCharacterId : null;
+                $this->hidden = $this->hidden > 0;
             }
         }
 
         /**
          * Override for getAll to include the winner character object
          */
-        public static function getAll($force = false) {
+        public static function getAll($force = false, $getHidden = false) {
             $cacheKey = 'Api:Bracket:getAll_' . BRACKET_SOURCE;
             $retVal = Lib\Cache::Get($cacheKey);
             if (false === $retVal || $force) {
-                $brackets = parent::queryReturnAll([ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ], [ 'score' => 'desc', 'state' => 'desc', 'start' => 'desc' ]);
+                $query = [ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ];
+                if (!$getHidden) {
+                    $query['hidden'] = 0;
+                }
+
+                $brackets = parent::queryReturnAll($query, [ 'score' => 'desc', 'state' => 'desc', 'start' => 'desc' ]);
                 $retVal = [];
                 foreach ($brackets as $bracket) {
                     if ($bracket->winnerCharacterId) {
@@ -183,7 +188,7 @@ namespace Api {
 
                     // Admins get all the fun
                     if ($user->admin) {
-                        $retVal = self::getAll();
+                        $retVal = self::getAll(false, true);
                     } else {
                         $result = Lib\Db::Query('SELECT * FROM bracket WHERE bracket_source = :source AND bracket_id IN (SELECT bracket_id FROM bracket_owners WHERE user_id = :userId)', [ ':source' => BRACKET_SOURCE, ':userId' => $user->id ]);
                         if ($result && $result->count) {
