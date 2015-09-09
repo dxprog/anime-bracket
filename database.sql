@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.7
+-- version 3.4.4
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 23, 2014 at 09:04 AM
--- Server version: 5.5.39-MariaDB-1~wheezy
--- PHP Version: 5.5.17-1~dotdeb.1
+-- Generation Time: Sep 09, 2015 at 04:57 AM
+-- Server version: 1.0.17
+-- PHP Version: 5.6.8-1~dotdeb+wheezy.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -13,6 +13,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `anime_bracket`
 --
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bot_users`
+--
+
+DROP TABLE IF EXISTS `bot_users`;
+CREATE TABLE IF NOT EXISTS `bot_users` (
+  `bot_id` int(10) NOT NULL AUTO_INCREMENT,
+  `bot_name` varchar(50) NOT NULL,
+  `bot_password` varchar(50) NOT NULL,
+  `bot_hash` varchar(255) DEFAULT NULL,
+  `bot_cookie` varchar(255) DEFAULT NULL,
+  `bot_data` text,
+  `bot_callback` varchar(30) NOT NULL,
+  `bot_updated` int(10) NOT NULL,
+  `bot_created` int(10) NOT NULL,
+  `bot_enabled` tinyint(4) NOT NULL,
+  PRIMARY KEY (`bot_id`),
+  UNIQUE KEY `bot_name` (`bot_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -31,6 +54,13 @@ CREATE TABLE IF NOT EXISTS `bracket` (
   `winner_character_id` int(11) DEFAULT NULL,
   `bracket_rules` text COLLATE utf8_unicode_ci NOT NULL,
   `bracket_source` int(11) NOT NULL,
+  `bracket_advance_hour` int(11) DEFAULT NULL,
+  `bracket_name_label` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bracket_source_label` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bracket_score` decimal(10,0) DEFAULT NULL,
+  `bracket_external_id` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bracket_min_age` int(11) DEFAULT NULL,
+  `bracket_hidden` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`bracket_id`),
   UNIQUE KEY `U_bracket_perma` (`bracket_perma`),
   KEY `FK_winner_character_id` (`winner_character_id`)
@@ -109,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `nominee` (
   `nominee_id` int(11) NOT NULL AUTO_INCREMENT,
   `bracket_id` int(11) NOT NULL,
   `nominee_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `nominee_source` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `nominee_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `nominee_created` int(11) NOT NULL,
   `nominee_processed` bit(1) DEFAULT NULL,
   `nominee_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -151,9 +181,9 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `user_admin` bit(1) NOT NULL,
+  `user_admin` tinyint(1) NOT NULL,
   `user_ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  `user_prizes` bit(1) DEFAULT NULL,
+  `user_age` int(11) NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -225,7 +255,7 @@ ALTER TABLE `round`
 -- Constraints for table `votes`
 --
 ALTER TABLE `votes`
-  ADD CONSTRAINT `FK_votes_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_votes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_vote_character_id` FOREIGN KEY (`character_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_vote_round_id` FOREIGN KEY (`round_id`) REFERENCES `round` (`round_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_vote_round_id` FOREIGN KEY (`round_id`) REFERENCES `round` (`round_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_votes_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_votes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
