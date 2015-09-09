@@ -33,7 +33,8 @@ namespace Api {
             'sourceLabel' => 'bracket_source_label',
             'score' => 'bracket_score',
             'externalId' => 'bracket_external_id',
-            'minAge' => 'bracket_min_age'
+            'minAge' => 'bracket_min_age',
+            'hidden' => 'bracket_hidden'
         );
 
         /**
@@ -125,6 +126,26 @@ namespace Api {
          * The age a reddit account must be to vote
          */
         public $minAge;
+
+        /**
+         * If this bracket is up for publically viewable
+         */
+        public $hidden;
+
+        /**
+         * Ints and bools things
+         * @override
+         */
+        public function copyFromDbRow($row) {
+            parent::copyFromDbRow($row);
+            if ($row) {
+                $this->id = (int) $this->id;
+                $this->state = (int) $this->state;
+                $this->start = (int) $this->start;
+                $this->winnerCharacterId = (int) $this->winnerCharacterId;
+                $this->hidden = (int) $this->hidden === 1;
+            }
+        }
 
         /**
          * Override for getAll to include the winner character object
