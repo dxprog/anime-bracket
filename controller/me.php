@@ -57,6 +57,9 @@ namespace Controller {
             $out = new stdClass;
             $out->brackets = Api\Bracket::getUserOwnedBrackets(self::$_user, $force);
 
+            // If there's no message passed directly, check for one from cache
+            $message = !$message ? self::_getStashedMessage() : $message;
+
             if ($out->brackets) {
 
                 // Check for card images
@@ -204,11 +207,40 @@ namespace Controller {
             Lib\Cache::setDisabled(false);
         }
 
-        protected static function _createMessage($type, $message) {
+        /**
+         * Creates a message object for the alert banner
+         * @param string $type The type of banner, eg "success" or "error"
+         * @param string $message The message to display
+         * @param boolean $stash Whether to stash this object
+         */
+        protected static function _createMessage($type, $message, $stash = false) {
             $retVal = new stdClass;
             $retVal->type = $type;
             $retVal->message = $message;
+
+            if ($stash && self::$_user) {
+                $cacheKey = self::_stashCacheKey();
+                Lib\Cache::Set($cacheKey, $retVal);
+            }
+
             return $retVal;
+        }
+
+        /**
+         * Retrieves a stashed message from caches and then clears it
+         */
+        protected static function _getStashedMessage() {
+            $retVal = null;
+            if (self::$_user) {
+                $cacheKey = self::_stashCacheKey();
+                $retVal = Lib\Cache::Get($cacheKey);
+                Lib\Cache::Set($cacheKey, false);
+            }
+            return $retVal;
+        }
+
+        private static function _stashCacheKey() {
+            return self::$_user ? 'Controller::_getStashedMeessage_' . self::$_user->id : null;
         }
 
         protected static function _generateAges($selectedAge) {
