@@ -1,0 +1,14 @@
+static/css/dev/compile
+static/css/*.css
+vendor/
+node_modules/
+static/images/
+.DS_Store
+._*
+static/js/*.js
+config.php
+app-config.php
+static/js/dev/lib/templates.js
+npm-debug.log
+*.lock
+*.gz

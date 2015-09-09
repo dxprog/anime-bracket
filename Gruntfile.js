@@ -47,8 +47,9 @@ module.exports = function(grunt) {
                 'static/js/dev/controls/*.js',
                 'static/js/dev/*.js',
                 'static/css/dev/*.scss',
-                'views/*.handlebars',
-                'views/admin/*.handlebars',
+                'views/anime-bracket/*.handlebars',
+                'views/anime-bracket/admin/*.handlebars',
+                'views/anime-bracket/partials/*.handlebars',
                 'static/js/dev/modules/*.js'
             ],
             tasks: [ 'handlebars', 'sass', 'concat', 'cssmin' ]
@@ -58,13 +59,14 @@ module.exports = function(grunt) {
                 options: {
                     namespace: 'Templates',
                     wrapped: true,
+                    partialsUseNamespace: true,
                     processName: function(filename) {
-                        return filename.split('.')[0];
+                        return filename.replace('anime-bracket/', '').split('.')[0];
                     }
                 },
                 files: {
-                    'static/js/dev/lib/templates.js': 'views/*.handlebars',
-                    'static/js/adminTemplates.js': 'views/admin/*.handlebars'
+                    'static/js/dev/lib/templates.js': [ 'views/anime-bracket/*.handlebars', 'views/anime-bracket/partials/*.handlebars' ],
+                    'static/js/adminTemplates.js': 'views/anime-bracket/admin/*.handlebars'
                 }
             }
         },
