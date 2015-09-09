@@ -6,7 +6,7 @@ require_once('config.php');
 require_once('lib/aal.php');
 
 // Get all brackets that need to be updated
-$brackets = Api\Bracket::queryReturnAll([ 'state' => [ 'in' => [ BS_NOMINATIONS, BS_ELIMINATIONS, BS_VOTING ] ] ]);
+$brackets = Api\Bracket::queryReturnAll([ 'hidden' => 0, 'state' => [ 'in' => [ BS_NOMINATIONS, BS_ELIMINATIONS, BS_VOTING ] ] ]);
 
 $bot = new Api\Reddit(RB_BOT);
 
