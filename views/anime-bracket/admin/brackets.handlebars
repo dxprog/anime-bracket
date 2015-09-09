@@ -50,6 +50,29 @@
                         <a href="/me/edit/{{perma}}/" class="button edit">Edit Bracket</a>
                     {{/isBracketFinal}}
                 </div>
+                {{#hasNotStarted .}}{{else}}
+                    <ul class="links">
+                        <li class="label">Public Links:</li>
+                        {{#isBracketNominations .}}
+                            <li><a href="/nominate/{{perma}}/" target="_blank">Nominate Form</a></li>
+                        {{/isBracketNominations}}
+                        {{#isBracketEliminations .}}
+                            <li><a href="/vote/{{perma}}/" target="_blank">Elimination Ballot</a></li>
+                            <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
+                        {{/isBracketEliminations}}
+                        {{#isBracketVoting .}}
+                            <li><a href="/vote/{{perma}}/" target="_blank">Ballot</a></li>
+                            <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
+                            <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
+                            <li><a href="/stats/{{perma}}/" target="_blank">Voting Statistics</a></li>
+                        {{/isBracketVoting}}
+                        {{#isBracketFinal .}}
+                            <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
+                            <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
+                            <li><a href="/stats/{{perma}}/" target="_blank">Voting Statistics</a></li>
+                        {{/isBracketFinal}}
+                    </ul>
+                {{/hasNotStarted}}
             </li>
         {{/isBracketNotHidden}}
     {{/each}}
