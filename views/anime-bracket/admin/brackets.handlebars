@@ -49,6 +49,9 @@
                         <a href="/me/delete/{{perma}}/" class="button delete">Delete</a>
                         <a href="/me/edit/{{perma}}/" class="button edit">Edit Bracket</a>
                     {{/isBracketFinal}}
+                    {{#hasNotStarted .}}{{else}}
+                        <a href="/me/hide/{{perma}}/" class="button">{{#if hidden}}Unhide{{else}}Hide{{/if}} Bracket</a>
+                    {{/hasNotStarted}}
                 </div>
                 {{#hasNotStarted .}}{{else}}
                     <ul class="links">
