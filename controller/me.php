@@ -199,6 +199,7 @@ namespace Controller {
 
             // Refresh a single bracket if specified
             if ($bracket) {
+                Api\Bracket::getById($bracket->id);
                 Api\Bracket::getBracketByPerma($bracket->perma);
                 Api\Round::getCurrentRounds($bracket->id);
                 $bracket->getResults();
