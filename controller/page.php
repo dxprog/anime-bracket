@@ -20,7 +20,15 @@ namespace Controller {
             Lib\Display::addKey('CSS_VERSION', CSS_VERSION);
             Lib\Display::addKey('JS_VERSION', JS_VERSION);
             Lib\Display::addKey('USE_MIN', USE_MIN);
-            Lib\Display::addKey('user', Api\User::getCurrentUser());
+
+            $user = Api\User::getCurrentUser();
+            Lib\Display::addKey('user', $user);
+
+            // If we have a user, seed the test bucket so that
+            // random distribution is deterministic
+            if ($user) {
+                Lib\TestBucket::initialize($user->id);
+            }
 
             // Kick off page specific rendering
             static::generate($params);
@@ -113,9 +121,6 @@ namespace Controller {
                 $user = new stdClass;
                 $user->id = 0;
             }
-
-            // Seed the test bucket with the user's ID
-            Lib\TestBucket::initialize($user->id);
 
             return $user;
         }
