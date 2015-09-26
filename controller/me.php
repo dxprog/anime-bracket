@@ -227,6 +227,11 @@ namespace Controller {
             return $retVal;
         }
 
+        protected static function _redirectToMain() {
+            header('Location: /me/');
+            exit;
+        }
+
         /**
          * Retrieves a stashed message from caches and then clears it
          */

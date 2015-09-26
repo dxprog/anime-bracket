@@ -18,7 +18,7 @@ namespace Controller\Admin {
         public static function _setState(Api\Bracket $bracket, $state) {
 
             $message = self::_createMessage('error', 'There was an error setting the bracket state.');
-
+            $setState = false;
             $stateMap = [
                 'nominations' => BS_NOMINATIONS,
                 'eliminations' => BS_ELIMINATIONS,
@@ -29,16 +29,23 @@ namespace Controller\Admin {
 
                 $stateId = $stateMap[$state];
 
-                if ($stateId == BS_ELIMINATIONS) {
+                if ($stateId == BS_NOMINATIONS && $bracket->state == BS_NOT_STARTED) {
+                    $setState = true;
+                } else if ($stateId == BS_ELIMINATIONS && $bracket->state == BS_NOMINATIONS) {
+                    $setState = true;
                     return self::_beginEliminations($bracket);
-                } else if ($stateId == BS_VOTING) {
+                } else if ($stateId == BS_VOTING && $bracket->state == BS_ELIMINATIONS) {
+                    $setState = true;
                     return self::_generateBracket($bracket);
                 }
 
-                $bracket->state = $stateId;
-                if ($bracket->sync()) {
-                    $message = self::_createMessage('success', '"' . $bracket->name . '" has advanced to the ' . $state . ' phase.');
-                    self::_refreshCaches($bracket);
+                if ($setState) {
+                    $bracket->state = $stateId;
+                    if ($bracket->sync()) {
+                        $message = self::_createMessage('success', '"' . $bracket->name . '" has advanced to the ' . $state . ' phase.', true);
+                        self::_refreshCaches($bracket);
+                        self::_redirectToMain();
+                    }
                 }
 
             }
@@ -79,11 +86,11 @@ namespace Controller\Admin {
 
                         $bracket->state = BS_ELIMINATIONS;
                         if ($bracket->sync()) {
-                            $message = self::_createMessage('success', 'Eliminations for "' . $bracket->name . '" have started.');
+                            $message = self::_createMessage('success', 'Eliminations for "' . $bracket->name . '" have started.', true);
                         }
 
                         self::_refreshCaches($bracket);
-                        self::_main($message);
+                        self::_redirectToMain();
 
                     }
                 }
@@ -116,16 +123,16 @@ namespace Controller\Admin {
                                 if ($bracket->createBracketFromEliminations($entrants * $groups, $groups)) {
                                     $message = self::_createMessage('success', 'Voting for bracket "' . $bracket->name . '" has successfully started!');
                                     self::_refreshCaches($bracket);
-                                    self::_main($message);
+                                    self::_redirectToMain();
                                 } else {
                                     $message = self::_createMessage('error', 'There are not enough entrants to create a bracket of that size');
-                                    self::_main($message);
+                                    self::_redirectToMain();
                                 }
                             }
 
                         } else {
                             $message = self::_createMessage('error', 'There was an error starting the bracket');
-                            self::_main($message);
+                            self::_redirectToMain();
                         }
                     } else {
                         $out = (object)[
