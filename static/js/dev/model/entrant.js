@@ -10,7 +10,7 @@
             this.id = data.id;
             this.seed = data.seed;
         } else {
-            this.image = '//cdn.awwni.me/bracket/unknown.jpg';
+            this.image = '//img.animebracket.com/unknown.jpg';
             this.name = '';
             this.source = '';
             this.id = 1;
