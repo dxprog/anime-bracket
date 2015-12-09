@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.4
+-- version 3.5.7
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 09, 2015 at 04:57 AM
--- Server version: 1.0.17
--- PHP Version: 5.6.8-1~dotdeb+wheezy.1
+-- Generation Time: Dec 10, 2015 at 04:32 AM
+-- Server version: 5.5.46-MariaDB-1~wheezy
+-- PHP Version: 5.6.16-1~dotdeb+7.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,28 +14,202 @@ SET time_zone = "+00:00";
 -- Database: `anime_bracket`
 --
 
-
--- --------------------------------------------------------
-
+DELIMITER $$
 --
--- Table structure for table `bot_users`
+-- Procedures
 --
+DROP PROCEDURE IF EXISTS `proc_CleanBrackets`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_CleanBrackets`()
+BEGIN
 
-DROP TABLE IF EXISTS `bot_users`;
-CREATE TABLE IF NOT EXISTS `bot_users` (
-  `bot_id` int(10) NOT NULL AUTO_INCREMENT,
-  `bot_name` varchar(50) NOT NULL,
-  `bot_password` varchar(50) NOT NULL,
-  `bot_hash` varchar(255) DEFAULT NULL,
-  `bot_cookie` varchar(255) DEFAULT NULL,
-  `bot_data` text,
-  `bot_callback` varchar(30) NOT NULL,
-  `bot_updated` int(10) NOT NULL,
-  `bot_created` int(10) NOT NULL,
-  `bot_enabled` tinyint(4) NOT NULL,
-  PRIMARY KEY (`bot_id`),
-  UNIQUE KEY `bot_name` (`bot_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+    
+    UPDATE
+        `bracket`
+    SET
+        `bracket_state` = 0
+    WHERE
+        `bracket_state` = 1
+        AND `bracket_start` < (UNIX_TIMESTAMP() - 86400 * 30);
+
+END$$
+
+DROP PROCEDURE IF EXISTS `proc_GetNextRounds`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_GetNextRounds`(bracketId INT)
+BEGIN
+
+    DECLARE currentTier INT;
+    DECLARE currentGroup INT;
+    DECLARE lastRoundInCurrentGroup INT;
+
+    SELECT
+        MIN(round_tier) INTO currentTier
+    FROM
+        `round`
+    WHERE
+        `bracket_id` = bracketId
+        AND `round_final` = 0;
+
+    SELECT
+        MIN(round_group) INTO currentGroup
+    FROM
+        `round`
+    WHERE
+        `bracket_id` = bracketId
+        AND `round_tier` = currentTier
+        AND `round_final` = 0;
+
+    SELECT
+        MAX(round_id) INTO lastRoundInCurrentGroup
+    FROM
+        `round`
+    WHERE
+        `bracket_id` = bracketId
+        AND `round_tier` = currentTier
+        AND `round_group` = currentGroup
+        AND `round_final` = 0;
+
+    SELECT
+        MIN(`round_tier`) AS nextTier,
+        (MIN(`round_tier`) * MAX(`round_group`) + MIN(`round_group`)) AS calculatedGroup,
+        `round_group` AS nextGroup
+    FROM
+        `round`
+    WHERE
+        `bracket_id` = bracketId
+        AND `round_final` = 0
+        AND `round_id` > lastRoundInCurrentGroup
+    GROUP BY
+        `round_group`,
+        `round_tier`
+    ORDER BY
+        nextTier ASC,
+        calculatedGroup ASC
+    LIMIT 1;
+
+END$$
+
+DROP PROCEDURE IF EXISTS `proc_GetRoundWinner`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_GetRoundWinner`(roundId INT)
+BEGIN
+
+    DECLARE character1Id INT;
+    DECLARE character2Id INT;
+    DECLARE character1Votes INT;
+    DECLARE character2Votes INT;
+    DECLARE character1Seed INT;
+    DECLARE character2Seed INT;
+
+    SELECT
+        `round_character1_id`, `round_character2_id` INTO character1Id, character2Id
+    FROM
+        `round`
+    WHERE
+        `round_id` = roundId;
+
+    SELECT
+        COUNT(1) INTO character1Votes
+    FROM
+        `votes`
+    WHERE
+        `round_id` = roundId
+        AND `character_id` = character1Id;
+
+    SELECT
+        COUNT(1) INTO character2Votes
+    FROM
+        `votes`
+    WHERE
+        `round_id` = roundId
+        AND `character_id` = character2Id;
+
+    CASE
+        WHEN character1Votes > character2Votes THEN SELECT character1Id AS character_id;
+        WHEN character2Votes > character1Votes THEN SELECT character2Id AS character_id;
+        ELSE
+            BEGIN
+
+                SELECT
+                    `character_seed` INTO character1Seed
+                FROM
+                    `character`
+                WHERE
+                    `character_id` = character1Id;
+
+                SELECT
+                    `character_seed` INTO character2Seed
+                FROM
+                    `character`
+                WHERE
+                    `character_id` = character2Id;
+
+                IF character1Seed < character2Seed THEN
+                    SELECT character1Id AS character_id;
+                ELSE
+                    SELECT character2Id AS character_id;
+                END IF;
+
+            END;
+    END CASE;
+
+END$$
+
+DROP PROCEDURE IF EXISTS `proc_UpdateBracketScores`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_UpdateBracketScores`()
+BEGIN
+
+    DECLARE bracketId INT;
+    DECLARE score DECIMAL;
+
+    DECLARE cursorDone BOOLEAN DEFAULT FALSE;
+    DECLARE query CURSOR FOR
+
+        SELECT
+            v.`bracket_id`,
+            (LOG10(COUNT(1)) + (AVG(v.`vote_date`) - (UNIX_TIMESTAMP() - 86400)) / 45000) * b.bracket_state AS score
+        FROM
+            `votes` v
+        INNER JOIN
+            `bracket` b ON b.`bracket_id` = v.`bracket_id`
+        WHERE
+            v.`vote_date` >= (UNIX_TIMESTAMP() - 86400)
+            AND b.`bracket_state` IN (2, 3)
+        GROUP BY
+            v.`bracket_id`
+
+        UNION
+
+        SELECT
+            n.`bracket_id`,
+            LOG10(COUNT(1)) + (b.bracket_start - (UNIX_TIMESTAMP() - 86400)) / 45000 AS score
+        FROM
+            `nominee` n
+        INNER JOIN
+            `bracket` b ON b.`bracket_id` = n.`bracket_id`
+        WHERE
+            b.`bracket_start` >= (UNIX_TIMESTAMP() - 86400)
+            AND b.`bracket_state` = 1
+        GROUP BY
+            n.`bracket_id`;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET cursorDone = TRUE;
+
+    OPEN query;
+    WHILE cursorDone = FALSE DO
+
+        FETCH query INTO bracketId, score;
+
+        UPDATE
+            `bracket`
+        SET
+            `bracket_score` = score
+        WHERE
+            `bracket_id` = bracketId;
+
+    END WHILE;
+
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -59,8 +233,8 @@ CREATE TABLE IF NOT EXISTS `bracket` (
   `bracket_source_label` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
   `bracket_score` decimal(10,0) DEFAULT NULL,
   `bracket_external_id` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `bracket_min_age` int(11) DEFAULT NULL,
-  `bracket_hidden` tinyint(4) DEFAULT NULL,
+  `bracket_min_age` int(11) DEFAULT '2592000',
+  `bracket_hidden` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`bracket_id`),
   UNIQUE KEY `U_bracket_perma` (`bracket_perma`),
   KEY `FK_winner_character_id` (`winner_character_id`)
@@ -183,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `user_admin` tinyint(1) NOT NULL,
   `user_ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  `user_age` int(11) NOT NULL,
+  `user_age` int(11) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -255,7 +429,7 @@ ALTER TABLE `round`
 -- Constraints for table `votes`
 --
 ALTER TABLE `votes`
-  ADD CONSTRAINT `FK_vote_character_id` FOREIGN KEY (`character_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_vote_round_id` FOREIGN KEY (`round_id`) REFERENCES `round` (`round_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_votes_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_votes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_votes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_vote_character_id` FOREIGN KEY (`character_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_vote_round_id` FOREIGN KEY (`round_id`) REFERENCES `round` (`round_id`) ON DELETE CASCADE ON UPDATE CASCADE;
