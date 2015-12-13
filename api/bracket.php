@@ -416,7 +416,16 @@ namespace Api {
                 $this->winnerCharacterId = $this->winner->id;
                 $this->state = BS_FINAL;
                 $this->sync();
-
+            } else {
+                // Somehow, there are no more open rounds, so get the last one and use the winner from
+                // that to close out the bracket
+                $round = Round::queryReturnAll([ 'bracketId' => $this->id ], [ 'round_id' => 'desc' ], 1);
+                if (count($round) === 1) {
+                    $this->winner = $round->getWinner();
+                    $this->winnerCharacterId = $this->winner->id;
+                    $this->state = BS_FINAL;
+                    $this->sync();
+                }
             }
 
             // Clear the results cache
