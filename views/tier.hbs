@@ -5,7 +5,7 @@
                 {{> entrant entrant1}}
             </div>
             {{#if entrant2}}
-                <div data-id="{{entrant2.id}}" class="entrant entrant-{{entrant2.position}} {{#userVoted entrant2}}user-voted{{/userVoted}}{{#if entrant2.nobody}} nobody{{/if}}" style="height:{{../../height}}px;">
+                <div data-id="{{entrant2.id}}" class="entrant entrant-{{entrant2.position}} {{#userVoted entrant2}}user-voted{{/userVoted}}{{#if entrant2.nobody}} nobody{{/if}}" style="height:{{../height}}px;">
                     {{> entrant entrant2}}
                 </div>
             {{/if}}

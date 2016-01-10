@@ -111,6 +111,10 @@ Router.prototype = {
 
     // Root gets renamed to index
     path = path === '/' ? 'index' : path;
+    
+    // If the first character is a slash, drop that
+    path = path.indexOf('/') === 0 ? path.substr(1) : path;
+    
 
     for (var i in this._routes) {
         if (this._routes.hasOwnProperty(i)) {
