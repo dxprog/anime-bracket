@@ -1,106 +1,68 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        concat: {
-            js: {
-                options: {
-                    separator: ';'
-                },
-                src: [
-                    'static/js/dev/lib/jquery-1.10.2.min.js',
-                    'static/js/dev/lib/handlebars.runtime.js',
-                    'static/js/dev/lib/templates.js',
-                    'static/js/dev/controls/*.js',
-                    'static/js/dev/model/*.js',
-                    'static/js/dev/*.js'
-                ],
-                dest: 'static/js/<%= pkg.name %>.js'
-            },
-            scss: {
-                src: [
-                    'static/css/dev/compile/*.css'
-                ],
-                dest: 'static/css/<%= pkg.name %>.css'
-            }
-        },
         uglify: {
             options: {
                 banner: '/* <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             dist: {
-                files: [
-                    {
-                        'static/js/<%= pkg.name %>.min.js': ['<%= concat.js.dest %>']
-                    },
-                    {
-                        expand: true,
-                        cwd: 'static/js/dev/modules',
-                        src: '*.js',
-                        dest: 'static/js'
-                    }
-                ]
-            }
-        },
-        watch: {
-            files: [
-                'static/js/dev/model/*.js',
-                'static/js/dev/controls/*.js',
-                'static/js/dev/*.js',
-                'static/css/dev/*.scss',
-                'views/anime-bracket/*.handlebars',
-                'views/anime-bracket/admin/*.handlebars',
-                'views/anime-bracket/partials/*.handlebars',
-                'static/js/dev/modules/*.js'
-            ],
-            tasks: [ 'handlebars', 'sass', 'concat', 'cssmin' ]
-        },
-        handlebars: {
-            compile: {
-                options: {
-                    namespace: 'Templates',
-                    wrapped: true,
-                    partialsUseNamespace: true,
-                    processName: function(filename) {
-                        return filename.replace('anime-bracket/', '').split('.')[0];
-                    }
-                },
                 files: {
-                    'static/js/dev/lib/templates.js': [ 'views/anime-bracket/*.handlebars', 'views/anime-bracket/partials/*.handlebars' ],
-                    'static/js/adminTemplates.js': 'views/anime-bracket/admin/*.handlebars'
+                    './static/js/<%= pkg.name %>.min.js': [ './static/js/<%= pkg.name %>.js' ]
                 }
             }
         },
         sass: {
             dist: {
-                files: [{
-                    expand: true,
-                    cwd: 'static/css/dev',
-                    src: [ '*.scss' ],
-                    dest: 'static/css/dev/compile',
-                    ext: '.css'
-                }]
+                files: {
+                    './static/scss/styles.css': './static/scss/styles.scss',
+                    './static/scss/mobile.css': './static/scss/mobile.scss'
+                }
             }
         },
-        cssmin: {
+        browserify: {
+            options: {
+                transform: [
+                    [ 'babelify', { 'presets': 'es2015' }],
+                    [ 'browserify-handlebars' ]
+                ],
+                require: [
+                    './node_modules/underscore/underscore.js:underscore',
+                    './node_modules/jquery/dist/jquery.js:jquery'
+                ]
+            },
             dist: {
+                src: [ './static/js/dev/app.js', './views/anime-bracket/*.hbs' ],
+                dest: './static/js/<%= pkg.name %>.js'
+            }
+        },
+        watch: {
+            css: {
+                files: [
+                    './static/scss/*.scss'
+                ],
+                tasks: [ 'sass' ]
+            },
+            js: {
+                files: [
+                    './static/js/dev/**/*.js',
+                    './views/**/*.hbs'
+                ],
+                tasks: [ 'browserify' ],
+            },
+            configFiles: {
+                files: [ 'Gruntfile.js' ],
                 options: {
-                    banner: '/* <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-                },
-                files: {
-                    'static/css/<%= pkg.name %>.min.css': [ '<%= concat.scss.dest %>' ]
+                    reload: true
                 }
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-handlebars');
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-sass');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-    grunt.registerTask('default', ['handlebars', 'sass', 'concat', 'uglify', 'cssmin' ]);
+    grunt.registerTask('default', ['browserify', 'sass', 'uglify']);
 
 };
