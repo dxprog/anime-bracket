@@ -31,7 +31,7 @@ module.exports = function(grunt) {
                 ]
             },
             dist: {
-                src: [ './static/js/dev/app.js', './views/anime-bracket/*.hbs' ],
+                src: [ './static/js/dev/app.js', './views/*.hbs' ],
                 dest: './static/js/<%= pkg.name %>.js'
             }
         },
