@@ -86,10 +86,14 @@ Router.prototype = {
             });
 
             url = qs.length ? url + '?' + qs.join('&') : url;
-            window.history.pushState({
-                route: route,
-                params: params
-            }, null, url);
+
+            // Don't push the index page
+            if (url !== 'index') {
+              window.history.pushState({
+                  route: route,
+                  params: params
+              }, null, url);
+            }
         }
 
     } else {
