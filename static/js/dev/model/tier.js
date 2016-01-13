@@ -32,7 +32,7 @@ Tier.prototype = {
     let side = [];
     let retVal = [];
     let cellHeight = Math.pow(2, tierOffset + 1) * ENTRANT_HEIGHT / 2;
-console.log(cellHeight);
+
     // Render such that when we're on the final round, each contestant is on opposite sides (for split render)
     count = rounds.length;
     if (count > 1 || !split) {

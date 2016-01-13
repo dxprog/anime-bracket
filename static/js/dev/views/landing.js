@@ -60,7 +60,6 @@ function placeHex(round) {
 };
 
 function init() {
-    console.log('hey guys');
     var $window = $(window),
         out = '',
         count = 0;

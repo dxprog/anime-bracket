@@ -6,7 +6,7 @@ import BracketDisplay from './views/bracket-display';
 
 Router.addRoutes({
   'index': Landing,
-  'results/:perma/': BracketDisplay
+  '/results/:perma/': BracketDisplay
 });
 
 Router.go(window.location.pathname);

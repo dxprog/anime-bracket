@@ -3,210 +3,188 @@ import $ from 'jquery';
 
 import Entrant from '../model/entrant';
 import Tier from '../model/tier';
+import Router from '../lib/router';
+import Singleton from '../lib/singleton';
 
 import TPL_GROUP_PICKER from '../../../../views/groupPicker.hbs';
 import TPL_ENTRANT from '../../../../views/partials/_entrant.hbs';
 import TPL_WINNER from '../../../../views/winner.hbs';
 
+const SINGLETON_NAME = 'bracket-display';
 const COLUMN_WIDTH = 298;
 
-let tiers = [];
-let i = 0;
-let count = null;
-let $content = $('.bracket-display');
-let $body = $('body');
-let $header = $('header');
-let tier = null;
-let lastEntrantCount = 9999;
-let groups = 0;
-let popup = null;
+let BracketDisplay = Singleton.define(SINGLETON_NAME, {
 
-function parseQueryString(qs) {
+  __construct() {
+    this._tiers = [];
+    this._$content = $('.bracket-display');
+    this._$body = $('body');
+    this._$header = $('header');
+    this._groups = 0;
+    this._initialized = false;
+  },
 
-  var
-    retVal = {},
-    i = null,
-    count = 0,
-    kvp = null;
+  parseQueryString(qs) {
+    var
+      retVal = {},
+      i = null,
+      count = 0,
+      kvp = null;
 
-  if (!qs) {
-    qs = location.href.indexOf('?') !== -1 ? location.href.split('?')[1] : null;
-  }
-
-  if (qs) {
-    qs = qs.split('&');
-    for (i = 0, count = qs.length; i < count; i++) {
-      kvp = qs[i].split('=');
-      retVal[kvp[0]] = kvp.length === 1 ? true : decodeURIComponent(kvp[1]);
+    if (!qs) {
+      qs = location.href.indexOf('?') !== -1 ? location.href.split('?')[1] : null;
     }
-  }
 
-  return retVal;
+    if (qs) {
+      qs = qs.split('&');
+      for (i = 0, count = qs.length; i < count; i++) {
+        kvp = qs[i].split('=');
+        retVal[kvp[0]] = kvp.length === 1 ? true : decodeURIComponent(kvp[1]);
+      }
+    }
 
-};
+    return retVal;
+  },
 
-function renderBracket(group, tier) {
-  let left = '';
-  let right = '';
-  let temp = [];
-  let columns = 0;
-  let max = tiersForGroup(group);
-  let lastRound = null;
-  let bracketHeight = 0;
-  let winner = {};
+  renderBracket(group, tier) {
+    let left = '';
+    let right = '';
+    let temp = [];
+    let columns = 0;
+    let max = this.tiersForGroup(group);
+    let lastRound = null;
+    let bracketHeight = 0;
+    let winner = {};
 
-  tier = tier || 0;
-  bracketHeight = Math.pow(2, max - tier - 1) * 100;
+    tier = tier || 0;
+    bracketHeight = Math.pow(2, max - tier - 1) * 100;
 
-  for (i = tier; i < max; i++) {
-    temp = tiers[i].render(i - tier, group, true);
-    left += temp[0];
-    right = temp[1] + right;
-    columns += 2;
-  }
+    for (let i = tier; i < max; i++) {
+      temp = this._tiers[i].render(i - tier, group, true);
+      left += temp[0];
+      right = temp[1] + right;
+      columns += 2;
+    }
 
-  // Render the winner
-  lastRound = tiers[i - 1].getRound(0, group);
-  if (null !== lastRound && null !== lastRound.entrant1 && null != lastRound.entrant2) {
-    if (!lastRound.entrant1.votes && !lastRound.entrant2.votes) {
-      winner = { entrant:new Entrant(null, 0) };
-    } else {
-      if (lastRound.entrant1.votes > lastRound.entrant2.votes) {
-        winner = { entrant: lastRound.entrant1 };
+    // Render the winner
+    lastRound = this._tiers[max - 1].getRound(0, group);
+    if (null !== lastRound && null !== lastRound.entrant1 && null != lastRound.entrant2) {
+      if (!lastRound.entrant1.votes && !lastRound.entrant2.votes) {
+        winner = { entrant:new Entrant(null, 0) };
       } else {
-        winner = { entrant: lastRound.entrant2 };
+        if (lastRound.entrant1.votes > lastRound.entrant2.votes) {
+          winner = { entrant: lastRound.entrant1 };
+        } else {
+          winner = { entrant: lastRound.entrant2 };
+        }
       }
+      winner.height = bracketHeight;
+      left += TPL_WINNER(winner);
     }
-    winner.height = bracketHeight;
-    left += TPL_WINNER(winner);
-  }
 
-  // Add an additional column for the winner
-  columns++;
-  let width = columns * COLUMN_WIDTH;
+    // Add an additional column for the winner
+    columns++;
+    let width = columns * COLUMN_WIDTH;
 
-  $body.width(width);
-  $content.width(width).html(left + right);
+    this._$body.width(width);
+    this._$content.width(width).html(left + right);
 
-}
+  },
 
-/**
- * Returns the number of tiers that will be in a group
- */
-function tiersForGroup(group, displayFinalRound) {
-  var rounds = tiers[0].getRoundsForGroup(group).length;
-  return Math.log(rounds) / Math.LN2 + 1;
-}
+  /**
+   * Returns the number of tiers that will be in a group
+   */
+  tiersForGroup(group) {
+    var rounds = this._tiers[0].getRoundsForGroup(group).length;
+    return Math.log(rounds) / Math.LN2 + 1;
+  },
 
-function handleGroupChange(e) {
-  changeGroup($(e.currentTarget).data('group'));
-}
+  handleGroupChange(e) {
+    this.changeGroup($(e.currentTarget).data('group'));
+  },
 
-function changeGroup(group, ignoreHistory) {
-  var tier = null,
-    urlGroup = group,
-    displayFinalRound = false;
+  changeGroup(group, ignoreHistory) {
+    let tier = null;
+    let urlGroup = group;
 
-  $header.find('.selected').removeClass('selected');
-  $header.find('[data-group="' + group + '"]').addClass('selected');
+    const bracketData = this._bracketData;
 
-  if (group === 'finals') {
-    group = null;
-    displayFinalRound = true;
-    tier = count - 3;
-  } else if (group === 'all') {
-    group = null;
-    displayFinalRound = true;
-    tier = 0;
-  } else {
-    group = parseInt(group, 10);
-    urlGroup = group + 1;
-  }
-  renderBracket(group, tier, displayFinalRound);
+    this._$header.find('.selected').removeClass('selected');
+    this._$header.find('[data-group="' + group + '"]').addClass('selected');
 
-  if (typeof window.history.pushState === 'function' && !ignoreHistory) {
-    history.pushState(null, window.title, '/results/' + window.bracketData.perma + '/?group=' + urlGroup);
-  }
-
-}
-
-function hidePopups() {
-  popup = null;
-  $('.stats-popup').remove();
-}
-
-function handleMouseOver(evt) {
-  var id = evt.currentTarget.getAttribute('data-id');
-  if ('1' !== id) {
-    if (popup) {
-      hidePopups();
+    if (group === 'finals') {
+      group = null;
+      tier = bracketData.results.length - 3;
+    } else if (group === 'full') {
+      group = null;
+      tier = 0;
+    } else {
+      group = parseInt(group, 10);
+      urlGroup = group + 1;
     }
-    // popup = new CharacterInfo($(evt.currentTarget).parent(), id);
-    $('.highlighted').removeClass('highlighted');
-    $('.entrant[data-id="' + id + '"]')
-      .addClass('highlighted')
-      .parent().addClass('highlighted');
-  }
-}
+    this.renderBracket(group, tier);
 
-function handleMouseOut(evt) {
-  hidePopups();
-}
+    if (!ignoreHistory) {
+      Router.go('results.perma', { perma: bracketData.perma, group: urlGroup });
+    }
+  },
 
-function populateGroups() {
-  var out = [],
-    i = 0;
+  populateGroups() {
+    let out = [];
+
+    for (let i = 0; i < this._groups; i++) {
+      out.push({ name:String.fromCharCode(i + 65), index:i });
+    }
+
+    this._$header
+      .find('ul.groups')
+      .html(TPL_GROUP_PICKER({ groups:out }))
+      .on('click', 'li', this.handleGroupChange.bind(this));
+  },
+
+  init() {
+
+    let qs = this.parseQueryString();
+    let group = qs.hasOwnProperty('group') ? qs.group : 1;
+    let groups = 0;
+
+    this._bracketData = window.bracketData || null;
 
 
-  for (; i < groups; i++) {
-    out.push({ name:String.fromCharCode(i + 65), index:i });
-  }
+    if (this._bracketData && !this._initialized) {
 
-  $header
-    .find('ul.groups')
-    .prepend(TPL_GROUP_PICKER({ groups:out }))
-    .on('click', 'li', handleGroupChange);
-}
+      const bracketData = this._bracketData;
 
-export default function init() {
+      Handlebars.registerPartial('entrant', TPL_ENTRANT);
+      Handlebars.registerHelper('userVoted', function(entrant, options) {
+        var retVal = '',
+          id = '' + this.id;
+        if (bracketData.userVotes && bracketData.userVotes.hasOwnProperty(id)) {
+          retVal = bracketData.userVotes[id] == entrant.id ? options.fn(this) : '';
+        }
+        return retVal;
+      });
 
-  let qs = parseQueryString();
-  let group = qs.hasOwnProperty('group') ? qs.group : 1;
-  let bracketData = window.bracketData || null;
-
-  if (bracketData) {
-
-    count = bracketData.results.length;
-
-    Handlebars.registerPartial('entrant', TPL_ENTRANT);
-    Handlebars.registerHelper('userVoted', function(entrant, options) {
-      var retVal = '',
-        id = '' + this.id;
-      if (window.bracketData.userVotes && bracketData.userVotes.hasOwnProperty(id)) {
-        retVal = bracketData.userVotes[id] == entrant.id ? options.fn(this) : '';
+      for (let i = 0, count = bracketData.results.length; i < count; i++) {
+        let tier = new Tier(bracketData.results[i]);
+        groups = tier.groups > groups ? tier.groups : groups;
+        this._tiers.push(tier);
       }
-      return retVal;
-    });
 
-    for (; i < count; i++) {
-      tier = new Tier(bracketData.results[i]);
-      groups = tier.groups > groups ? tier.groups : groups;
-      lastEntrantCount = tier.entrants;
-      tiers.push(tier);
+      // Increment by 1 because group IDs are 0 based
+      this._groups = groups + 1;
+
+      this._$header.find('.title').text(window.bracketData.name);
+
+      group = isNaN(group) ? group : group - 1;
+      this.populateGroups();
+      this.changeGroup(group, true);
+    } else if (this._initialized) {
+      this.changeGroup(group, true);
     }
-
-    // Increment by 1 because group IDs are 0 based
-    groups = groups + 1;
-
-    $body
-      .on('mouseover', '.entrant-info', handleMouseOver)
-      .on('mouseout', '.entrant-info', handleMouseOut);
-
-    $header.find('.title').text(window.bracketData.name);
-
-    group = isNaN(group) ? group : group - 1;
-    populateGroups();
-    changeGroup(group, true);
   }
-  
+});
+
+export default function() {
+  Singleton.getByName(SINGLETON_NAME).init(...arguments);
 }
