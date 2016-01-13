@@ -13,7 +13,7 @@ import TPL_WINNER from '../../../../views/winner.hbs';
 const SINGLETON_NAME = 'bracket-display';
 const COLUMN_WIDTH = 298;
 
-let BracketDisplay = Singleton.define(SINGLETON_NAME, {
+Singleton(SINGLETON_NAME, {
 
   __construct() {
     this._tiers = [];
@@ -186,5 +186,5 @@ let BracketDisplay = Singleton.define(SINGLETON_NAME, {
 });
 
 export default function() {
-  Singleton.getByName(SINGLETON_NAME).init(...arguments);
+  Singleton(SINGLETON_NAME).init(...arguments);
 }

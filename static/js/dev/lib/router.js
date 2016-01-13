@@ -9,13 +9,13 @@ const MODE_STANDARD = 0;
 const MODE_PARAM = 1;
 
 
-export default Singleton.define('router', {
+export default Singleton('router', {
 
   __construct() {
     this._routes = {};
     this._supportsHistory = 'history' in window;
   },
-  
+
   /**
    * Bulk add routes. Name will be determined by path, eg: /this/page/thing/:id -> this.page.thing.id
    */
