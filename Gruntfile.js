@@ -27,7 +27,8 @@ module.exports = function(grunt) {
                 ],
                 require: [
                     './node_modules/underscore/underscore.js:underscore',
-                    './node_modules/jquery/dist/jquery.js:jquery'
+                    './node_modules/jquery/dist/jquery.js:jquery',
+                    './node_modules/moleculejs/src/molecule.js:molecule'
                 ]
             },
             dist: {
