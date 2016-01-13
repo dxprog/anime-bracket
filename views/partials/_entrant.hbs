@@ -9,7 +9,7 @@
         {{#if votes}}
             {{votes}} votes
         {{else}}
-            Pending
+            {{#if final}}0 votes{{else}}Pending{{/if}}
         {{/if}}
     </dd>
     {{#if seed}}
