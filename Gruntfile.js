@@ -14,15 +14,14 @@ module.exports = function(grunt) {
         sass: {
             dist: {
                 files: {
-                    './static/scss/styles.css': './static/scss/styles.scss',
-                    './static/scss/mobile.css': './static/scss/mobile.scss'
+                    './static/css/<%= pkg.name %>.css': './static/css/dev/index.scss'
                 }
             }
         },
         browserify: {
             options: {
                 transform: [
-                    [ 'babelify', { 'presets': 'es2015' }],
+                    [ 'babelify', { 'presets': 'es2015' } ],
                     [ 'browserify-handlebars' ]
                 ],
                 require: [
@@ -39,7 +38,7 @@ module.exports = function(grunt) {
         watch: {
             css: {
                 files: [
-                    './static/scss/*.scss'
+                    './static/css/dev/**/*.scss'
                 ],
                 tasks: [ 'sass' ]
             },
