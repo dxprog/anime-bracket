@@ -1,5 +1,7 @@
 import _ from 'underscore';
 
+import Singleton from './singleton';
+
 const PATH_DELIMITER = '/';
 const PARAM_MARKER = ':';
 const QS_MARKER = '?';
@@ -7,27 +9,19 @@ const MODE_STANDARD = 0;
 const MODE_PARAM = 1;
 
 
-var Router = function(handleCurrentState) {
+export default Singleton.define('router', {
 
+  __construct() {
     this._routes = {};
     this._supportsHistory = 'history' in window;
-
-    if (this._supportsHistory) {
-        window.addEventListener('popstate', function(evt) {
-
-        });
-    }
-
-};
-
-Router.prototype = {
-
+  },
+  
   /**
    * Bulk add routes. Name will be determined by path, eg: /this/page/thing/:id -> this.page.thing.id
    */
   addRoutes(routes) {
     Object.keys(routes).forEach((path) => {
-      var name = path.replace(/:/g, '').replace(/\//g, '.');
+      let name = path.replace(/\//g, '.').replace(/(^\.|:|\.$)/g, '');
       this.addRoute(name, path, routes[path]);
     });
   },
@@ -58,7 +52,7 @@ Router.prototype = {
         qs = [];
 
     // Look for the route by name in the list
-    if (route in this._routes) {
+    if (!!this._routes[route]) {
 
         url = this._routes[route].path;
         oldUrl = url;
@@ -111,10 +105,6 @@ Router.prototype = {
 
     // Root gets renamed to index
     path = path === '/' ? 'index' : path;
-    
-    // If the first character is a slash, drop that
-    path = path.indexOf('/') === 0 ? path.substr(1) : path;
-    
 
     for (var i in this._routes) {
         if (this._routes.hasOwnProperty(i)) {
@@ -197,10 +187,5 @@ Router.prototype = {
         map: paramMap
     };
   }
-};
 
-if (!window._Router) {
-  window._Router = new Router();
-}
-
-export default window._Router;
+});
