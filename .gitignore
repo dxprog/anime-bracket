@@ -12,3 +12,6 @@ static/js/dev/lib/templates.js
 npm-debug.log
 *.lock
 *.gz
+.vscode
+images/*.png
+images/*.jpg
