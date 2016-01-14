@@ -99,6 +99,17 @@ export default Route(SINGLETON_NAME,{
     return Math.log(rounds) / Math.LN2 + 1;
   },
 
+  handleMouseOver(evt) {
+    let id = evt.currentTarget.getAttribute('data-id');
+    if ('1' !== id) {
+
+      $('.highlighted').removeClass('highlighted');
+      $('.entrant[data-id="' + id + '"]')
+        .addClass('highlighted')
+        .parent().addClass('highlighted');
+      }
+  },
+
   handleGroupChange(e) {
     this.changeGroup($(e.currentTarget).data('group'));
   },
@@ -174,6 +185,7 @@ export default Route(SINGLETON_NAME,{
       // Increment by 1 because group IDs are 0 based
       this._groups = groups + 1;
 
+      this._$body.on('mouseover', '.entrant-info', this.handleMouseOver.bind(this));
       this._$header.find('.title').text(window.bracketData.name);
 
       group = isNaN(group) ? group : group - 1;
@@ -182,7 +194,5 @@ export default Route(SINGLETON_NAME,{
     } else if (this._initialized) {
       this.changeGroup(group, true);
     }
-  },
-
-  revisitRoute() {}
+  }
 });
