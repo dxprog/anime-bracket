@@ -3,8 +3,8 @@ import $ from 'jquery';
 
 import Entrant from '../model/entrant';
 import Tier from '../model/tier';
+import Route from '../lib/route';
 import Router from '../lib/router';
-import Singleton from '../lib/singleton';
 
 import TPL_GROUP_PICKER from '../../../../views/groupPicker.hbs';
 import TPL_ENTRANT from '../../../../views/partials/_entrant.hbs';
@@ -13,7 +13,7 @@ import TPL_WINNER from '../../../../views/winner.hbs';
 const SINGLETON_NAME = 'bracket-display';
 const COLUMN_WIDTH = 298;
 
-Singleton(SINGLETON_NAME, {
+export default Route(SINGLETON_NAME,{
 
   __construct() {
     this._tiers = [];
@@ -142,7 +142,7 @@ Singleton(SINGLETON_NAME, {
       .on('click', 'li', this.handleGroupChange.bind(this));
   },
 
-  init() {
+  initRoute() {
 
     let qs = this.parseQueryString();
     let group = qs.hasOwnProperty('group') ? qs.group : 1;
@@ -182,9 +182,7 @@ Singleton(SINGLETON_NAME, {
     } else if (this._initialized) {
       this.changeGroup(group, true);
     }
-  }
-});
+  },
 
-export default function() {
-  Singleton(SINGLETON_NAME).init(...arguments);
-}
+  revisitRoute() {}
+});
