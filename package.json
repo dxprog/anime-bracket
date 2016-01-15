@@ -5,10 +5,14 @@
   "repository": "https://github.com/dxprog/anime-bracket",
   "author": "Matt (dxprog) Hackmann",
   "license": "GPLv3",
+  "scripts": {
+    "test": "karma start karma.conf.js --single-run"
+  },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify-handlebars": "^1.0.0",
+    "chai": "^3.4.1",
     "grunt": "~0.4.5",
     "grunt-browserify": "^4.0.1",
     "grunt-concat-css": "~0.3.1",
@@ -20,8 +24,16 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-sass": "^1.1.0",
     "jquery": "^2.2.0",
+    "karma": "^0.13.19",
+    "karma-chai": "^0.1.0",
+    "karma-mocha": "^0.2.1",
+    "karma-phantomjs-launcher": "^0.2.3",
+    "karma-sinon": "^1.0.4",
+    "mocha": "^2.3.4",
     "moleculejs": "^1.0.0",
+    "phantomjs": "^1.9.19",
     "sass": "~0.5.0",
+    "sinon": "^1.17.2",
     "underscore": "^1.8.3"
   }
 }

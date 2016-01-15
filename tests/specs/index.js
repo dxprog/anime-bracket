@@ -1,0 +1,1 @@
+import Singleton from './lib/singleton.spec';

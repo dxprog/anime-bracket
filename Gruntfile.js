@@ -31,8 +31,10 @@ module.exports = function(grunt) {
                 ]
             },
             dist: {
-                src: [ './static/js/dev/app.js', './views/*.hbs' ],
-                dest: './static/js/<%= pkg.name %>.js'
+              files: {
+                  './static/js/<%= pkg.name %>.js': [ './static/js/dev/app.js', './views/*.hbs' ],
+                  './tests/tests.js': [ './tests/specs/index.js', './views/*.hbs' ]
+              }
             }
         },
         watch: {
@@ -45,7 +47,8 @@ module.exports = function(grunt) {
             js: {
                 files: [
                     './static/js/dev/**/*.js',
-                    './views/**/*.hbs'
+                    './views/**/*.hbs',
+                    './tests/specs/**/*.js'
                 ],
                 tasks: [ 'browserify' ],
             },
