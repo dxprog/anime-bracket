@@ -6,7 +6,7 @@
   "author": "Matt (dxprog) Hackmann",
   "license": "GPLv3",
   "scripts": {
-    "test": "karma start karma.conf.js --single-run"
+    "test": "grunt browserify && karma start karma.conf.js --single-run"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
