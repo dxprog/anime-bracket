@@ -1,11 +1,12 @@
 import Router from './lib/router';
 
 // Pages
-import Landing from './views/landing';
 import BracketDisplay from './views/bracket-display';
-import Voting from './views/voting';
-import Nominations from './views/nominations';
 import Characters from './views/characters';
+import Landing from './views/landing';
+import Nav from './views/nav';
+import Nominations from './views/nominations';
+import Voting from './views/voting';
 
 Router.addRoutes({
   'index': Landing,
@@ -15,4 +16,13 @@ Router.addRoutes({
   '/characters/:perma/': Characters
 });
 
+// Set the UTC cookie
+if (document.cookie.indexOf('utcOffset') === -1) {
+  // 1000 days in the future...
+  let expires = new Date();
+  expires.setTime(Date.now() + (86400 * 1000 * 1000));
+  document.cookie = 'utcOffset=' + expires.getTimezoneOffset() + '; expires=' + expires.toGMTString() + '; path=/';
+}
+
+Nav.init();
 Router.go(window.location.pathname);
