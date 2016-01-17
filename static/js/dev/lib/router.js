@@ -4,10 +4,11 @@ import Singleton from './singleton';
 
 const PATH_DELIMITER = '/';
 const PARAM_MARKER = ':';
+const FRAGMENT_WILDCARD = '*';
 const QS_MARKER = '?';
 const MODE_STANDARD = 0;
 const MODE_PARAM = 1;
-
+const MODE_WILDCARD = 2;
 
 export default Singleton('router', {
 
@@ -127,64 +128,73 @@ export default Singleton('router', {
    * Generates a regular expression so that a path can be tracked back to its route
    */
   _compilePath(path) {
-    var regEx = '^',
-        paramName = '',
-        mode = MODE_STANDARD,
-        i = 0,
-        count = path.length,
-        character,
-        paramCount = 1,
-        paramMap = {},
-        hasQueryString = false;
+    let regEx = '^';
+    let paramName = '';
+    let mode = MODE_STANDARD;
+    let character;
+    let paramCount = 1;
+    let paramMap = {};
+    let hasQueryString = false;
 
-    for (; i < count; i++) {
+    for (let i = 0, count = path.length; i < count; i++) {
 
-        // If this route has already parsed a querystring placeholder, throw an error
-        // because that must be the last part of a route if it's present
-        if (hasQueryString) {
-            throw 'Cannot have additional path/parameters after a query string marker';
-            return;
-        }
+      // If this route has already parsed a querystring placeholder, throw an error
+      // because that must be the last part of a route if it's present
+      if (hasQueryString) {
+        throw 'Cannot have additional path/parameters after a query string marker';
+        return;
+      }
 
-        character = path.charAt(i);
+      character = path.charAt(i);
 
-        if (MODE_PARAM === mode) {
-            // A parameter marker in a character is invalid
-            if (PARAM_MARKER === character) {
-                throw 'Invalid character in route path';
-                return;
-            } else if (PATH_DELIMITER === character) {
-                regEx = regEx.concat('([^\\/]+)\\/');
-                paramMap[paramCount] = paramName;
-                paramName = '';
-                mode = MODE_STANDARD;
-                paramCount++;
-            } else {
-                paramName = paramName.concat(character);
-            }
+      if (MODE_PARAM === mode) {
+        // A parameter marker in a character is invalid
+        if (PARAM_MARKER === character) {
+          throw 'Invalid character in route path';
+          return;
+        } else if (PATH_DELIMITER === character) {
+          regEx = regEx.concat('([^\\/]+)\\/');
+          paramMap[paramCount] = paramName;
+          paramName = '';
+          mode = MODE_STANDARD;
+          paramCount++;
         } else {
-            if (PARAM_MARKER === character) {
-                mode = MODE_PARAM;
-            } else if (QS_MARKER === character) {
-                hasQueryString = true;
-                regEx = regEx.concat('([\w]+)');
-            } else {
-                regEx = regEx.concat(character);
-            }
+          paramName = paramName.concat(character);
         }
+      } else if (MODE_WILDCARD === mode) {
+        if (PATH_DELIMITER !== character) {
+          throw 'Wildcards must end a route or be followed by a path marker';
+        }
+        regEx = regEx.concat('([\\w\\/-]+)');
+      } else {
+        if (PARAM_MARKER === character) {
+          mode = MODE_PARAM;
+        } else if (FRAGMENT_WILDCARD === character) {
+          mode = MODE_WILDCARD
+        } else if (QS_MARKER === character) {
+          hasQueryString = true;
+          regEx = regEx.concat('([\w]+)');
+        } else {
+          regEx = regEx.concat(character);
+        }
+      }
     }
 
     // If the route ended on a parameter, handle it
     if (paramName.length > 0) {
-        regEx = regEx.concat('([^\\/]+)');
-        paramMap[paramCount] = paramName;
+      regEx = regEx.concat('([^\\/]+)');
+      paramMap[paramCount] = paramName;
+
+    // Handle ending on a wild card
+    } else if (MODE_WILDCARD === mode) {
+      regEx = regEx.concat('([\\w\\/-]+)');
     }
 
     regEx = new RegExp(regEx.concat('$'), 'ig');
 
     return {
-        regEx: regEx,
-        map: paramMap
+      regEx: regEx,
+      map: paramMap
     };
   }
 
