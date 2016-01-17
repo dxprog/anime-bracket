@@ -5,6 +5,10 @@ import sinon from 'sinon';
 import Route from '../../../static/js/dev/lib/route';
 import Singleton from '../../../static/js/dev/lib/singleton';
 
+function getRouteInstance(name) {
+  return Singleton(`__ROUTE_${name}`);
+}
+
 describe('Route tests', function() {
 
   let sandbox;
@@ -18,27 +22,43 @@ describe('Route tests', function() {
   });
 
   it('should instantiate as a Route and register a singleton', function() {
-    const routeName = 'this-route';
+    const routeName = 'this-is-route';
     Route(routeName, {});
-    let route = Singleton(routeName);
-    expect(route).to.be.an('object');
-    expect(route.initRoute).to.be.a('function');
-    expect(route.revisitRoute).to.be.a('function');
+    const routeInstance = getRouteInstance(routeName);
+    expect(routeInstance).to.be.an('object');
+    expect(routeInstance.initRoute).to.be.a('function');
+    expect(routeInstance.revisitRoute).to.be.a('function');
   });
 
-  it('should init a route only on the first get', function() {
+  it('should not invoke initRoute/revisitRoute on creation or refetch', function() {
+    const routeName = 'another-route';
+    const routeInvoke = Route(routeName, {
+      initRoute: sandbox.spy()
+    });
+    const routeInstance = getRouteInstance(routeName);
+
+    expect(routeInvoke).to.be.a('function');
+    sinon.assert.notCalled(routeInstance.initRoute);
+
+    // Try re-getting
+    Route(routeName);
+    sinon.assert.notCalled(routeInstance.initRoute);
+  });
+
+  it('should init a route via the returned invoker only on the first get', function() {
     const routeName = 'new-route';
-    Route(routeName, {
+    const routeInvoke = Route(routeName, {
       initRoute: sandbox.spy(),
       revisitRoute: sandbox.spy()
     });
+    const routeInstance = getRouteInstance(routeName);
 
-    let route = Singleton(routeName);
-    sinon.assert.calledOnce(route.initRoute);
-    sinon.assert.notCalled(route.revisitRoute);
+    routeInvoke();
+    sinon.assert.calledOnce(routeInstance.initRoute);
+    sinon.assert.notCalled(routeInstance.revisitRoute);
 
-    Route(routeName);
-    sinon.assert.calledOnce(route.initRoute);
-    sinon.assert.calledOnce(route.revisitRoute);
+    routeInvoke();
+    sinon.assert.calledOnce(routeInstance.initRoute);
+    sinon.assert.calledOnce(routeInstance.revisitRoute);
   });
 });
