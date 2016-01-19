@@ -46,7 +46,7 @@ export default Singleton('router', {
     }
   },
 
-  go(route, params) {
+  go(route, params, updateUrl = true) {
 
     var url,
         oldUrl,
@@ -83,7 +83,7 @@ export default Singleton('router', {
             url = qs.length ? url + '?' + qs.join('&') : url;
 
             // Don't push the index page
-            if (url !== 'index') {
+            if (url !== 'index' && updateUrl) {
               window.history.pushState({
                   route: route,
                   params: params
@@ -117,7 +117,7 @@ export default Singleton('router', {
                     params[name] = result[index];
                 });
 
-                this.go(i, params);
+                this.go(i, params, false);
                 return;
             }
         }
