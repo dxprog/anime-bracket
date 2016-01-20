@@ -7,13 +7,15 @@ import Landing from './views/landing';
 import Nav from './views/nav';
 import Nominations from './views/nominations';
 import Voting from './views/voting';
+import Admin from './views/admin';
 
 Router.addRoutes({
   'index': Landing,
   '/results/:perma/': BracketDisplay,
   '/vote/:perma/': Voting,
   '/nominate/:perma/': Nominations,
-  '/characters/:perma/': Characters
+  '/characters/:perma/': Characters,
+  '/me/*': Admin
 });
 
 // Set the UTC cookie
