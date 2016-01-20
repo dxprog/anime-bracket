@@ -27,10 +27,6 @@ export default Singleton('router', {
     });
   },
 
-  removeRoute(route) {
-
-  },
-
   addRoute(name, path, callback) {
     this._routes[name] = {
         path: path,
@@ -145,7 +141,7 @@ export default Singleton('router', {
    * Generates a regular expression so that a path can be tracked back to its route
    */
   _compilePath(path) {
-    let regEx = '^';
+    let regExStr = '^';
     let paramName = '';
     let mode = MODE_STANDARD;
     let character;
@@ -171,7 +167,7 @@ export default Singleton('router', {
           throw 'Invalid character in route path';
           return;
         } else if (PATH_DELIMITER === character) {
-          regEx = regEx.concat('([^\\/]+)\\/');
+          regExStr += '([^\\/]+)\\/';
           paramMap[paramCount] = paramName;
           paramName = '';
           mode = MODE_STANDARD;
@@ -183,42 +179,45 @@ export default Singleton('router', {
         if (PATH_DELIMITER !== character) {
           throw 'Wildcards must end a route or be followed by a path marker';
         }
-        regEx = regEx.concat('([\\w\\/-]+)');
+        regExStr += '([\\w\\/-]+)';
         mode = MODE_STANDARD;
         wildCards++;
       } else {
         if (PARAM_MARKER === character) {
           mode = MODE_PARAM;
         } else if (FRAGMENT_WILDCARD === character) {
-          mode = MODE_WILDCARD
+          mode = MODE_WILDCARD;
         } else if (QS_MARKER === character) {
           hasQueryString = true;
-          regEx = regEx.concat('([\w]+)');
+          regExStr += '([\w]+)';
+        } else if (PATH_DELIMITER === character) {
+          regExStr += '\\/';
         } else {
-          regEx = regEx.concat(character);
+          regExStr += character;
         }
       }
     }
 
     // If the route ended on a parameter, handle it
     if (paramName.length > 0) {
-      regEx = regEx.concat('([^\\/]+)');
+      regExStr += '([^\\/]+)';
       paramMap[paramCount] = paramName;
 
     // Handle ending on a wild card
     } else if (MODE_WILDCARD === mode) {
-      regEx = regEx.concat('([\\w\\/-]+)');
+      regExStr += '([\\w\\/-]+)';
     }
 
-    let tokenCount = regEx.length;
-    regEx = new RegExp(regEx.concat('$'), 'ig');
+    regExStr += '$';
+    let regEx = new RegExp(regExStr, 'ig');
 
     return {
-      regEx: regEx,
+      regEx,
+      regExStr,
       map: paramMap,
 
-      // THe more specific, the higher the weight
-      weight: tokenCount + paramCount - wildCards
+      // The more specific, the higher the weight
+      weight: regExStr.length + paramCount - wildCards
     };
   }
 
