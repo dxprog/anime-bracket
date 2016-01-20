@@ -27,6 +27,10 @@ export default Singleton('router', {
     });
   },
 
+  removeRoute(route) {
+
+  },
+
   addRoute(name, path, callback) {
     this._routes[name] = {
         path: path,
@@ -101,27 +105,40 @@ export default Singleton('router', {
 
   _getRouteFromPath(path) {
 
-    var i, result, route,
-        params = {};
+    let result;
+    let routes = [];
+    let params = {};
 
     // Root gets renamed to index
     path = path === '/' ? 'index' : path;
 
-    for (var i in this._routes) {
-        if (this._routes.hasOwnProperty(i)) {
-            route = this._routes[i];
-            result = route.regEx.exec(path);
+    for (let i in this._routes) {
+      if (this._routes.hasOwnProperty(i)) {
+        let route = this._routes[i];
+        result = route.regEx.exec(path);
 
-            if (result) {
-                _.each(route.map, function(name, index) {
-                    params[name] = result[index];
-                });
+        if (result) {
+          _.each(route.map, function(name, index) {
+            params[name] = result[index];
+          });
 
-                this.go(i, params, false);
-                return;
-            }
+          routes.push({
+            name: i,
+            params
+          });
         }
+      }
     }
+
+    // Go to the highest weighted route
+    if (routes) {
+      routes.sort((a, b) => {
+        return a.weight > b.weight ? -1 : 1;
+      });
+      let route = routes.shift();
+      this.go(route.name, route.params, false);
+    }
+
   },
 
   /**
@@ -135,6 +152,7 @@ export default Singleton('router', {
     let paramCount = 1;
     let paramMap = {};
     let hasQueryString = false;
+    let wildCards = 0;
 
     for (let i = 0, count = path.length; i < count; i++) {
 
@@ -166,6 +184,8 @@ export default Singleton('router', {
           throw 'Wildcards must end a route or be followed by a path marker';
         }
         regEx = regEx.concat('([\\w\\/-]+)');
+        mode = MODE_STANDARD;
+        wildCards++;
       } else {
         if (PARAM_MARKER === character) {
           mode = MODE_PARAM;
@@ -190,11 +210,15 @@ export default Singleton('router', {
       regEx = regEx.concat('([\\w\\/-]+)');
     }
 
+    let tokenCount = regEx.length;
     regEx = new RegExp(regEx.concat('$'), 'ig');
 
     return {
       regEx: regEx,
-      map: paramMap
+      map: paramMap,
+
+      // THe more specific, the higher the weight
+      weight: tokenCount + paramCount - wildCards
     };
   }
 
