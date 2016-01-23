@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import Router from '../../../static/js/dev/lib/router';
+import Router from 'lib/router';
 
 const NOOP = function() {};
 

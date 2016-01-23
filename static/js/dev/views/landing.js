@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import hexRound from '../../../../views/hexRound.hbs';
+import hexRound from 'templates/hexRound.hbs';
 
 const HEX_WIDTH = 132;
 const HEX_HEIGHT = 113;

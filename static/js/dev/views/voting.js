@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import Route from '../lib/route';
+import Route from 'lib/route';
 
 const bracketId = window.bracketId;
 

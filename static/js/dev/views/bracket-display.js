@@ -3,12 +3,12 @@ import $ from 'jquery';
 
 import Entrant from '../model/entrant';
 import Tier from '../model/tier';
-import Route from '../lib/route';
-import Router from '../lib/router';
+import Route from 'lib/route';
+import Router from 'lib/router';
 
-import TPL_GROUP_PICKER from '../../../../views/groupPicker.hbs';
-import TPL_ENTRANT from '../../../../views/partials/_entrant.hbs';
-import TPL_WINNER from '../../../../views/winner.hbs';
+import TPL_GROUP_PICKER from 'templates/groupPicker.hbs';
+import TPL_ENTRANT from 'templates/partials/_entrant.hbs';
+import TPL_WINNER from 'templates/winner.hbs';
 
 const SINGLETON_NAME = 'bracket-display';
 const COLUMN_WIDTH = 298;

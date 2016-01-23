@@ -1,9 +1,8 @@
-/* globals describe,it,beforeEach,afterEach */
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import Route from '../../../static/js/dev/lib/route';
-import Singleton from '../../../static/js/dev/lib/singleton';
+import Route from 'lib/route';
+import Singleton from 'lib/singleton';
 
 function getRouteInstance(name) {
   return Singleton(`__ROUTE_${name}`);

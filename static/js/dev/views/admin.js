@@ -1,5 +1,5 @@
-import Route from '../lib/route';
-import Router from '../lib/router';
+import Route from 'lib/route';
+import Router from 'lib/router';
 
 import Characters from './admin/characters';
 //import Nominee from './nominee';

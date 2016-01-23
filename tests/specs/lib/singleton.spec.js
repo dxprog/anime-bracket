@@ -1,8 +1,7 @@
-/* globals describe,it */
 import Molecule from 'molecule';
 import { expect } from 'chai';
 
-import Singleton from '../../../static/js/dev/lib/singleton';
+import Singleton from 'lib/singleton';
 
 describe('Singleton tests', function() {
 

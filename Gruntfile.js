@@ -1,3 +1,22 @@
+const path = require('path');
+
+const MODULE_PATHS = {
+  lib: path.resolve(__dirname, 'static/js/dev/lib'),
+  tests: path.resolve(__dirname, 'tests/specs'),
+  templates: path.resolve(__dirname, 'views')
+};
+
+function resolveModuleSource(id, parent) {
+  var retVal = id;
+  var dirTokens = id.split('/');
+  var baseLevel = dirTokens.shift('.');
+  if (!!MODULE_PATHS[baseLevel]) {
+    // The substr at the end is because path.relative is a cock and throws in too many ".."
+    retVal = path.relative(parent, [ MODULE_PATHS[baseLevel] ].concat(dirTokens).join('/')).substr(3);
+  }
+  return retVal;
+}
+
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -21,7 +40,7 @@ module.exports = function(grunt) {
         browserify: {
             options: {
                 transform: [
-                    [ 'babelify', { 'presets': 'es2015' } ],
+                    [ 'babelify', { presets: 'es2015', resolveModuleSource: resolveModuleSource } ],
                     [ 'browserify-handlebars' ]
                 ],
                 require: [
