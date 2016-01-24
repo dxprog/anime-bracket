@@ -51,9 +51,9 @@ export default Route('admin-stats', {
     });
 
     return {
-      labels: labels,
-      totalVotes: totalVotes,
-      userCount: userCount
+      labels,
+      totalVotes,
+      userCount
     };
   }
 

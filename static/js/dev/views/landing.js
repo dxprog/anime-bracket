@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import Route from 'lib/route';
+
 import hexRound from 'templates/hexRound.hbs';
 
 const HEX_WIDTH = 132;
@@ -10,73 +12,70 @@ const FORWARD = 'forward';
 const BACKSLASH = 'backslash';
 const BAIL_TRIES = 10;
 
-let data = window.rounds || [];
-let cols = 0;
-let rows = 0;
-let grid = [];
+export default Route('landing', {
+  initRoute() {
+    const $window = $(window);
+    const data = window.rounds || [];
+    let out = '';
 
-let itr = 0;
+    const cols = this._cols = Math.floor(($window.width() - LEFT_PADDING) / HEX_WIDTH);
+    const rows = this._rows = Math.floor(($window.height() - TOP_PADDING) / HEX_HEIGHT);
+    let count = cols * rows;
+    this._grid = new Array(count);
+    this._itr = 0;
 
-function getRandomPosition() {
-
-    var x = Math.round(Math.random() * cols),
-        y = Math.round(Math.random() * rows),
-        bail = 0;
-
-    while (typeof grid[y * rows + x] === 'object' && bail < BAIL_TRIES) {
-        x = Math.round(Math.random() * cols);
-        y = Math.round(Math.random() * rows);
-        bail++;
-    }
-
-    return bail < BAIL_TRIES ? y * rows + x : null;
-
-};
-
-function placeHex(round) {
-    var index = getRandomPosition(),
-        y = index ? Math.floor(index / cols) : null,
-        x = index ? index - (y * cols) : null,
-        direction = Math.random() > 0.5 ? BACKSLASH : FORWARD,
-        xOffset = direction === FORWARD ? -(HEX_WIDTH / 2) : 0,
-        retVal = '';
-
-    if (null !== index) {
-        xOffset += y % 2 > 0 ? HEX_WIDTH / 2 : 0;
-
-        grid[(y + 1) * cols + (y % 2 > 0 ? -1 : 0) + x] = {};
-        grid[index] = {
-            character1: round.character1,
-            character2: round.character2,
-            x: x * HEX_WIDTH + LEFT_PADDING + xOffset,
-            y: y * HEX_HEIGHT + TOP_PADDING,
-            direction: direction,
-            fadeDelay: itr++
-        };
-        retVal = hexRound(grid[index]);
-    }
-
-    return retVal;
-};
-
-function init() {
-    var $window = $(window),
-        out = '',
-        count = 0;
-
-    cols = Math.floor(($window.width() - LEFT_PADDING) / HEX_WIDTH);
-    rows = Math.floor(($window.height() - TOP_PADDING) / HEX_HEIGHT);
-    count = cols * rows;
-    grid = new Array(cols * rows);
-
-    data.forEach(function(item) {
-        if (count-- > -1) {
-            out += placeHex(item);
-        }
+    data.forEach((item) => {
+      if (count-- > -1) {
+        out += this.placeHex(item);
+      }
     });
 
     $('#hexes').html(out);
+  },
 
-};
+  getRandomPosition() {
+    const grid = this._grid;
+    const cols = this._cols;
+    const rows = this._rows;
+    let x = Math.round(Math.random() * cols);
+    let y = Math.round(Math.random() * rows);
+    let bail = 0;
 
-export default init;
+    while (typeof grid[y * rows + x] === 'object' && bail < BAIL_TRIES) {
+      x = Math.round(Math.random() * cols);
+      y = Math.round(Math.random() * rows);
+      bail++;
+    }
+
+    return bail < BAIL_TRIES ? y * rows + x : null;
+  },
+
+  placeHex(round) {
+    const grid = this._grid;
+    const cols = this._cols;
+    const index = this.getRandomPosition();
+    const y = index ? Math.floor(index / cols) : null;
+    const x = index ? index - (y * cols) : null;
+    const direction = Math.random() > 0.5 ? BACKSLASH : FORWARD;
+    let xOffset = direction === FORWARD ? -(HEX_WIDTH / 2) : 0;
+    let retVal = '';
+
+    if (null !== index) {
+      xOffset += y % 2 > 0 ? HEX_WIDTH / 2 : 0;
+
+      grid[(y + 1) * cols + (y % 2 > 0 ? -1 : 0) + x] = {};
+      grid[index] = {
+        character1: round.character1,
+        character2: round.character2,
+        x: x * HEX_WIDTH + LEFT_PADDING + xOffset,
+        y: y * HEX_HEIGHT + TOP_PADDING,
+        direction,
+        fadeDelay: this._itr++
+      };
+      retVal = hexRound(grid[index]);
+    }
+
+    return retVal;
+  }
+
+});
