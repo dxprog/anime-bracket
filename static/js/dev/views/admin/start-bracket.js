@@ -1,54 +1,54 @@
-(function(undefined) {
+import $ from 'jquery';
 
-    var $groups = $('#groups'),
-        $entrants = $('#entrants'),
-        $totalSize = $('.total-size'),
-        totalEntrants = $entrants.data('total'),
+import Route from 'lib/route';
 
-        addEntrantOption = function(val, selected) {
-            var opt = document.createElement('option');
-            opt.value = val;
-            opt.innerHTML = val;
-            opt.selected = selected;
-            $entrants.append(opt);
-        },
+export default Route('admin-start-bracket', {
+  initRoute() {
+    this._$groups = $('#groups').on('change', this.handleGroupsChange.bind(this));
+    this._$entrants = $('#entrants').on('change', this.updateBracketSize.bind(this));
+    this._$totalSize = $('.total-size');
+    this._totalEntrants = this._$entrants.data('total');
 
-        handleGroupsChange = function(evt) {
-            var numGroups = $groups.val(),
-                i = 2,
-                selectedVal = $entrants.val();
-                entrantsPerGroup = Math.floor(totalEntrants / numGroups);
+    // Remove any groups that exceed the number of entrants
+    this._$groups.find('option').each(function() {
+      const $this = $(this);
+      const val = $this.val();
 
-            $entrants.empty();
-            while (i <= entrantsPerGroup) {
-                addEntrantOption(i, i == selectedVal);
-                i *= 2;
-            }
+      // Validate against the group count times two since each group has to have at least two entrants
+      if (val * 2 > this._totalEntrants) {
+        $this.remove();
+      }
+    });
 
-            updateBracketSize();
-        },
+    this.handleGroupsChange();
+  },
 
-        updateBracketSize = function() {
-            var numGroups = $groups.val(),
-                numEntrants = $entrants.val();
-            $totalSize.html('Bracket will have ' + (numGroups * numEntrants) + ' total entrants.');
-        },
+  addEntrantOption(val, selected) {
+    let opt = document.createElement('option');
+    opt.value = val;
+    opt.innerHTML = val;
+    opt.selected = selected;
+    this._$entrants.append(opt);
+  },
 
-        init = (function() {
-            $groups.on('change', handleGroupsChange);
-            $entrants.on('change', updateBracketSize);
+  handleGroupsChange(evt) {
+    let numGroups = this._$groups.val();
+    let i = 2;
+    let selectedVal = this._$entrants.val();
+    let entrantsPerGroup = Math.floor(this._totalEntrants / numGroups);
 
-            // Remove any groups that exceed the number of entrants
-            $groups.find('option').each(function() {
-                var $this = $(this),
-                    val = $this.val();
-                // Validate against the group count times two since each group has to have at least two entrants
-                if (val * 2 > totalEntrants) {
-                    $this.remove();
-                }
-            });
+    this._$entrants.empty();
+    while (i <= entrantsPerGroup) {
+      this.addEntrantOption(i, i == selectedVal);
+      i *= 2;
+    }
 
-            handleGroupsChange();
-        }());
+    this.updateBracketSize();
+  },
 
-}());
+  updateBracketSize() {
+    const entrantCount = this._$groups.val() * this._$entrants.val();
+    this._$totalSize.html(`Bracket will have ${entrantCount} total entrants.`);
+  }
+
+});
