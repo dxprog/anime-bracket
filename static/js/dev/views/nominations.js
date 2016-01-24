@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import Route from 'lib/route';
+import Typeahead from '../controls/typeahead';
 
 const IS_IE = (/MSIE/).test(window.navigator.userAgent);
 
@@ -21,7 +22,7 @@ export default Route('nominations', {
       .on('click', '.accept', this.formShow.bind(this))
       .on('click', 'button[type="submit"]', this.nomineeSubmit.bind(this))
       .on('keypress', 'input', this.nomineeKeypress.bind(this));
-    // this._characterTypeahead = characterTypeahead = new Typeahead($txtName, characterChosen, bracketId);
+    this._characterTypeahead = new Typeahead(this._$txtName, this.characterChosen.bind(this), this._bracketId);
   },
 
   displayMessage(message, success) {
