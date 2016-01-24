@@ -18,8 +18,8 @@ namespace Lib {
         public static function init() {
 
             self::$_hbEngine = new Handlebars([
-                'loader' => new \Handlebars\Loader\FilesystemLoader(VIEW_PATH),
-                'partials_loader' => new \Handlebars\Loader\FilesystemLoader(VIEW_PATH . '/partials/')
+                'loader' => new \Handlebars\Loader\FilesystemLoader(VIEW_PATH, [ 'extension' => 'hbs' ]),
+                'partials_loader' => new \Handlebars\Loader\FilesystemLoader(VIEW_PATH . '/partials/', [ 'extension' => 'hbs' ])
             ]);
             self::addKey(KEY_CLIENT_DATA, new stdClass);
             self::_addStandardHelpers();
@@ -29,7 +29,7 @@ namespace Lib {
          * Renders the page
          **/
         public static function render() {
-            echo self::$_hbEngine->render('layouts/' . self::$_layout . '.handlebars', self::$_tplData);
+            echo self::$_hbEngine->render('layouts/' . self::$_layout . '.hbs', self::$_tplData);
         }
 
         /**

@@ -30,4 +30,4 @@ define('JS_VERSION', '20131109');
 define('SESSION_DOMAIN', '.brakk.it');
 
 // Path to the /view directory (must be a full path, no trailing slash)
-define('VIEW_PATH', '/var/www/brakkit/views/anime-bracket');
+define('VIEW_PATH', '/var/www/brakkit/views');
