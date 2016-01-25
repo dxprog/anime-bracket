@@ -2,7 +2,7 @@ import Handlebars from 'handlebars/runtime';
 import $ from 'jquery';
 
 import Entrant from '../model/entrant';
-import Tier from '../model/tier';
+import { default as Tier, ENTRANT_HEIGHT } from '../model/tier';
 import Route from 'lib/route';
 import Router from 'lib/router';
 
@@ -11,7 +11,7 @@ import TPL_ENTRANT from 'templates/partials/_entrant.hbs';
 import TPL_WINNER from 'templates/winner.hbs';
 
 const SINGLETON_NAME = 'bracket-display';
-const COLUMN_WIDTH = 298;
+const COLUMN_WIDTH = 225 + 18;
 
 export default Route(SINGLETON_NAME,{
 
@@ -57,7 +57,7 @@ export default Route(SINGLETON_NAME,{
     let winner = {};
 
     tier = tier || 0;
-    bracketHeight = Math.pow(2, max - tier - 1) * 100;
+    bracketHeight = Math.pow(2, max - tier - 1) * ENTRANT_HEIGHT;
 
     for (let i = tier; i < max; i++) {
       temp = this._tiers[i].render(i - tier, group, true);

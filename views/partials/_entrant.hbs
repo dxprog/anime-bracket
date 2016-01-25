@@ -1,20 +1,22 @@
 <dl data-id="{{id}}" class="entrant-info">
-    <dt>Headshot</dt>
-    <dd class="image">
-        <img src="{{image}}" alt="{{name}}" />
+  <dt>Headshot</dt>
+  <dd class="image">
+    <img src="{{image}}" alt="{{name}}" />
+  </dd>
+  <dd class="name"><span class="text">{{name}}</span></dd>
+  <dd class="source">{{source}}</dd>
+  <dd class="votes">
+    <span class="text">
+      {{#if votes}}
+        {{votes}} votes
+      {{else}}
+        {{#if final}}0 votes{{else}}N/A{{/if}}
+      {{/if}}
+    </span>
+  </dd>
+  {{#if seed}}
+    <dd class="seed">
+      {{seed}}
     </dd>
-    <dd class="name">{{name}}</dd>
-    <dd class="source">{{source}}</dd>
-    <dd class="votes">
-        {{#if votes}}
-            {{votes}} votes
-        {{else}}
-            {{#if final}}0 votes{{else}}Pending{{/if}}
-        {{/if}}
-    </dd>
-    {{#if seed}}
-        <dd class="seed">
-            {{seed}}
-        </dd>
-    {{/if}}
+  {{/if}}
 </dl>

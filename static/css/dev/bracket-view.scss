@@ -22,8 +22,10 @@
 
 }
 
-$ENTRANT_HEIGHT: 75px;
+$ENTRANT_HEIGHT: 50px;
+$ENTRANT_WIDTH: 225px;
 $ENTRANT_SPACING: 25px;
+$ENTRANT_AFTER: 18px;
 
 .results {
 
@@ -128,7 +130,7 @@ $ENTRANT_SPACING: 25px;
                 top: 50%;
                 height: 2px;
                 border-top: 1px solid $standard;
-                left: 289px;
+                left: $ENTRANT_WIDTH + $ENTRANT_AFTER / 2;
                 right: 0;
             }
 
@@ -138,7 +140,7 @@ $ENTRANT_SPACING: 25px;
 
             &.single-entrant {
                 &:before {
-                    left: 281px;
+                    left: $ENTRANT_WIDTH;
                 }
 
                 .entrant {
@@ -152,7 +154,7 @@ $ENTRANT_SPACING: 25px;
 
         .winner {
             text-align: center;
-            width: 298px;
+            width: $ENTRANT_WIDTH + $ENTRANT_AFTER;
 
             h2 {
                 @include heading();
@@ -160,7 +162,7 @@ $ENTRANT_SPACING: 25px;
             }
 
             dl {
-                width: 298px;
+                width: $ENTRANT_WIDTH + $ENTRANT_AFTER;
                 position: absolute;
                 height: 200px;
                 top: 50%;
@@ -185,7 +187,7 @@ $ENTRANT_SPACING: 25px;
         }
 
         .entrant {
-            width: 298px;
+            width: $ENTRANT_WIDTH + $ENTRANT_AFTER;
             position: relative;
             line-height: 1;
             color: $dark;
@@ -210,7 +212,7 @@ $ENTRANT_SPACING: 25px;
                 position: absolute;
                 border-right: 1px solid $standard;
                 content: '';
-                left: 280px;
+                left: $ENTRANT_WIDTH;
                 right: 8px;
             }
 
@@ -235,14 +237,13 @@ $ENTRANT_SPACING: 25px;
                 border: 1px solid $standard;
                 background: #fff;
                 height: $ENTRANT_HEIGHT;
-                width: 280px;
+                width: $ENTRANT_WIDTH;
                 margin-top: $ENTRANT_HEIGHT / 2 * -1;
                 top: 50%;
                 position: absolute;
 
                 dd {
                     position: absolute;
-                    left: 86px;
                 }
 
                 dt {
@@ -252,20 +253,26 @@ $ENTRANT_SPACING: 25px;
                 }
 
                 .name {
-                    font: bold 18px/1 'Roboto Condensed', sans-serif;
-                    bottom: 42px;
+                    left: $ENTRANT_HEIGHT + 5px;
+                    right: $ENTRANT_HEIGHT + 5px;
+                    height: $ENTRANT_HEIGHT - 2px;
+                    display: flex;
+                    align-items: center;
+                    overflow: hidden;
+
+                    .text {
+                      display: block;
+                      font: bold 18px/1 'Roboto Condensed', sans-serif;
+                      max-height: $ENTRANT_HEIGHT;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    }
                 }
 
                 .image {
-                    left: -1px;
-                    top: -1px;
-                    width: 75px;
-                    height: 75px;
-                    overflow: hidden;
-
                     img {
-                        width: 75px;
-                        height: 75px;
+                        width: $ENTRANT_HEIGHT - 2px;
+                        height: $ENTRANT_HEIGHT - 2px;
                         display: block;
                     }
                 }
@@ -275,8 +282,19 @@ $ENTRANT_SPACING: 25px;
                 }
 
                 .votes {
-                    font: bold 18px/1 'Roboto', sans-serif;
-                    top: 42px;
+                  @include border-box();
+                  display: flex;
+                  align-items: center;
+                  right: 0;
+                  width: $ENTRANT_HEIGHT;
+                  height: $ENTRANT_HEIGHT - 2px;
+                  background: $dark;
+
+                  .text {
+                    font: bold 14px/1 'Roboto', sans-serif;
+                    text-align: center;
+                    color: #fff;
+                  }
                 }
 
                 .seed {
@@ -398,13 +416,13 @@ $ENTRANT_SPACING: 25px;
 
             .round {
                 &:before {
-                    left: -18px;
-                    right: 306px;
+                    left: -$ENTRANT_AFTER;
+                    right: $ENTRANT_WIDTH + 25px;
                 }
 
                 &.single-entrant:before {
                     left: -8px;
-                    right: 298px;
+                    right: $ENTRANT_WIDTH + $ENTRANT_AFTER;
                 }
             }
 
@@ -414,7 +432,7 @@ $ENTRANT_SPACING: 25px;
                     border-left: 1px solid $standard;
                     border-right: 0;
                     content: '';
-                    right: 298px;
+                    right: $ENTRANT_WIDTH + $ENTRANT_AFTER;
                     left: -8px;
                 }
 
@@ -434,13 +452,16 @@ $ENTRANT_SPACING: 25px;
 
                 dd {
                     text-align: right;
-                    left: auto;
-                    right: 86px;
                 }
 
                 .seed {
                     right: -1px;
                     left: auto;
+                }
+
+                .votes {
+                  left: 0;
+                  right: auto;
                 }
 
                 .stats-popup {
