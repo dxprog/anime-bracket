@@ -58,7 +58,7 @@ export default Singleton('router', {
         url = this._routes[route].path;
         oldUrl = url;
 
-        _.each(this._routes[route].callbacks, function(callback) {
+        this._routes[route].callbacks.forEach((callback) => {
             var addParams = callback(params);
 
             // If the callback returned additional parameters, add them to the list
