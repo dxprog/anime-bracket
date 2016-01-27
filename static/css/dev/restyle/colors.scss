@@ -1,0 +1,14 @@
+$colors-def: (
+  white: #fff,
+  black: #000,
+  light-gray: #f2f2f2,
+  dark-gray: #bfbfbf,
+  red: #a94442,
+  dark-red: #752f2e,
+  green: #96bcb1,
+  dark-green: #6e8a82
+);
+
+@function get-color($name) {
+  @return map-get($colors-def, $name);
+}

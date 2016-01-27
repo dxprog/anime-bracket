@@ -1,0 +1,30 @@
+@import "restyle";
+
+@at-root {
+  @include restyle-define(button, (
+
+    restyle-var(font-size):
+    restyle-var(padding): 15px 40px,
+
+    display: inline-block,
+    padding: restyle-var(padding),
+    border-radius: 2px,
+    background: get-color(green),
+    color: #fff,
+    text-decoration: none,
+    border: 0,
+    cursor: pointer,
+
+    restyle-modifiers: (
+      small: (
+        restyle-var(font-size): 18px,
+        restyle-var(padding): 10px 20px
+      ),
+
+      round: (
+        border-radius: 50%,
+        border: 1px solid get-color(dark-green)
+      )
+    )
+  ));
+}

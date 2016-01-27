@@ -1,0 +1,14 @@
+@at-root {
+
+  html body {
+    font-family: 'Roboto';
+    font-size: 62.5%;
+    font-weight: normal;
+  }
+
+  @include restyle-define(heading, (
+    font-weight: 700,
+    font-size: 4.8rem,
+    color: get-color(green)
+  ));
+}
