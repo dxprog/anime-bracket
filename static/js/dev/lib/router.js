@@ -127,7 +127,7 @@ export default Singleton('router', {
     }
 
     // Go to the highest weighted route
-    if (routes) {
+    if (routes.length) {
       routes.sort((a, b) => {
         return a.weight > b.weight ? -1 : 1;
       });
