@@ -1,4 +1,5 @@
 const path = require('path');
+const eyeglass = require('eyeglass');
 
 const MODULE_PATHS = {
   lib: path.resolve(__dirname, 'static/js/dev/lib'),
@@ -31,6 +32,7 @@ module.exports = function(grunt) {
             }
         },
         sass: {
+            options: eyeglass({ sourceMap: true }),
             dist: {
                 files: {
                     './static/css/<%= pkg.name %>.css': './static/css/dev/index.scss'
