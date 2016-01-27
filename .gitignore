@@ -1,5 +1,6 @@
 static/css/dev/compile
 static/css/*.css*
+static/fonts/
 vendor/
 node_modules/
 static/images/
