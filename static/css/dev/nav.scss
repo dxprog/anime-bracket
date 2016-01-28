@@ -3,108 +3,98 @@
 $NAV_BG: #1b1e24;
 
 #nav-header {
-    background: $NAV_BG;
-    padding: 23px 30px;
-    position: absolute;
-    z-index: $BASE-INDEX + 5;
-    left: 0;
-    top: 0;
-    right: 0;
+  background: $NAV_BG;
+  padding: 23px 30px;
+  position: relative; // Just for the z-indexing needs
+  z-index: $BASE-INDEX + 5;
+  overflow: hidden;
+
+  h1 {
+    @include image-text($background: url(/static/images/nav_logo.png), $width: 352px, $height: 36px);
+    float: left;
+  }
+
+  ul {
+    float: right;
+    li {
+      a {
+        color: #fff;
+        text-decoration: none;
+      }
+      display: inline-block;
+      padding: 4px 15px 0;
+      @include font-light();
+      color: #fff;
+    }
+  }
+
+  //
+  // MOBILE STYLES
+  //
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+
+    padding: 20px 60px 10px 20px;
+
+    a {
+      display: block;
+    }
 
     h1 {
-        @include image-text($background: url(/static/images/nav_logo.png), $width: 352px, $height: 36px);
-        float: left;
+      max-width: 100%;
+      background-size: contain;
+      margin-right: 75px;
+      float: none;
     }
 
-    ul {
-        float: right;
-        li {
-            a {
-                color: #fff;
-                text-decoration: none;
-            }
-            display: inline-block;
-            padding: 4px 15px 0;
-            @include font-light();
-            color: #fff;
-        }
-    }
+    nav {
 
-    & + #content {
-        padding-top: 100px;
-    }
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 45px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
 
-    //
-    // MOBILE STYLES
-    //
+      &:after {
+        content: '';
+        border: 7px solid transparent;
+        border-top-color: #fff;
+        position: absolute;
+        right: 15px;
+        top: 30px;
+      }
 
-    @media screen and (max-width: $MOBILE-WIDTH) {
+      &.show {
 
-        padding: 20px 60px 10px 20px;
-
-        a {
-            display: block;
-        }
-
-        h1 {
-            max-width: 100%;
-            background-size: contain;
-            margin-right: 75px;
-            float: none;
-        }
-
-        nav {
-
-            &:before {
-                content: '';
-                display: block;
-                position: absolute;
-                width: 45px;
-                right: 0;
-                top: 0;
-                bottom: 0;
-            }
-
-            &:after {
-                content: '';
-                border: 7px solid transparent;
-                border-top-color: #fff;
-                position: absolute;
-                right: 15px;
-                top: 30px;
-            }
-
-            &.show {
-
-                &:before {
-                    background: $darkGrey;
-                }
-
-                ul {
-                    display: block;
-                    z-index: $BASE-INDEX + 20;
-                }
-
-            }
-
+        &:before {
+          background: $darkGrey;
         }
 
         ul {
-            float: none;
-            display: none;
-            position: relative;
-
-            li {
-                display: block;
-                font-size: 18px;
-                padding: 10px 0;
-            }
+          display: block;
+          z-index: $BASE-INDEX + 20;
         }
 
-        & + #content {
-            padding-top: 60px;
-        }
+      }
 
     }
+
+    ul {
+      float: none;
+      display: none;
+      position: relative;
+
+      li {
+        display: block;
+        font-size: 18px;
+        padding: 10px 0;
+      }
+    }
+
+  }
 
 }

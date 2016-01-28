@@ -1,116 +1,109 @@
 @import "globals";
 
 * {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 html {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    font-size: 24px;
+  background: url(/static/images/honey_bg.png);
+  &:after {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: $BASE-INDEX;
 
-    max-width: 1240px;
-    margin: 0 auto;
-    background: url(/static/images/honey_bg.png);
-    &:after {
-        content: '';
-        display: block;
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: $BASE-INDEX;
+    background-image: url(/static/images/squares_bg.png),
+        -moz-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+        -moz-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
 
-        background-image: url(/static/images/squares_bg.png),
-            -moz-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
-            -moz-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
-
-        background-image: url(/static/images/squares_bg.png),
-            -webkit-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
-            -webkit-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
-    }
-
+    background-image: url(/static/images/squares_bg.png),
+        -webkit-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
+        -webkit-linear-gradient(right, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%);
+  }
 }
 
 h2 {
-    @include heading();
+  @include heading();
 }
 
 #content {
-    z-index: $BASE-INDEX + 1;
-    position: relative;
+  z-index: $BASE-INDEX + 1;
+  position: relative;
 }
 
 .logo {
-    position: relative;
-    z-index: $BASE-INDEX + 1;
-    display: block;
-    margin: 40px 0 20px;
+  position: relative;
+  z-index: $BASE-INDEX + 1;
+  display: block;
+  margin: 40px 0 20px;
 
-    h1 {
-        @include logo();
-    }
-
+  h1 {
+    @include logo();
+  }
 }
 
 footer p {
-    position: relative;
-    z-index: $BASE-INDEX + 1;
-    margin: 100px 0 20px;
-    text-align: center;
-    @include body-copy();
-    color: #fff;
-    a {
-        color: $standard;
-    }
+  position: relative;
+  z-index: $BASE-INDEX + 1;
+  margin: 100px 0 20px;
+  text-align: center;
+  @include body-copy();
+  color: #fff;
+  a {
+    color: $standard;
+  }
 }
 
 // Banner message
 .message {
-    font: 20px/1 'Roboto', sans-serif;
-    padding: 15px 20px;
-    margin-bottom: 20px;
-    &.error {
-        color: #a94442 !important;
-        background: #f2dede;
+  font: 20px/1 'Roboto', sans-serif;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  &.error {
+    color: #a94442 !important;
+    background: #f2dede;
+  }
+
+  &.success {
+    color: #3c763d !important;
+    background: #dff0d8;
+
+    a {
+      color: #3c763d;
     }
+  }
 
-    &.success {
-        color: #3c763d !important;
-        background: #dff0d8;
-
-        a {
-            color: #3c763d;
-        }
-
-    }
-
-    &.hidden {
-        display: none;
-    }
+  &.hidden {
+    display: none;
+  }
 
 }
 
 .button {
-    @include button();
+  @include button();
 }
 
 .small-button {
-    @include small-button();
+  @include small-button();
 }
 
 @media screen and (max-width: 1280px), screen and (max-height: 768px) {
-    body {
-        font-size: 18px;
-    }
+  body {
+    font-size: 18px;
+  }
 }
 
 //
@@ -118,13 +111,12 @@ footer p {
 //
 
 @media screen and (max-width: $MOBILE-WIDTH) {
-    footer p {
-        font-size: 18px;
-    }
+  footer p {
+    font-size: 18px;
+  }
 
-    .button {
-        padding: 10px 20px;
-        font-size: 24px;
-    }
-
+  .button {
+    padding: 10px 20px;
+    font-size: 24px;
+  }
 }
