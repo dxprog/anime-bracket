@@ -64,6 +64,9 @@
     padding: 15px 15px 15px 115px;
     width: 380px;
     float: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     @include border-box();
 
