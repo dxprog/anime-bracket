@@ -1,17 +1,18 @@
+<header>
+  <h2>Begin Bracket - <span>{{bracket.name}}</span></h2>
+</header>
 <div class="eliminations start-bracket">
-    <h2>Begin Bracket</h2>
-    <h3>{{bracket.name}}</h3>
-    <form action="/me/start/{{bracket.perma}}/voting/" method="post">
-        <label for="groups">How many groups would you like?</label>
-        <select id="groups" name="groups">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="4">4</option>
-            <option value="8">8</option>
-        </select>
-        <label for="entrants">How many entrants per group?</label>
-        <select id="entrants" name="entrants" data-total="{{count}}"></select>
-        <p class="total-size"></p>
-        <button type="submit" class="button">Start Bracket</button>
-    </form>
+  <form action="/me/start/{{bracket.perma}}/voting/" method="post">
+    <label for="groups">How many groups would you like?</label>
+    <select id="groups" name="groups">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="4">4</option>
+      <option value="8">8</option>
+    </select>
+    <label for="entrants">How many entrants per group?</label>
+    <select id="entrants" name="entrants" data-total="{{count}}"></select>
+    <p class="total-size"></p>
+    <button type="submit" class="button">Start Bracket</button>
+  </form>
 </div>

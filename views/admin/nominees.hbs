@@ -1,31 +1,31 @@
+<header>
+  <h2>Unprocessed Nominees - <span>{{bracket.name}}</span></h2>
+</header>
 <div class="characters">
-    <h2>Unprocessed Nominees</h2>
-    <h3>{{bracket.name}}</h3>
-
-    <table data-bracket="{{bracket.perma}}" data-type="nominee">
-        <thead>
-            <th></th>
-            <th>Name</th>
-            <th>Source</th>
-            <th>
-        </thead>
-        <tbody>
-            {{#each nominees}}
-                <tr data-id="{{id}}">
-                    <td class="image">
-                        <img src="{{image}}" alt="{{name}}" />
-                    </td>
-                    <td class="name">
-                        <input type="text" name="name" value="{{name}}" />
-                    </td>
-                    <td class="source">
-                        <input type="text" name="source" value="{{source}}" />
-                    </td>
-                    <td>
-                        <button class="delete" name="action" value="delete">Delete</button>
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
+  <table data-bracket="{{bracket.perma}}" data-type="nominee">
+    <thead>
+      <th></th>
+      <th>Name</th>
+      <th>Source</th>
+      <th></th>
+    </thead>
+    <tbody>
+      {{#each nominees}}
+        <tr data-id="{{id}}">
+          <td class="image">
+            <img src="{{image}}" alt="{{name}}" />
+          </td>
+          <td class="name">
+            <input type="text" name="name" value="{{name}}" />
+          </td>
+          <td class="source">
+            <input type="text" name="source" value="{{source}}" />
+          </td>
+          <td>
+            <button class="delete" name="action" value="delete">Delete</button>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </div>

@@ -1,4 +1,6 @@
-<h2>{{#if id}}Edit{{else}}Create{{/if}} Bracket</h2>
+<header>
+  <h2>{{#if id}}Edit{{else}}Create{{/if}} Bracket</h2>
+</header>
 <form action="/me/{{#if id}}edit/{{perma}}{{else}}create{{/if}}/" method="post" class="form">
 
     <label for="bracketName">Bracket Name:</label>

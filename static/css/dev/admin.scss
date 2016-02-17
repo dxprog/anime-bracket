@@ -27,6 +27,10 @@ $bracket-row-height: 75px;
     header {
       @include restyle(header in a light page);
 
+      span {
+        font-weight: normal;
+      }
+
       .top-actions {
         position: absolute;
         right: spacing(10);
