@@ -62,19 +62,23 @@ namespace Controller {
 
             if ($out->brackets) {
 
-                // Check for card images
-                foreach ($out->brackets as $bracket) {
-                    if (is_readable('./images/bracket_' . $bracket->id . '_card.jpg')) {
-                        $bracket->cardImage = '/images/bracket_' . $bracket->id . '_card.jpg';
-                    } else {
-                        $bracket->entrants = Api\Character::getRandomCharacters($bracket, 9);
-                    }
-                }
-
                 // Sort the brackets by reverse date
                 usort($out->brackets, function($a, $b) {
                     return $a->state == BS_FINAL || $a->state > $b->state ? 1 : -1;
                 });
+
+                // Get round information for all the brackets
+                $bracketIds = array_map(function($bracket) {
+                  return $bracket->id;
+                }, $out->brackets);
+
+                $bracketRoundData = [];
+                $result = Lib\Db::Query('SELECT bracket_id, MIN(round_group) AS current_group, MAX(round_group) AS last_group FROM `round` WHERE bracket_id IN ("' . implode('","', $bracketIds) . '") AND round_final = 0 GROUP BY bracket_id');
+                if ($result && $result->count) {
+                  while ($row = Lib\Db::Fetch($result)) {
+                    $bracketRoundData[(int) $row->bracket_id] = $row;
+                  }
+                }
 
                 // Decorate each bracket with some information about what phase it can
                 // safely move to. Mostly this is for eliminations
@@ -92,21 +96,34 @@ namespace Controller {
                     // This is a dumb catch all while I work out issues in the stored procedure
                     $bracket->nextTitle = $bracket->nextTitle ?: 'Next Round';
 
-                    if ($bracket->state == BS_ELIMINATIONS) {
+                    if ($bracket->state == BS_ELIMINATIONS && isset($bracketRoundData[$bracket->id])) {
                         // Should query all the brackets at once, but I'm feeling lazy tonight...
-                        $result = Lib\Db::Query('SELECT MIN(round_group) AS current_group, MAX(round_group) AS last_group FROM `round` WHERE bracket_id = :bracketId AND round_final = 0', [ ':bracketId' => $bracket->id ]);
-                        if ($result && $result->count) {
-                            $row = Lib\Db::Fetch($result);
+                        $row = $bracketRoundData[$bracket->id];
 
-                            // If the eliminations are on the last group, don't show the
-                            // advance button
-                            if ($row->current_group == $row->last_group) {
-                                $bracket->showStart = true;
-                            } else {
-                                $bracket->showAdvance = true;
-                            }
+                        // If the eliminations are on the last group, don't show the
+                        // advance button
+                        if ($row->current_group == $row->last_group) {
+                            $bracket->showStart = true;
+                        } else {
+                            $bracket->showAdvance = true;
                         }
                     }
+
+                    if (is_readable('./images/bracket_' . $bracket->id . '_card.jpg')) {
+                        $bracket->cardImage = '/images/bracket_' . $bracket->id . '_card.jpg';
+                    } else {
+                        $bracket->entrants = Api\Character::getRandomCharacters($bracket, 9);
+                    }
+
+                    // All the various button states
+                    $bracket->showStartNominations = $bracket->state == BS_NOT_STARTED;
+                    $bracket->showProcessNominees = $bracket->state == BS_NOMINATIONS;
+                    $bracket->showBeginEliminations = $bracket->state == BS_NOMINATIONS;
+                    $bracket->showEditEntrants = $bracket->state == BS_NOMINATIONS || $bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING;
+                    $bracket->showAdvance = isset($bracket->showAdvance) || $bracket->state == BS_VOTING;
+                    $bracket->showStats = $bracket->state == BS_VOTING || $bracket->state == BS_FINAL;
+                    $bracket->showEdit = $bracket->state != BS_FINAL;
+                    $bracket->showDelete = $bracket->showEdit;
                 }
 
             }

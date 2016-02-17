@@ -9,6 +9,12 @@ $bracket-row-height: 75px;
   @if $type == 'delete' {
     @include restyle(round critical button);
     background-position: -45px center;
+  } @else if $type == 'collapse' {
+    @include restyle(round neutral button);
+    background-position: -90px center;
+  } @else if $type == 'open' {
+    @include restyle(round neutral button);
+    background-position: -135px center;
   } @else {
     @include restyle(round button);
   }
@@ -32,10 +38,11 @@ $bracket-row-height: 75px;
 
     }
 
-    .brackets li {
-      display: flex;
+    .brackets li.bracket {
       padding: spacing(4) 0;
       border-top: 1px solid get-color(light-gray);
+      overflow: hidden;
+      position: relative;
 
       &:first-child {
         border-top: 0;
@@ -44,11 +51,11 @@ $bracket-row-height: 75px;
       img {
         width: $bracket-row-height;
         height: $bracket-row-height;
+        padding-right: spacing(4);
         float: left;
       }
 
       .info {
-        margin-left: spacing(4);
         height: $bracket-row-height;
         display: flex;
         flex-direction: column;
@@ -65,14 +72,15 @@ $bracket-row-height: 75px;
         }
       }
 
-      .actions {
-        align-self: flex-end;
+      .quick-actions {
+        position: absolute;
+        top: spacing(4);
+        right: 0;
         height: $bracket-row-height;
         display: flex;
         align-items: center;
 
         .button {
-          @include restyle(round button);
           margin-left: spacing(2);
 
           &.delete {
@@ -82,8 +90,64 @@ $bracket-row-height: 75px;
           &.edit {
             @include admin-button(edit);
           }
+
+          &.open {
+            margin-left: spacing(4);
+            @include admin-button(open);
+          }
+        }
+      }
+
+      .all-actions {
+        clear: both;
+        margin: spacing(2) 0 0 ($bracket-row-height + spacing(4));
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 500ms;
+
+        h5 {
+          @include restyle(body);
+          margin-bottom: spacing(2);
         }
 
+        a {
+          @include restyle(body);
+          color: get-color(dark-green);
+          text-decoration: none;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .actions-panel {
+          width: 450px;
+          float: left;
+        }
+
+        li {
+          padding-bottom: spacing(1);
+          float: left;
+          width: 50%;
+        }
+
+        .primary-action {
+          padding-bottom: spacing(2);
+          float: none;
+          a {
+            font-weight: bold;
+          }
+        }
+
+      }
+
+      &.open {
+        .quick-actions .button.open {
+          @include admin-button(collapse);
+        }
+
+        .all-actions {
+          max-height: 250px;
+        }
       }
     }
 

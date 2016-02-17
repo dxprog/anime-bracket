@@ -1,86 +1,106 @@
 <header>
   <h2>My Brackets</h2>
   <div {{#if brackets}}class="top-actions"{{/if}}>
-    <a href="/me/create/" {{#unless brackets}}class="button"{{/unless}}>Create a New Bracket</a>
+  <a href="/me/create/" {{#unless brackets}}class="button"{{/unless}}>Create a New Bracket</a>
   </div>
 </header>
 
 {{#if message}}
-    <p class="message {{message.type}}">{{message.message}}</p>
+  <p class="message {{message.type}}">{{message.message}}</p>
 {{/if}}
 <ul class="brackets">
-    {{#each brackets}}
-        {{#isBracketNotHidden .}}
-            <li>
-                <img src="{{#if entrants}}{{entrants.0.image}}{{else}}/static/images/no_card_image.png{{/if}}" />
-                <div class="info">
-                    <h3>{{name}}</h3>
-                    <h4>{{title}}</h4>
-                </div>
-                <div class="actions">
-                    {{#hasNotStarted .}}
-                        <a href="/me/start/{{perma}}/nominations/" class="button">Start Nominations</a>
-                    {{/hasNotStarted}}
-                    {{#isBracketNominations .}}
-                        <a href="/me/process/{{perma}}/nominations/" class="button">Process Nominees</a>
-                        <a href="/me/process/{{perma}}/characters/" class="button">Edit Entrants</a>
-                        <a href="/me/start/{{perma}}/eliminations/" class="button">Begin Eliminations</a>
-                    {{/isBracketNominations}}
-                    {{#isBracketEliminations .}}
-                        <a href="/me/process/{{perma}}/characters/" class="button">Edit Entrants</a>
-                        {{#if showAdvance}}
-                            <a href="/me/advance/{{perma}}/" class="button">Advance to {{nextTitle}}</a>
-                        {{/if}}
-                        {{#if showStart}}
-                            <a href="/me/start/{{perma}}/voting/" class="button">Begin Bracket</a>
-                        {{/if}}
-                        <a href="/me/stats/{{perma}}/" class="button">Voting Stats</a>
-                    {{/isBracketEliminations}}
-                    {{#isBracketVoting .}}
-                        {{#if nextIsFinal}}
-                            <a href="/me/advance/{{perma}}/" class="button">Finalize Bracket</a>
-                        {{else}}
-                            <a href="/me/advance/{{perma}}/" class="button">Advance to {{nextTitle}}</a>
-                        {{/if}}
-                        <a href="/me/process/{{perma}}/characters/" class="button">Edit Entrants</a>
-                        <a href="/me/stats/{{perma}}/" class="button">Voting Stats</a>
-                        <!-- <a href="/me/rollback/{{perma}}/" class="button delete">Rollback</a> -->
-                    {{/isBracketVoting}}
-                    {{#isBracketFinal .}}
-                        <a href="/me/stats/{{perma}}/" class="button">Voting Stats</a>
-                    {{/isBracketFinal}}
-                    {{#isBracketFinal .}}{{else}}
-                        <a href="/me/delete/{{perma}}/" class="button delete">Delete</a>
-                        <a href="/me/edit/{{perma}}/" class="button edit">Edit Bracket</a>
-                    {{/isBracketFinal}}
-                    {{#hasNotStarted .}}{{else}}
-                        <a href="/me/hide/{{perma}}/" class="button">{{#if hidden}}Unhide{{else}}Hide{{/if}} Bracket</a>
-                    {{/hasNotStarted}}
-                </div>
-                {{#hasNotStarted .}}{{else}}
-                    <ul class="links">
-                        <li class="label">Public Links:</li>
-                        {{#isBracketNominations .}}
-                            <li><a href="/nominate/{{perma}}/" target="_blank">Nominate Form</a></li>
-                        {{/isBracketNominations}}
-                        {{#isBracketEliminations .}}
-                            <li><a href="/vote/{{perma}}/" target="_blank">Elimination Ballot</a></li>
-                            <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
-                        {{/isBracketEliminations}}
-                        {{#isBracketVoting .}}
-                            <li><a href="/vote/{{perma}}/" target="_blank">Ballot</a></li>
-                            <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
-                            <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
-                            <li><a href="/stats/{{perma}}/" target="_blank">Voting Statistics</a></li>
-                        {{/isBracketVoting}}
-                        {{#isBracketFinal .}}
-                            <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
-                            <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
-                            <li><a href="/stats/{{perma}}/" target="_blank">Voting Statistics</a></li>
-                        {{/isBracketFinal}}
-                    </ul>
-                {{/hasNotStarted}}
-            </li>
-        {{/isBracketNotHidden}}
-    {{/each}}
+  {{#each brackets}}
+    {{#isBracketNotHidden .}}
+      <li class="bracket">
+        <img src="{{#if entrants}}{{entrants.0.image}}{{else}}/static/images/no_card_image.png{{/if}}" />
+        <div class="info">
+          <h3>{{name}}</h3>
+          <h4>{{title}}</h4>
+        </div>
+        <div class="quick-actions">
+          {{#if showDelete}}
+            <a href="/me/delete/{{perma}}/" class="button delete">Delete</a>
+          {{/if}}
+          {{#if showEdit}}
+            <a href="/me/edit/{{perma}}/" class="button edit">Edit Bracket</a>
+          {{/if}}
+          <button class="button open">Open</button>
+        </div>
+        <div class="all-actions">
+          <div class="actions-panel">
+            <h5>Actions</h5>
+            <ul>
+              {{#if showAdvance}}
+                <li class="primary-action">
+                  {{#if nextIsFinal}}
+                    <a href="/me/advance/{{perma}}/">Finalize Bracket</a>
+                  {{else}}
+                    <a href="/me/advance/{{perma}}/">Advance to {{nextTitle}}</a>
+                  {{/if}}
+                </li>
+              {{/if}}
+              {{#if showStart}}
+                <li class="primary-action">
+                  <a href="/me/start/{{perma}}/voting/">Begin Bracket</a>
+                </li>
+              {{/if}}
+              {{#if showStartNominations}}
+                <li class="primary-action">
+                  <a href="/me/start/{{perma}}/voting/">Begin Nominations</a>
+                </li>
+              {{/if}}
+              {{#if showBeginEliminations}}
+                <li class="primary-action">
+                  <a href="/me/start/{{perma}}/eliminations/">Begin Eliminations</a>
+                </li>
+              {{/if}}
+              {{#if showProcessNominees}}
+                <li>
+                  <a href="/me/process/{{perma}}/nominations/">Process Nominees</a>
+                </li>
+              {{/if}}
+              {{#if showEditEntrants}}
+                <li>
+                  <a href="/me/process/{{perma}}/characters/">Edit Entrants</a>
+                </li>
+              {{/if}}
+              {{#if showStats}}
+                <li>
+                  <a href="/me/stats/{{perma}}/">Voting Stats</a>
+                </li>
+              {{/if}}
+              <li>
+                <a href="/me/hide/{{perma}}/">{{#if hidden}}Unhide{{else}}Hide{{/if}} Bracket</a>
+              </li>
+            </ul>
+          </div>
+          {{#hasNotStarted .}}{{else}}
+            <div class="actions-panel">
+              <h5>Bracket Links</h5>
+              <ul class="links">
+                {{#isBracketNominations .}}
+                  <li><a href="/nominate/{{perma}}/" target="_blank">Nominate Form</a></li>
+                {{/isBracketNominations}}
+                {{#isBracketEliminations .}}
+                  <li><a href="/vote/{{perma}}/" target="_blank">Elimination Ballot</a></li>
+                  <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
+                {{/isBracketEliminations}}
+                {{#isBracketVoting .}}
+                  <li><a href="/vote/{{perma}}/" target="_blank">Ballot</a></li>
+                  <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
+                  <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
+                  <li><a href="/stats/{{perma}}/" target="_blank">Entrant Stats</a></li>
+                {{/isBracketVoting}}
+                {{#isBracketFinal .}}
+                  <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
+                  <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
+                  <li><a href="/stats/{{perma}}/" target="_blank">Entrant Stats</a></li>
+                {{/isBracketFinal}}
+              </ul>
+            </div>
+          {{/hasNotStarted}}
+        </div>
+      </li>
+    {{/isBracketNotHidden}}
+  {{/each}}
 </ul>

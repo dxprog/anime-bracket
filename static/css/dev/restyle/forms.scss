@@ -29,12 +29,17 @@
         width: 45px,
         border: 1px solid restyle-var(border-color),
         restyle-var(padding): 0,
+        box-sizing: border-box,
 
         // Round buttons should never have text
         color: rgba(#000, 0),
         font-size: 0,
 
         restyle-modifiers: (
+          neutral: (
+            restyle-var(border-color): get-color(dark-gray),
+            restyle-var(background-color): get-color(light-gray)
+          ),
           critical: (
             restyle-var(border-color): get-color(dark-red),
             restyle-var(background-color): get-color(red)

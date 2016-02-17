@@ -1,5 +1,6 @@
 import Route from 'lib/route';
 import Router from 'lib/router';
+import $ from 'jquery';
 
 import Characters from './admin/characters';
 import Nominee from './admin/nominee';
@@ -9,14 +10,26 @@ import Stats from './admin/stats';
 export default Route('admin', {
 
   initRoute() {
-    Router.addRoutes({
-      '/me/process/:perma/characters/': Characters,
-      '/me/process/:perma/nominees/': Characters,
-      '/me/process/:perma/nominations/': Nominee,
-      '/me/start/:perma/voting/': StartBracket,
-      '/me/stats/:perma/': Stats
-    });
-    Router.go(window.location.pathname);
+    const $brackets = $('.brackets');
+
+    // If we're on the main brackets page, do that stuff, otherwise
+    // kick in the admin routes
+    if ($brackets.length) {
+      $brackets.on('click', '.button.open', this.openActions.bind(this));
+    } else {
+      Router.addRoutes({
+        '/me/process/:perma/characters/': Characters,
+        '/me/process/:perma/nominees/': Characters,
+        '/me/process/:perma/nominations/': Nominee,
+        '/me/start/:perma/voting/': StartBracket,
+        '/me/stats/:perma/': Stats
+      });
+      Router.go(window.location.pathname);
+    }
+  },
+
+  openActions(evt) {
+    $(evt.currentTarget).closest('li').toggleClass('open');
   }
 
 });

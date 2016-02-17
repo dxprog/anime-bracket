@@ -15,6 +15,7 @@ Router.addRoutes({
   '/vote/:perma/': Voting,
   '/nominate/:perma/': Nominations,
   '/characters/:perma/': Characters,
+  '/me/': Admin,
   '/me/*': Admin
 });
 
