@@ -1,0 +1,42 @@
+@import "restyle";
+
+@at-root {
+
+  $page-gutter: spacing(10);
+
+  @include restyle-define(header, (
+    '& h2': (
+      restyle: 'heading'
+    ),
+    restyle-modifiers: (
+      'in a light page': (
+        background: get-color(light-gray),
+        position: relative,
+        left: -$page-gutter,
+        width: calc(100% + #{$page-gutter * 2}),
+        padding: spacing(2.5) $page-gutter,
+        box-sizing: border-box,
+        '& h2': (
+          restyle: 'heading in a header'
+        )
+      ),
+      'with a subheading': (
+        '& h2': (
+          restyle: 'heading in a header with a subheading'
+        )
+      )
+    )
+  ));
+
+  @include restyle-define(page, (
+    width: 1240px,
+    margin: 0 auto,
+    padding: 0 $page-gutter,
+    box-sizing: border-box,
+    restyle-modifiers: (
+      light: (
+        background: get-color(white)
+      )
+    )
+  ));
+}

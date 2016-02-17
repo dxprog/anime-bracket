@@ -1,33 +1,36 @@
 @import "globals";
+@import "restyle";
 
 $BASE-INDEX: 1;
 
 #page-brackets {
 
-    padding: 40px;
+  #content {
+    @include restyle(page);
+    padding: 0;
+    header {
+      @include restyle(header in a page);
+    }
+  }
+
+  footer {
+    position: static;
+  }
+
+  .brackets {
+    overflow: hidden;
+  }
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+
+    padding: 20px;
 
     h2 {
-        margin-bottom: 40px;
+      margin-bottom: 20px;
+      font-size: 30px;
     }
 
-    footer {
-        position: static;
-    }
-
-    .brackets {
-        overflow: hidden;
-    }
-
-    @media screen and (max-width: $MOBILE-WIDTH) {
-
-        padding: 20px;
-
-        h2 {
-            margin-bottom: 20px;
-            font-size: 30px;
-        }
-
-    }
+  }
 
 }
 
@@ -35,132 +38,132 @@ $BASE-INDEX: 1;
  * Global bracket card pattern
  */
 .bracket-card {
+  width: 350px;
+  height: 416px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+  background: rgba(255, 255, 255, .8);
+  position: relative;
+  margin-bottom: 40px;
+  margin-right: 40px;
+  float: left;
+
+  &:after {
+    content: '';
+    position: absolute;
+    height: 165px;
+    bottom: 116px;
+    left: 0;
+    right: 0;
+    z-index: $BASE-INDEX;
+    @include gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .5));
+  }
+
+  .info {
+    padding: 20px;
+  }
+
+  h3 {
+    font: 36px/1 'Roboto', sans-serif;
+    margin: 20px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 116px;
+    color: #fff;
+    z-index: $BASE-INDEX + 1;
+    text-shadow: 0 0 2px #000;
+  }
+
+  h4 {
+    font: 24px/1 'Roboto', sans-serif;
+    margin-bottom: 10px;
+
+    &.winner:after {
+      content: 'Winner';
+      display: block;
+      font: 18px/1 'Roboto', sans-serif;
+      color: #666;
+    }
+
+  }
+
+  .card-image {
     width: 350px;
-    height: 416px;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
-    background: rgba(255, 255, 255, .8);
+    height: 300px;
+  }
+
+  .card-entrants {
+    width: 350px;
+    height: 300px;
+    overflow: hidden;
     position: relative;
-    margin-bottom: 40px;
-    margin-right: 40px;
-    float: left;
+
+    .inner {
+      position: absolute;
+      left: -12px;
+      top: -38px;
+      width: 450px;
+
+      img {
+        width: 125px;
+        height: 125px;
+        float: left;
+      }
+
+    }
 
     &:after {
-        content: '';
-        position: absolute;
-        height: 165px;
-        bottom: 116px;
-        left: 0;
-        right: 0;
-        z-index: $BASE-INDEX;
-        @include gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .5));
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: url(/static/images/vignette.png);
     }
 
-    .info {
-        padding: 20px;
+  }
+
+  .actions {
+    position: absolute;
+    bottom: 17px;
+    right: 20px;
+
+    li {
+      float: right;
+      padding-left: 20px;
     }
 
-    h3 {
-        font: 36px/1 'Roboto', sans-serif;
-        margin: 20px;
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 116px;
-        color: #fff;
-        z-index: $BASE-INDEX + 1;
-        text-shadow: 0 0 2px #000;
+    a {
+      color: $dark;
+      text-decoration: none;
+      font: 24px/1 'Roboto', sans-serif;
+      text-transform: uppercase;
     }
 
-    h4 {
-        font: 24px/1 'Roboto', sans-serif;
-        margin-bottom: 10px;
+  }
 
-        &.winner:after {
-            content: 'Winner';
-            display: block;
-            font: 18px/1 'Roboto', sans-serif;
-            color: #666;
-        }
+  @media screen and (max-width: $MOBILE-WIDTH) {
 
-    }
+    width: 100%;
+    height: 116px + 150px;
 
     .card-image {
-        width: 350px;
-        height: 300px;
+      max-width: 100%;
+      max-height: 150px;
     }
 
     .card-entrants {
-        width: 350px;
-        height: 300px;
-        overflow: hidden;
-        position: relative;
 
-        .inner {
-            position: absolute;
-            left: -12px;
-            top: -38px;
-            width: 450px;
+      height: 150px;
 
-            img {
-                width: 125px;
-                height: 125px;
-                float: left;
-            }
-
-        }
-
-        &:after {
-            content: '';
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: url(/static/images/vignette.png);
-        }
-
+      .inner img {
+        width: 100px;
+        height: 100px;
+      }
     }
 
-    .actions {
-        position: absolute;
-        bottom: 17px;
-        right: 20px;
-
-        li {
-            float: right;
-            padding-left: 20px;
-        }
-
-        a {
-            color: $dark;
-            text-decoration: none;
-            font: 24px/1 'Roboto', sans-serif;
-            text-transform: uppercase;
-        }
-
-    }
-
-    @media screen and (max-width: $MOBILE-WIDTH) {
-
-        width: 100%;
-        height: 116px + 150px;
-
-        .card-image {
-            max-width: 100%;
-            max-height: 150px;
-        }
-
-        .card-entrants {
-
-            height: 150px;
-
-            .inner img {
-                width: 100px;
-                height: 100px;
-            }
-        }
-
-    }
+  }
 
 }

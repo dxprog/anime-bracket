@@ -1,158 +1,162 @@
 @import "globals";
+@import "restyle";
 
 #page-vote {
 
+  #content {
+    @include restyle(page);
+    header {
+      @include restyle(header in a page with a subheading);
+    }
+  }
+
+  h2 {
+    @include heading();
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    @include sub-heading();
+  }
+
+  p {
+    @include body-copy();
+    color: #fff;
+  }
+
+  label {
+    cursor: pointer;
+  }
+
+  #content {
+    padding-left: 340px;
+  }
+
+  .entrant1 {
+    clear: both;
+  }
+
+  .character-input {
+    display: none;
+
+    &:checked + .mini-card .image:after {
+      content: '';
+      display: block;
+      background: url(/static/images/checkmark.png);
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100px;
+      width: 100px;
+    }
+
+    &:checked + .mini-card.right .image:after {
+      left: auto;
+      right: 0;
+    }
+
+    & + .left {
+      position: relative;
+      &:after {
+        content: 'vs';
+        position: absolute;
+        padding-top: 12px;
+        text-align: center;
+        @include border-box();
+        font: 28px 'Roboto Condensed', sans-serif;
+        right: -40px;
+        top: 18px;
+        color: #fff;
+        background: $standard;
+        height: 60px;
+        width: 60px;
+        overflow: hidden;
+        border-radius: 30px;
+        z-index: 9001;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+      }
+    }
+
+    @media screen and (max-width: 1170px) {
+      & + .left:after {
+        right: 50%;
+        margin-right: -25px;
+        top: auto;
+        bottom: -40px;
+      }
+    }
+
+  }
+
+  .votes-code {
+    display: none;
+    margin-bottom: 20px;
+
+    .overlay {
+
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: rgba(0, 0, 0, .9);
+      z-index: 10000;
+
+      .code-form {
+        position: absolute;
+        width: 50%;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        background: #fff;
+        box-shadow: 0 2px 2px rgba(0, 0, 0, .25);
+        padding: 10px;
+
+        label {
+          display: block;
+          margin-bottom: 10px;
+          @include font-light();
+        }
+
+        textarea {
+          width: 100%;
+          height: 300px;
+          font-family: mono-space;
+        }
+
+      }
+
+    }
+
+  }
+
+
+  //
+  // MOBILE STYLES
+  //
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+
+    padding: 20px;
+
     h2 {
-        @include heading();
-        margin-bottom: 10px;
+      font-size: 30px;
     }
 
     h3 {
-        @include sub-heading();
+      font-size: 24px;
+      margin-bottom: 20px;
     }
 
     p {
-        @include body-copy();
-        color: #fff;
-    }
-
-    label {
-        cursor: pointer;
+      font-size: 18px;
     }
 
     #content {
-        padding-left: 340px;
+      padding-left: 0;
     }
-
-    #ad {
-
-    }
-
-    .entrant1 {
-        clear: both;
-    }
-
-    .character-input {
-        display: none;
-
-        &:checked + .mini-card .image:after {
-            content: '';
-            display: block;
-            background: url(/static/images/checkmark.png);
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100px;
-            width: 100px;
-        }
-
-        &:checked + .mini-card.right .image:after {
-            left: auto;
-            right: 0;
-        }
-
-        & + .left {
-            position: relative;
-            &:after {
-                content: 'vs';
-                position: absolute;
-                padding-top: 12px;
-                text-align: center;
-                @include border-box();
-                font: 28px 'Roboto Condensed', sans-serif;
-                right: -40px;
-                top: 18px;
-                color: #fff;
-                background: $standard;
-                height: 60px;
-                width: 60px;
-                overflow: hidden;
-                border-radius: 30px;
-                z-index: 9001;
-                box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
-            }
-        }
-
-        @media screen and (max-width: 1170px) {
-            & + .left:after {
-                right: 50%;
-                margin-right: -25px;
-                top: auto;
-                bottom: -40px;
-            }
-        }
-
-    }
-
-    .votes-code {
-        display: none;
-        margin-bottom: 20px;
-
-        .overlay {
-
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: rgba(0, 0, 0, .9);
-            z-index: 10000;
-
-            .code-form {
-                position: absolute;
-                width: 50%;
-                left: 50%;
-                top: 50%;
-                -webkit-transform: translateX(-50%) translateY(-50%);
-                -moz-transform: translateX(-50%) translateY(-50%);
-                background: #fff;
-                box-shadow: 0 2px 2px rgba(0, 0, 0, .25);
-                padding: 10px;
-
-                label {
-                    display: block;
-                    margin-bottom: 10px;
-                    @include font-light();
-                }
-
-                textarea {
-                    width: 100%;
-                    height: 300px;
-                    font-family: mono-space;
-                }
-
-            }
-
-        }
-
-    }
-
-
-    //
-    // MOBILE STYLES
-    //
-
-    @media screen and (max-width: $MOBILE-WIDTH) {
-
-        padding: 20px;
-
-        h2 {
-            font-size: 30px;
-        }
-
-        h3 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 18px;
-        }
-
-        #content {
-            padding-left: 0;
-        }
-    }
+  }
 
 }

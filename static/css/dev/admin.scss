@@ -1,19 +1,97 @@
 @import "globals";
 
+$bracket-row-height: 75px;
+
+@mixin admin-button($type) {
+  background-image: url(/static/images/admin_icons.png);
+  background-repeat: no-repeat;
+
+  @if $type == 'delete' {
+    @include restyle(round critical button);
+    background-position: -45px center;
+  } @else {
+    @include restyle(round button);
+  }
+}
+
 #admin {
+
+  #content {
+    @include restyle(light page);
+    header {
+      @include restyle(header in a light page);
+
+      .top-actions {
+        position: absolute;
+        right: spacing(10);
+        top: 0;
+        a {
+          @include small-button();
+        }
+      }
+
+    }
+
+    .brackets li {
+      display: flex;
+      padding: spacing(4) 0;
+      border-top: 1px solid get-color(light-gray);
+
+      &:first-child {
+        border-top: 0;
+      }
+
+      img {
+        width: $bracket-row-height;
+        height: $bracket-row-height;
+        float: left;
+      }
+
+      .info {
+        margin-left: spacing(4);
+        height: $bracket-row-height;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        h3,
+        h4 {
+          @include restyle(identifier);
+          margin: 0;
+        }
+
+        h4 {
+          color: get-color(dark-gray);
+        }
+      }
+
+      .actions {
+        align-self: flex-end;
+        height: $bracket-row-height;
+        display: flex;
+        align-items: center;
+
+        .button {
+          @include restyle(round button);
+          margin-left: spacing(2);
+
+          &.delete {
+            @include admin-button(delete);
+          }
+
+          &.edit {
+            @include admin-button(edit);
+          }
+        }
+
+      }
+    }
+
+  }
 
     footer {
         position: static;
         margin-top: 50px;
-    }
-
-    .top-actions {
-        position: absolute;
-        right: 0;
-        top: 100px;
-        a {
-            @include small-button();
-        }
     }
 
     .non-button {
@@ -416,70 +494,6 @@
             padding: 5px;
             width: 100%;
             @include border-box();
-        }
-
-    }
-
-    .brackets {
-
-        border-radius: 2px;
-        background: rgba(255, 255, 255, 0.8);
-
-        img {
-            width: 100px;
-            height: 100px;
-            display: block;
-            float: left;
-            margin-right: 25px;
-            background: $darkGrey;
-        }
-
-        h3 {
-            @include body-copy();
-        }
-
-        h4 {
-            @include font-light();
-            strong {
-                @include body-copy();
-            }
-        }
-
-        li {
-            overflow: hidden;
-            padding: 10px;
-        }
-
-        .edit,
-        .delete {
-            float: right;
-            margin-left: 5px;
-        }
-
-        .button {
-            @include small-button();
-        }
-
-        .delete {
-            background: #a94442;
-            color: #fff;
-        }
-
-        .links {
-            @include body-copy();
-            font-size: 20px;
-            padding: 10px 0;
-            li {
-                padding: 0 5px;
-                display: inline;
-                &.label {
-                    padding-left: 0;
-                }
-            }
-            a {
-                color: $dark;
-                text-decoration: none;
-            }
         }
 
     }

@@ -1,3 +1,5 @@
+@import "restyle";
+
 $darkGrey: #494a4c;
 $MED_TURK: #96bcb1;
 $blue: #7b8fa8;
@@ -11,14 +13,7 @@ $BASE-INDEX: 1;
 $MOBILE-WIDTH: 414px;
 
 @mixin heading($hasSubHead: false) {
-  font: bold 48px/1 'Roboto Condensed', sans-serif;
-  color: $standard;
-  text-transform: uppercase;
-  @if ($hasSubHead == true) {
-    margin-bottom: 10px;
-  } @else {
-    margin-bottom: 40px;
-  }
+
 }
 
 @mixin font-light($size: 24px) {
@@ -91,9 +86,7 @@ $MOBILE-WIDTH: 414px;
 }
 
 @mixin small-button() {
-    @include button();
-    font-size: 18px;
-    padding: 10px 20px;
+  @include restyle(small button);
 }
 
 @mixin logo($type: light) {

@@ -1,14 +1,69 @@
+@import "restyle";
+
 @at-root {
 
-  html body {
-    font-family: 'Roboto';
+  $white: get-color(white);
+  $black: get-color(black);
+  $green: get-color(green);
+
+  html {
+    font-family: 'Roboto', sans-serif;
     font-size: 62.5%;
     font-weight: normal;
   }
 
   @include restyle-define(heading, (
+    restyle-var(font-size): 4.8rem,
+    restyle-var(color): $green,
+    restyle-var(line-height): 1.8,
     font-weight: 700,
-    font-size: 4.8rem,
-    color: get-color(green)
+    line-height: restyle-var(line-height),
+    font-size: restyle-var(font-size),
+    color: restyle-var(color),
+    restyle-modifiers: (
+      'in a header': (
+        restyle-var(font-size): 3.6rem,
+        restyle-var(color): $black
+      ),
+      'with a subheader': (
+        restyle-var(line-height): 1
+      )
+    )
+  ));
+
+  @include restyle-define(subheading, (
+    restyle-var(font-weight): 700,
+    font-weight: restyle-var(font-weight),
+    font-size: 3.6rem,
+    color: $white,
+    restyle-modifiers: (
+      thin: (
+        restyle-var(font-weight): 400
+      )
+    )
+  ));
+
+  @include restyle-define(body, (
+    restyle-var(color): $black,
+    font-size: 1.8rem,
+    color: restyle-var(color),
+    restyle-modifiers: (
+      thin: (
+        font-weight: 300
+      ),
+      inverse: (
+        restyle-var(color): $white
+      )
+    )
+  ));
+
+  @include restyle-define(identifier, (
+    font-weight: 400,
+    font-size: 2.4rem,
+    restyle-modifiers: (
+      inverse: (
+        color: $white
+      )
+    )
   ));
 }

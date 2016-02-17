@@ -3,27 +3,43 @@
 @at-root {
   @include restyle-define(button, (
 
-    restyle-var(font-size):
     restyle-var(padding): 15px 40px,
+    restyle-var(background-color): get-color(green),
+    restyle-var(border-color): transparent,
 
     display: inline-block,
     padding: restyle-var(padding),
     border-radius: 2px,
-    background: get-color(green),
-    color: #fff,
+    background-color: restyle-var(background-color),
+    color: get-color(white),
     text-decoration: none,
     border: 0,
     cursor: pointer,
 
     restyle-modifiers: (
       small: (
-        restyle-var(font-size): 18px,
+        restyle: 'body thin inverse',
         restyle-var(padding): 10px 20px
       ),
 
       round: (
+        restyle-var(border-color): get-color(dark-green),
         border-radius: 50%,
-        border: 1px solid get-color(dark-green)
+        height: 45px,
+        width: 45px,
+        border: 1px solid restyle-var(border-color),
+        restyle-var(padding): 0,
+
+        // Round buttons should never have text
+        color: rgba(#000, 0),
+        font-size: 0,
+
+        restyle-modifiers: (
+          critical: (
+            restyle-var(border-color): get-color(dark-red),
+            restyle-var(background-color): get-color(red)
+          )
+        )
       )
     )
   ));

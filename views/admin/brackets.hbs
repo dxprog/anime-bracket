@@ -1,19 +1,23 @@
-<h2>My Brackets</h2>
+<header>
+  <h2>My Brackets</h2>
+  <div {{#if brackets}}class="top-actions"{{/if}}>
+    <a href="/me/create/" {{#unless brackets}}class="button"{{/unless}}>Create a New Bracket</a>
+  </div>
+</header>
 
 {{#if message}}
     <p class="message {{message.type}}">{{message.message}}</p>
 {{/if}}
-
-<div {{#if brackets}}class="top-actions"{{/if}}>
-    <a href="/me/create/" {{#unless brackets}}class="button"{{/unless}}>Create a New Bracket</a>
-</div>
 <ul class="brackets">
     {{#each brackets}}
         {{#isBracketNotHidden .}}
             <li>
                 <img src="{{#if entrants}}{{entrants.0.image}}{{else}}/static/images/no_card_image.png{{/if}}" />
                 <div class="info">
-                    <h3>{{name}} - {{title}}</h3>
+                    <h3>{{name}}</h3>
+                    <h4>{{title}}</h4>
+                </div>
+                <div class="actions">
                     {{#hasNotStarted .}}
                         <a href="/me/start/{{perma}}/nominations/" class="button">Start Nominations</a>
                     {{/hasNotStarted}}

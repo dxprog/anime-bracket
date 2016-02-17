@@ -2,139 +2,147 @@
 
 #page-characters {
 
-    h2 {
-        margin-bottom: 10px;
+  #content {
+    @include restyle(page);
+    padding: 0;
+    header {
+      @include restyle(header in a page);
+    }
+  }
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font: 30px/1 'Roboto Condensed', sans-serif;
+    margin: 30px 0 10px;
+    color: #fff;
+  }
+
+  footer {
+    position: static;
+  }
+
+  .sorter {
+    overflow: hidden;
+    li {
+      float: left;
+      margin-right: 10px;
     }
 
-    h3 {
-        font: 30px/1 'Roboto Condensed', sans-serif;
-        margin: 30px 0 10px;
-        color: #fff;
+    .label {
+      @include small-button();
+      font: 24px/1 'Roboto Condensed', sans-serif;
+      background: transparent;
+      color: #fff;
+      padding-left: 0;
     }
 
-    footer {
-        position: static;
+    input {
+      display: none;
+      &:checked + label {
+        @include small-button();
+        border: 1px solid transparent;
+      }
     }
 
-    .sorter {
-        overflow: hidden;
-        li {
-            float: left;
-            margin-right: 10px;
-        }
-
-        .label {
-            @include small-button();
-            font: 24px/1 'Roboto Condensed', sans-serif;
-            background: transparent;
-            color: #fff;
-            padding-left: 0;
-        }
-
-        input {
-            display: none;
-            &:checked + label {
-                @include small-button();
-                border: 1px solid transparent;
-            }
-        }
-
-        label {
-            @include small-button();
-            background: transparent;
-            color: #fff;
-            border: 1px solid #fff;
-        }
-
+    label {
+      @include small-button();
+      background: transparent;
+      color: #fff;
+      border: 1px solid #fff;
     }
+
+  }
 
 }
 
 .mini-card-container {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .mini-card {
 
-    box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
-    background: rgba(255, 255, 255, .8);
-    position: relative;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+  background: rgba(255, 255, 255, .8);
+  position: relative;
+  height: 100px;
+  margin: 0 20px 20px 0;
+  padding: 15px 15px 15px 115px;
+  width: 380px;
+  float: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @include border-box();
+
+  dt {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+  }
+
+  .name {
+    font: 24px/1 'Roboto', sans-serif;
+    margin-bottom: 10px;
+    color: $dark;
+  }
+
+  .source {
+    font: 18px/1 'Roboto', sans-serif;
+    color: #000;
+  }
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
     height: 100px;
-    margin: 0 20px 20px 0;
-    padding: 15px 15px 15px 115px;
-    width: 380px;
-    float: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    width: 100px;
+  }
 
-    @include border-box();
-
-    dt {
-        position: absolute;
-        left: -9999px;
-        top: -9999px;
+  &.right {
+    padding-left: 15px;
+    padding-right: 115px;
+    dd {
+      text-align: right;
     }
+    img {
+      left: auto;
+      right: 0;
+    }
+  }
+
+  .seed {
+    border: 1px solid $dark;
+    position: absolute;
+    bottom: 0;
+    width: 22px;
+    text-align: center;
+    right: 280px;
+    padding: 2px;
+    font: 12px/1 'Roboto', sans-serif;
+    background: $dark;
+    color: #fff;
+  }
+
+  //
+  // MOBILE STYLES
+  //
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+    width: 100%;
 
     .name {
-        font: 24px/1 'Roboto', sans-serif;
-        margin-bottom: 10px;
-        color: $dark;
+      font-size: 20px;
     }
 
     .source {
-        font: 18px/1 'Roboto', sans-serif;
-        color: #000;
+      font-size: 16px;
     }
 
-    img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100px;
-        width: 100px;
-    }
-
-    &.right {
-        padding-left: 15px;
-        padding-right: 115px;
-        dd {
-            text-align: right;
-        }
-        img {
-            left: auto;
-            right: 0;
-        }
-    }
-
-    .seed {
-        border: 1px solid $dark;
-        position: absolute;
-        bottom: 0;
-        width: 22px;
-        text-align: center;
-        right: 280px;
-        padding: 2px;
-        font: 12px/1 'Roboto', sans-serif;
-        background: $dark;
-        color: #fff;
-    }
-
-    //
-    // MOBILE STYLES
-    //
-
-    @media screen and (max-width: $MOBILE-WIDTH) {
-        width: 100%;
-
-        .name {
-            font-size: 20px;
-        }
-
-        .source {
-            font-size: 16px;
-        }
-
-    }
+  }
 
 }
