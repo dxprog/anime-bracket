@@ -16,6 +16,7 @@ export default Route('admin', {
     // kick in the admin routes
     if ($brackets.length) {
       $brackets.on('click', '.button.open', this.openActions.bind(this));
+      $brackets.on('click', '.button.delete', this.confirmDelete.bind(this));
     } else {
       Router.addRoutes({
         '/me/process/:perma/characters/': Characters,
@@ -30,6 +31,13 @@ export default Route('admin', {
 
   openActions(evt) {
     $(evt.currentTarget).closest('li').toggleClass('open');
+  },
+
+  confirmDelete(evt) {
+    if (!confirm('All data related to this bracket will be PERMENENTLY DELETED! Do you wish to continue?')) {
+      evt.preventDefault();
+      return false;
+    }
   }
 
 });
