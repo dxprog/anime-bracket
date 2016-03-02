@@ -2,48 +2,50 @@
 
 #page-login {
 
-    h3 {
-        margin: 40px 0 10px;
-        font: 30px/1 'Roboto Condensed', sans-serif;
-        color: #fff;
+  #content {
+    @include restyle(page);
+  }
+
+  h3 {
+    margin: 40px 0 10px;
+    font: 30px/1 'Roboto Condensed', sans-serif;
+    color: #fff;
+  }
+
+  ul {
+    list-style: disc;
+    padding-left: 25px;
+  }
+
+  p, li {
+    font: 24px/1.2 'Roboto', sans-serif;
+    margin-bottom: 5px;
+    color: #fff;
+  }
+
+  .read-only {
+    display: block;
+    margin-top: 40px;
+    font: 18px/1 'Roboto Condensed', sans-serif;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  //
+  // MOBILE STYLES
+  //
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+    padding: 20px;
+
+    h2 {
+      font-size: 30px;
     }
 
-    ul {
-        list-style: disc;
-        padding-left: 25px;
+    p,
+    li {
+      font-size: 18px;
     }
-
-    p, li {
-        font: 24px/1.2 'Roboto', sans-serif;
-        margin-bottom: 5px;
-        color: #fff;
-    }
-
-    .read-only {
-        display: block;
-        margin-top: 40px;
-        font: 18px/1 'Roboto Condensed', sans-serif;
-        color: #fff;
-        text-decoration: none;
-    }
-
-    //
-    // MOBILE STYLES
-    //
-
-    @media screen and (max-width: $MOBILE-WIDTH) {
-
-        padding: 20px;
-
-        h2 {
-            font-size: 30px;
-        }
-
-        p,
-        li {
-            font-size: 18px;
-        }
-
-    }
+  }
 
 }
