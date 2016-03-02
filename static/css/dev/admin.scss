@@ -34,7 +34,8 @@ $bracket-row-height: 75px;
       .top-actions {
         position: absolute;
         right: spacing(10);
-        top: 0;
+        top: 50%;
+        transform: translateY(-50%);
         a {
           @include small-button();
         }
@@ -187,9 +188,8 @@ $bracket-row-height: 75px;
         }
 
         label {
+            @include restyle(body);
             display: block;
-            font: 24px/1 'Roboto', sans-serif;
-            color: #fff;
             margin-bottom: 10px;
         }
 
