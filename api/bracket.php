@@ -566,6 +566,22 @@ namespace Api {
         }
 
         /**
+         * Gets all users assigned to a bracket
+         */
+        public function getUsers() {
+          $retVal = [];
+          $result = Lib\Db::Query('SELECT u.* FROM `bracket_owners` bo INNER JOIN `users` u ON u.user_id = bo.user_id WHERE bo.bracket_id=:bracketId', [
+            'bracketId' => $this->id
+          ]);
+          if ($result && $result->count) {
+            while ($row = Lib\Db::Fetch($result)) {
+              $retVal[] = new User($row);
+            }
+          }
+          return $retVal;
+        }
+
+        /**
          * Generator for the locked cache key
          */
         private function _lockedCacheKey() {

@@ -97,7 +97,6 @@ namespace Controller {
                     $bracket->nextTitle = $bracket->nextTitle ?: 'Next Round';
 
                     if ($bracket->state == BS_ELIMINATIONS && isset($bracketRoundData[$bracket->id])) {
-                        // Should query all the brackets at once, but I'm feeling lazy tonight...
                         $row = $bracketRoundData[$bracket->id];
 
                         // If the eliminations are on the last group, don't show the

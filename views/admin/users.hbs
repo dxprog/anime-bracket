@@ -1,0 +1,25 @@
+<header>
+  <h2>Manage Bracket Administrators</h2>
+</header>
+<div class="add-user">
+  <h3>Add Admin</h3>
+  <p><strong>Note - </strong> All users have the same administrative abilities. Be sure you trust any person you add as an admin.</p>
+  <label for="username">Username: </label>
+  <input type="text" id="username" name="username" />
+  <button type="submit">Add</button>
+</div>
+<div class="current-users">
+  <h3>Current Admins</h3>
+  <ul>
+    {{#each users}}
+      {{#if self}}
+        <li>{{name}}</li>
+      {{/if}}
+    {{/each}}
+    {{#each users}}
+      {{#unless self}}
+        <li>{{name}} - <button>Remove</button></li>
+      {{/unless}}
+    {{/each}}
+  </ul>
+</div>
