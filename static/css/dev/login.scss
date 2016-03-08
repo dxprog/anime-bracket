@@ -4,6 +4,9 @@
 
   #content {
     @include restyle(page);
+    header {
+        @include restyle(header in a page);
+    }
   }
 
   h3 {
