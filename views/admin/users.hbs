@@ -1,14 +1,21 @@
 <header>
-  <h2>Manage Bracket Administrators</h2>
+  <h2>Manage Admins - {{bracket.name}}</h2>
 </header>
-<div class="add-user">
+{{#if message}}
+  <p class="message {{message.type}}">{{message.message}}</p>
+{{/if}}
+<div class="section add-user">
   <h3>Add Admin</h3>
-  <p><strong>Note - </strong> All users have the same administrative abilities. Be sure you trust any person you add as an admin.</p>
-  <label for="username">Username: </label>
-  <input type="text" id="username" name="username" />
-  <button type="submit">Add</button>
+  <p class="note"><strong>Note - </strong> All users have the same administrative abilities. Be sure you trust any person you add as an admin.</p>
+  <form action="/me/users/{{bracket.perma}}/?action=add" method="POST">
+    <div class="input-group">
+      <label for="username">Username: </label>
+      <input type="text" id="username" name="username" />
+    </div>
+    <button type="submit" class="small-button">Add User</button>
+  </form>
 </div>
-<div class="current-users">
+<div class="section current-users">
   <h3>Current Admins</h3>
   <ul>
     {{#each users}}

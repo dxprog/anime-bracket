@@ -69,6 +69,11 @@
                   <a href="/me/stats/{{perma}}/">Voting Stats</a>
                 </li>
               {{/if}}
+              {{#unless isFinal}}
+                <li>
+                  <a href="/me/users/{{perma}}/">Manage Admins</a>
+                </li>
+              {{/unless}}
               <li>
                 <a href="/me/hide/{{perma}}/">{{#if hidden}}Unhide{{else}}Hide{{/if}} Bracket</a>
               </li>

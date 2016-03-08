@@ -116,6 +116,7 @@ namespace Controller {
 
                     // All the various button states
                     $bracket->showStartNominations = $bracket->state == BS_NOT_STARTED;
+                    $bracket->isFinal = $bracket->state == BS_FINAL;
                     $bracket->showProcessNominees = $bracket->state == BS_NOMINATIONS;
                     $bracket->showBeginEliminations = $bracket->state == BS_NOMINATIONS;
                     $bracket->showEditEntrants = $bracket->state == BS_NOMINATIONS || $bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING;
