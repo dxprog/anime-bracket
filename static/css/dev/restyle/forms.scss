@@ -37,7 +37,7 @@
 
         restyle-modifiers: (
           neutral: (
-            restyle-var(border-color): get-color(dark-gray),
+            restyle-var(border-color): get-color(gray),
             restyle-var(background-color): get-color(light-gray)
           ),
           critical: (
@@ -62,16 +62,16 @@
   @include restyle-define(label, (
     restyle: body,
     display: block,
-    color: get-color(light-black),
+    color: get-color(dark-green),
     padding-bottom: spacing(1),
     padding-left: spacing(1)
   ));
 
   @include restyle-define(textbox, (
-    restyle: thin body,
+    restyle: body,
     display: block,
     padding: spacing(1),
-    border: 1px solid get-color(dark-gray),
+    border: 1px solid get-color(gray),
     width: 33%
   ));
 }

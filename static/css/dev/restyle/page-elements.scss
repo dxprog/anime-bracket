@@ -40,7 +40,7 @@
         padding-bottom: $page-gutter,
         '& + footer': (
           margin: 0,
-          background: get-color(light-black),
+          background: get-color(dark-gray),
           padding: spacing(4) 0,
           '& p': (
             margin: 0
