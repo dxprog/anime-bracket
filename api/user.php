@@ -32,7 +32,7 @@ namespace Api {
 
         public static function getByName($userName) {
             $retVal = null;
-            $result = Lib\Db::Query('SELECT * FROM users WHERE user_name = :userName', [ ':userName' => $userName ]);
+            $result = Lib\Db::Query('SELECT * FROM users WHERE user_name LIKE :userName', [ ':userName' => $userName ]);
             if ($result && $result->count) {
                 $retVal = new User(Lib\Db::Fetch($result));
             }
