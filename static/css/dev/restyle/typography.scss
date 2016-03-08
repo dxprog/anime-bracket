@@ -33,12 +33,17 @@
 
   @include restyle-define(subheading, (
     restyle-var(font-weight): 700,
+    restyle-var(color): $white,
+    restyle-var(font-size): 3.6rem,
     font-weight: restyle-var(font-weight),
-    font-size: 3.6rem,
-    color: $white,
+    font-size: restyle-var(font-size),
+    color: restyle-var(color),
     restyle-modifiers: (
       thin: (
         restyle-var(font-weight): 400
+      ),
+      'in a light page': (
+        restyle-var(color): $black
       )
     )
   ));

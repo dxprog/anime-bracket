@@ -48,4 +48,30 @@
       )
     )
   ));
+
+  @include restyle-define(input-group, (
+    margin: spacing(2) 0,
+    '& label': (
+      restyle: label
+    ),
+    '& input[type="text"]': (
+      restyle: textbox
+    )
+  ));
+
+  @include restyle-define(label, (
+    restyle: body,
+    display: block,
+    color: get-color(light-black),
+    padding-bottom: spacing(1),
+    padding-left: spacing(1)
+  ));
+
+  @include restyle-define(textbox, (
+    restyle: thin body,
+    display: block,
+    padding: spacing(1),
+    border: 1px solid get-color(dark-gray),
+    width: 33%
+  ));
 }

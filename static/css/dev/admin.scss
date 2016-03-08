@@ -43,6 +43,24 @@ $bracket-row-height: 75px;
 
     }
 
+    h3 {
+      @include restyle(subheading in a light page);
+      font-size: 2.4rem;
+    }
+
+    .section {
+      margin-top: spacing(4);
+    }
+
+    .input-group {
+      @include restyle(input-group);
+    }
+
+    .note {
+      @include restyle(body);
+      margin: spacing(1) 0;
+    }
+
     .brackets li.bracket {
       padding: spacing(4) 0;
       border-top: 1px solid get-color(light-gray);
