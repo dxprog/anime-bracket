@@ -66,8 +66,29 @@ namespace Controller\Admin {
       return $retVal;
     }
 
+    /**
+     * Removes a user from the current bracket
+     * @param Api\Bracket $bracket The bracket to remove the user from
+     * @return stdClass The error/success message to display
+     */
     private static function _removeUser(Api\Bracket $bracket) {
-
+      $retVal = null;
+      $userId = Lib\Url::Post('id', true);
+      if ($userId) {
+        $user = Api\User::getById($userId);
+        if ($user) {
+          if ($bracket->removeUser($user)) {
+            $retVal = parent::_createMessage('success', 'User /u/' . $user->name . ' removed from bracket');
+          } else {
+            $retVal = parent::_createMessage('error', 'There was an error removing /u/' . $user->name . '.');
+          }
+        } else {
+          $retVal = parent::_createMessage('error', 'Invalid user ID');
+        }
+      } else {
+        $retVal = parent::_createMessage('error', 'Invalid user ID');
+      }
+      return $retVal;
     }
 
   }

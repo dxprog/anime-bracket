@@ -25,7 +25,13 @@
     {{/each}}
     {{#each users}}
       {{#unless self}}
-        <li>{{name}} - <button>Remove</button></li>
+        <li>
+            {{name}}
+            <form action="/me/users/{{../../bracket.perma}}/?action=remove" method="post">
+              <input type="hidden" name="id" value="{{id}}" />
+              <button type="submit">Remove</button>
+            </form>
+         </li>
       {{/unless}}
     {{/each}}
   </ul>

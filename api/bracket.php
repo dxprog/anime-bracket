@@ -566,6 +566,13 @@ namespace Api {
         }
 
         /**
+         * Removes a user's admin privileges from this bracket
+         */
+        public function removeUser(User $user) {
+          return Lib\Db::Query('DELETE FROM bracket_owners WHERE bracket_id=:bracketId AND user_id=:userId', [ 'bracketId' => $this->id, 'userId' => $user->id ]);
+        }
+
+        /**
          * Gets all users assigned to a bracket
          */
         public function getUsers() {
