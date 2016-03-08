@@ -61,6 +61,27 @@ $bracket-row-height: 75px;
       margin: spacing(1) 0;
     }
 
+    // This is the laziest thing I've ever done...
+    // ...and it's only getting lazier, my friend...
+    .hide-source {
+      > label {
+        display: inline;
+      }
+
+      .source {
+        margin-top: spacing(2);
+        display: none;
+      }
+
+      #hideSource {
+        position: relative;
+        top: -2px;
+        &:checked + label + .source {
+          display: block;
+        }
+      }
+    }
+
     .brackets li.bracket {
       padding: spacing(4) 0;
       border-top: 1px solid get-color(light-gray);
@@ -244,30 +265,6 @@ $bracket-row-height: 75px;
             &:hover {
                 background: $dark;
             }
-        }
-
-        // This is the laziest thing I've ever done...
-        #hideSource {
-            display: none;
-
-            & + .source .show {
-                display: none;
-            }
-
-            & + .source .toggle {
-                font-size: 18px;
-                cursor: pointer;
-            }
-
-            &:checked + .source input,
-            &:checked + .source .hide {
-                display: none;
-            }
-
-            &:checked + .source .show {
-                display: inline;
-            }
-
         }
 
     }
