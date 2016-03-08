@@ -3,6 +3,7 @@
 @at-root {
 
   $page-gutter: spacing(10);
+  $white: get-color(white);
 
   @include restyle-define(header, (
     '& h2': (
@@ -35,7 +36,16 @@
     box-sizing: border-box,
     restyle-modifiers: (
       light: (
-        background: get-color(white)
+        background: $white,
+        padding-bottom: $page-gutter,
+        '& + footer': (
+          margin: 0,
+          background: get-color(light-black),
+          padding: spacing(4) 0,
+          '& p': (
+            margin: 0
+          )
+        )
       )
     )
   ));
