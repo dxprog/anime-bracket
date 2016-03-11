@@ -60,7 +60,7 @@
   ));
 
   @include restyle-define(label, (
-    restyle: body,
+    restyle: large body,
     display: block,
     color: get-color(dark-green),
     padding-bottom: spacing(1),

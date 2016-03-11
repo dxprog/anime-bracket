@@ -50,14 +50,18 @@
 
   @include restyle-define(body, (
     restyle-var(color): $black,
-    font-size: 1.8rem,
+    restyle-var(font-size): 1.8rem,
     color: restyle-var(color),
+    font-size: restyle-var(font-size),
     restyle-modifiers: (
       thin: (
         font-weight: 300
       ),
       inverse: (
         restyle-var(color): $white
+      ),
+      large: (
+        restyle-var(font-size): 2rem
       )
     )
   ));
