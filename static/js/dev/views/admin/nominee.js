@@ -72,7 +72,7 @@ export default Route('admin-nominee', {
 
   uploadComplete(data) {
     if (data.success) {
-      this._$cropper.find('.crop').empty().append('<img src="' + data.fileName + '" />');
+      this._$cropper.find('.cropper').empty().append('<img src="' + data.fileName + '" />');
       this.initCropper(true);
     } else {
       alert(data.message);

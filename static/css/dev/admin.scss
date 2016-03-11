@@ -1,4 +1,5 @@
 @import "globals";
+@import "admin-nominee";
 
 $bracket-row-height: 75px;
 
@@ -221,395 +222,174 @@ $bracket-row-height: 75px;
 
   }
 
-    footer {
-        position: static;
-        margin-top: 50px;
+  footer {
+    position: static;
+    margin-top: 50px;
+  }
+
+  .non-button {
+    background: transparent;
+  }
+
+  .nominee-head {
+    margin-bottom: 10px;
+  }
+
+  .nominee-count {
+    @include sub-heading();
+  }
+
+  .form {
+
+    h3 {
+      @include sub-heading();
+      margin: 20px 0 10px;
     }
 
-    .non-button {
-        background: transparent;
+    label {
+      @include restyle(body);
+      display: block;
+      margin-bottom: 10px;
     }
 
-    .nominee-head {
-        margin-bottom: 10px;
+    input[type="text"],
+    textarea,
+    select {
+      font: 20px/1.2 'Roboto', sans-serif;
+      padding: 5px;
+      margin-bottom: 20px;
+      width: 75%;
     }
 
-    .nominee-count {
-        @include sub-heading();
+    textarea {
+      height: 400px;
     }
 
-    #content {
-        overflow: hidden;
+    .foot {
+      font: 20px/1 'Roboto', sans-serif;
+      color: #ccc;
+      margin-bottom: 10px;
+      a {
+        color: $light;
+        text-decoration: none;
+        &:hover {
+          color: $dark;
+        }
+      }
     }
 
-    .form {
-
-        h3 {
-            @include sub-heading();
-            margin: 20px 0 10px;
-        }
-
-        label {
-            @include restyle(body);
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
-            font: 20px/1.2 'Roboto', sans-serif;
-            padding: 5px;
-            margin-bottom: 20px;
-            width: 75%;
-        }
-
-        textarea {
-            height: 400px;
-        }
-
-        .foot {
-            font: 20px/1 'Roboto', sans-serif;
-            color: #ccc;
-            margin-bottom: 10px;
-            a {
-                color: $light;
-                text-decoration: none;
-                &:hover {
-                    color: $dark;
-                }
-            }
-        }
-
-        button {
-            display: block;
-            border: 0;
-            cursor: pointer;
-            &:hover {
-                background: $dark;
-            }
-        }
-
+    button {
+      display: block;
+      border: 0;
+      cursor: pointer;
+      &:hover {
+        background: $dark;
+      }
     }
 
-    .eliminations,
-    .stats {
-        h2 {
-            margin-bottom: 5px;
-        }
+  }
 
-        h3 {
-            font: 30px/1 'Roboto Condensed', sans-serif;
-            color: #fff;
-            margin-bottom: 40px;
-        }
-
-        label {
-            font: 30px/1.2 'Roboto', sans-serif;
-            color: #fff;
-        }
-
-        p {
-            font: 24px/1.2 'Roboto', sans-serif;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        select {
-            font: 24px/1 'Roboto', sans-serif;
-            padding: 15px;
-            display: block;
-            margin-bottom: 20px;
-        }
-
+  .eliminations,
+  .stats {
+    h2 {
+      margin-bottom: 5px;
     }
 
-    .nominee {
-
-        box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
-        background: rgba(255, 255, 255, .8);
-
-        label {
-            color: $dark;
-        }
-
-        input[type="text"] {
-            width: 300px;
-        }
-
-        dl {
-            overflow: hidden;
-            padding: 20px;
-        }
-
-        dt {
-            display: none;
-        }
-
-        h3 {
-            background: $light;
-            padding: 10px 20px;
-            color: $dark;
-            font: 24px/1 'Roboto Condensed', sans-serif;
-        }
-
-        .image {
-            float: left;
-            margin-right: 20px;
-            position: relative;
-
-            img {
-                display: block;
-                max-width: 150px;
-                min-width: 150px;
-                min-height: 150px;
-            }
-
-            button {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(0, 0, 0, .75);
-                color: #fff;
-                font: 18px/1 'Roboto', sans-serif;
-                padding: 10px 0;
-                width: 100%;
-            }
-        }
-
-        table {
-
-            border-collapse: collapse;
-            border: 0;
-            width: 100%;
-
-            thead {
-                background: $standard;
-                th {
-                    text-align: left;
-                    font: 18px 'Roboto', sans-serif;
-                    color: #fff;
-                    padding: 5px;
-                }
-
-                .name {
-                    width: 356px;
-
-                }
-
-                .thumb {
-                    width: 75px;
-                    padding: 10px;
-                }
-
-            }
-
-            tr.checked {
-                opacity: .5;
-            }
-
-            .bracket-name {
-                display: block;
-                font-size: 18px;
-            }
-
-            a.thumb {
-                display: block;
-                width: 75px;
-                margin: 10px;
-                height: 0;
-                overflow: hidden;
-                padding-top: 75px;
-                background-size: cover;
-                background-position: center center;
-            }
-
-            .button {
-                background: transparent;
-                font-size: 18px;
-                color: $dark;
-            }
-
-            input[type="checkbox"] {
-                display: none;
-            }
-
-            .action {
-                .button {
-                    float: right;
-                }
-            }
-
-            td {
-                font: 24px 'Roboto', sans-serif;
-                padding: 0 5px;
-
-                &[colspan="4"] {
-                    padding: 0;
-                }
-
-                &.duplicate input {
-                    display: block;
-                    width: 16px;
-                    margin: 0 auto;
-                }
-
-                &.action {
-                    width: 142px;
-                }
-
-            }
-
-        }
-
-        .buttons {
-            background: $standard;
-            padding: 20px 15px;
-        }
-
-        .overlay {
-            display: none;
-            background: rgba(0, 0, 0, .8);
-            position: fixed;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-
-            .cropper {
-                width: 960px;
-                margin: 100px auto 0;
-            }
-
-            .crop {
-                width: 600px;
-                float: left;
-                padding: 10px;
-
-                background: #000;
-                border: 1px dotted #666;
-
-                .jcrop-holder {
-                    margin: 0 auto;
-                }
-
-                img {
-                    max-width: 600px;
-                    max-height: 500px;
-                    display: block;
-                    margin: 0 auto;
-                }
-            }
-
-            h3 {
-                background: transparent;
-                padding: 0;
-                text-transform: uppercase;
-            }
-
-            .side {
-                float: right;
-                width: 300px;
-                padding: 0 10px;
-
-                input[type="file"] {
-                    position: absolute;
-                    left: -9999px;
-                    top: -9999px;
-                }
-
-                label {
-                    color: #fff;
-                    font: 18px/1 'Roboto Condensed', sans-serif;
-                    display: inline-block;
-                }
-
-                button {
-                    margin-top: 40px;
-                }
-
-            }
-
-            p {
-                font: 18px/1.2 'Roboto', sans-serif;
-                color: #fff;
-                margin: 20px 0;
-            }
-
-        }
-
+    h3 {
+      font: 30px/1 'Roboto Condensed', sans-serif;
+      color: #fff;
+      margin-bottom: 40px;
     }
 
-    .characters {
-
-        h2 {
-            @include heading($hasSubHead: true);
-        }
-
-        h3 {
-            @include sub-heading();
-        }
-
-        table {
-            background: #fff;
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .image {
-            width: 75px;
-            img {
-                width: 75px;
-                height: 75px;
-            }
-        }
-
-        thead {
-            background: $standard;
-            font: 24px/1 'Roboto Condensed', sans-serif;
-            color: #fff;
-            th {
-                padding: 5px;
-            }
-        }
-
-        button {
-            @include small-button();
-        }
-
-        button.delete {
-            background: #a94442;
-            color: #fff;
-        }
-
-        .error {
-            background: #f00;
-        }
-
-        .success {
-            background: #0f0;
-        }
-
-        td.name,
-        td.source {
-            padding: 5px;
-        }
-
-        input[type="text"] {
-            font: 18px/1 'Roboto', sans-serif;
-            padding: 5px;
-            width: 100%;
-            @include border-box();
-        }
-
+    label {
+      font: 30px/1.2 'Roboto', sans-serif;
+      color: #fff;
     }
+
+    p {
+      font: 24px/1.2 'Roboto', sans-serif;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    select {
+      font: 24px/1 'Roboto', sans-serif;
+      padding: 15px;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+  }
+
+  .characters {
+
+    h2 {
+      @include heading($hasSubHead: true);
+    }
+
+    h3 {
+      @include sub-heading();
+    }
+
+    table {
+      background: #fff;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .image {
+      width: 75px;
+      img {
+        width: 75px;
+        height: 75px;
+      }
+    }
+
+    thead {
+      background: $standard;
+      font: 24px/1 'Roboto Condensed', sans-serif;
+      color: #fff;
+      th {
+        padding: 5px;
+      }
+    }
+
+    button {
+      @include small-button();
+    }
+
+    button.delete {
+      background: #a94442;
+      color: #fff;
+    }
+
+    .error {
+      background: #f00;
+    }
+
+    .success {
+      background: #0f0;
+    }
+
+    td.name,
+    td.source {
+      padding: 5px;
+    }
+
+    input[type="text"] {
+      font: 18px/1 'Roboto', sans-serif;
+      padding: 5px;
+      width: 100%;
+      @include border-box();
+    }
+
+  }
 
 }
 
 #chart {
-    margin-top: 20px;
-    background: #fff;
-    padding: 25px;
-    @include border-box();
+  margin-top: 20px;
+  background: #fff;
+  padding: 25px;
+  @include border-box();
 }

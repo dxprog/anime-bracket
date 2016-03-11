@@ -1,0 +1,241 @@
+$nominee-thumb-width: 150px;
+$spacing-2: spacing(2);
+
+#admin {
+
+  .nominee {
+    overflow: hidden;
+
+    label {
+      color: $dark;
+    }
+
+    input[type="text"] {
+      width: 300px;
+    }
+
+    .col2 {
+      width: 50%;
+      h3 {
+        margin: spacing(4) 0 spacing(2);
+      }
+      float: left;
+    }
+
+    .form {
+      padding: $spacing-2 $spacing-2 $spacing-2 ($nominee-thumb-width + spacing(4));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .buttons {
+      overflow: hidden;
+      button {
+        float: left;
+        &.delete {
+          margin-left: spacing(2);
+          background-color: get-color(red);
+          &:hover {
+            background-color: get-color(dark-red);
+          }
+        }
+      }
+    }
+
+    dt {
+      display: none;
+    }
+
+    h3.info {
+      background: $light;
+      padding: 10px 20px;
+      color: $dark;
+      font: 24px/1 'Roboto Condensed', sans-serif;
+    }
+
+    .image {
+      position: absolute;
+      left: 0;
+      top: 0;
+
+      img {
+        display: block;
+        max-width: $nominee-thumb-width;
+        min-width: $nominee-thumb-width;
+        min-height: $nominee-thumb-width;
+      }
+
+      button {
+        background: get-color(black);
+        color: #fff;
+        font: 18px/1 'Roboto', sans-serif;
+        padding: 10px 0;
+        width: 100%;
+      }
+    }
+
+    table {
+
+      border-collapse: collapse;
+      border: 0;
+      width: 100%;
+
+      thead {
+        display: none;
+      }
+
+      tr.checked {
+        opacity: .5;
+      }
+
+      td {
+        @include restyle(large body);
+
+        &.thumb {
+          width: 75px;
+        }
+
+        &[colspan="4"] {
+          padding: 0;
+        }
+
+        .this-bracket:after {
+          content: 'In this bracket';
+          background: get-color(gray);
+          border-radius: 2px;
+          padding: spacing(1);
+          font-size: 1rem;
+          position: relative;
+          margin-left: spacing(1);
+          top: -3px;
+        }
+
+        &.duplicate input {
+          display: block;
+          width: 16px;
+          margin: 0 auto;
+        }
+
+        &.action {
+          text-align: right;
+        }
+
+      }
+
+      .bracket-name {
+        display: block;
+        @include restyle(body);
+        color: get-color(gray);
+      }
+
+      a.thumb {
+        display: block;
+        width: 75px;
+        margin: $spacing-2;
+        margin-left: 0;
+        height: 0;
+        overflow: hidden;
+        padding-top: 75px;
+        background-size: cover;
+        background-position: center center;
+      }
+
+      .button {
+        background: transparent;
+        font-size: 18px;
+        color: $dark;
+      }
+
+      input[type="checkbox"] {
+        display: none;
+      }
+
+      .action {
+        .button {
+          float: right;
+        }
+      }
+    }
+
+    .overlay {
+      display: none;
+      background: rgba(0, 0, 0, .8);
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 10;
+
+      .modal {
+        width: 960px;
+        margin: 100px auto 0;
+        padding: spacing(4);
+        background: get-color(white);
+        box-shadow: 0 4px 3px rgba(#000, 0.9);
+        overflow: hidden;
+      }
+
+      .cropper {
+        width: 600px;
+        height: 600px;
+        float: left;
+        padding: 10px;
+        position: relative;
+        background: #000;
+        border: 1px dotted #666;
+
+        .jcrop-holder {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translateX(-50%) translateY(-50%);
+
+          input[type="radio"] {
+            opacity: 0;
+          }
+        }
+
+        img {
+          max-width: 600px;
+          max-height: 500px;
+          display: block;
+          margin: 0 auto;
+        }
+      }
+
+      h3 {
+        @include restyle(subheading);
+      }
+
+      .side {
+        float: right;
+        width: 300px;
+        padding: 0 10px;
+
+        input[type="file"] {
+          position: absolute;
+          left: -9999px;
+          top: -9999px;
+        }
+
+        label {
+          @include restyle(small button);
+        }
+
+        button {
+          margin-top: 40px;
+        }
+
+      }
+
+      p {
+        @include restyle(body);
+        margin: spacing(4) 0;
+      }
+
+    }
+
+  }
+
+}
