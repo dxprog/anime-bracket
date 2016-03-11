@@ -63,8 +63,7 @@
     restyle: large body,
     display: block,
     color: get-color(dark-green),
-    padding-bottom: spacing(1),
-    padding-left: spacing(1)
+    padding-bottom: spacing(1)
   ));
 
   @include restyle-define(textbox, (
