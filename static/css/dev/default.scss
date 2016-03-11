@@ -23,7 +23,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: $BASE-INDEX;
+    z-index: -1;
 
     background-image: url(/static/images/squares_bg.png),
         -moz-linear-gradient(left, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0) 50%),
