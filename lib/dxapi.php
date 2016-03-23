@@ -39,7 +39,7 @@ namespace Api {
 	 * @name $_err
 	 */
 	$_err = array (	ERR_INVALID_METHOD=>'An invalid method was invoked.',
-					ERR_INVALID_RETURN_TYPE=>'Return type requested is not valid. Valid return types are: ' . $_return,
+					ERR_INVALID_RETURN_TYPE=>'Return type requested is not valid. Valid return types are: ' . $GLOBALS['_return'],
 					ERR_INVALID_LIBRARY=>'The library requested does not exists.',
 					ERR_INVALID_FUNCTION=>'Function called does not exist in requested library.',
 					ERR_BAD_LOGIN=>'User name and/or password do not match any on record.',

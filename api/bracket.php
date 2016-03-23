@@ -519,10 +519,12 @@ namespace Api {
         public static function generateSeededBracket($entrants, array $buildFrom = null) {
             $entrants = (int) $entrants;
             $buildFrom = is_array($buildFrom) ? $buildFrom : [ 1, 2 ];
-            $retVal = [];
-            for ($i = 0, $count = count($buildFrom); $i < $count; $i++) {
-                $retVal[] = $buildFrom[$i];
-                $retVal[] = $count * 2 - ($buildFrom[$i] - 1);
+            $retVal = $entrants === 2 ? $buildFrom : [];
+            if (empty($retVal)) {
+              for ($i = 0, $count = count($buildFrom); $i < $count; $i++) {
+                  $retVal[] = $buildFrom[$i];
+                  $retVal[] = $count * 2 - ($buildFrom[$i] - 1);
+              }
             }
             return count($retVal) === $entrants ? $retVal : self::generateSeededBracket($entrants, $retVal);
         }
