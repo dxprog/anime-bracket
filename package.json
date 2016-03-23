@@ -6,7 +6,7 @@
   "author": "Matt (dxprog) Hackmann",
   "license": "GPLv3",
   "scripts": {
-    "test": "grunt browserify && karma start karma.conf.js --single-run"
+    "test": "grunt browserify && grunt phpunit && karma start karma.conf.js --single-run"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
@@ -24,6 +24,7 @@
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-uglify": "~0.6.0",
     "grunt-contrib-watch": "~0.6.1",
+    "grunt-phpunit": "^0.3.6",
     "grunt-sass": "^1.1.0",
     "jquery": "^2.2.0",
     "karma": "^0.13.19",

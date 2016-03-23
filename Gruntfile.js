@@ -79,6 +79,15 @@ module.exports = function(grunt) {
                     reload: true
                 }
             }
+        },
+        phpunit: {
+          classes: {
+            dir: 'tests/php'
+          },
+          options: {
+            bin: 'vendor/bin/phpunit',
+            bootstrap: 'tests/php/bootstrap.php'
+          }
         }
     });
 
@@ -86,6 +95,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-phpunit');
 
     grunt.registerTask('default', ['browserify', 'sass', 'uglify']);
 
