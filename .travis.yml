@@ -2,5 +2,7 @@ language: node_js
 node_js:
   - "0.12"
 before_script:
+  - apt-get update -qq
+  - apt-get install php5-cli
   - npm install grunt-cli -g
   - php composer-install.php && php composer.phar install && rm composer.phar
