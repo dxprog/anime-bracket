@@ -36,7 +36,8 @@ namespace Controller\Admin {
 
             }
 
-            return self::_main($message, true);
+            self::_createMessage($message->type, $message->message, true);
+            self::_redirectToMain();
 
         }
 
