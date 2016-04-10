@@ -56,8 +56,6 @@ h2 {
 }
 
 footer p {
-  position: relative;
-  z-index: $BASE-INDEX + 1;
   margin: 100px 0 20px;
   text-align: center;
   @include body-copy();
@@ -97,7 +95,7 @@ footer p {
 }
 
 .small-button {
-  @include small-button();
+  @include restyle(small button);
 }
 
 @media screen and (max-width: 1280px), screen and (max-height: 768px) {

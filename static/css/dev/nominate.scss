@@ -2,195 +2,196 @@
 
 #page-nominate {
 
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 40px;
+  #content {
+    @include restyle(page);
+    header {
+      @include restyle(header in a page);
+    }
+
+    padding-left: 360px;
+
+    h3 {
+      @include sub-heading();
+    }
+
+    label {
+      font: 24px/1 'Roboto Condensed', sans-serif;
+      display: block;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style: disc;
+    }
+
+    ul,
+    ol {
+      padding-left: 32px;
+      margin-bottom: 20px;
+      li {
+        width: 610px;
+        font-size: 20px;
+        font: 24px/1.2 'Roboto', sans-serif;
+        margin-bottom: 10px;
+      }
+    }
+
+    input[type="text"] {
+      border: 1px solid #494a4c;
+      height: 30px;
+      width: 404px;
+      padding: 4px;
+      font: 24px/1 'Roboto', sans-serif;
+      margin-bottom: 20px;
+      display: block;
+      &:focus {
+        background: #f2f3df;
+      }
+      &.error {
+        background: #fcc;
+      }
+
+      [readonly] {
+        background: #ddd;
+      }
+
+    }
+
+    button[disabled] {
+      background: #ddd;
+    }
+
+    .accept {
+      margin-top: spacing(4);
+    }
+
+    .info {
+
+      color: #eee;
+
+      p {
+        @include body-copy();
+      }
+
+      strong {
+        font-size: 28px;
+      }
+
+    }
+
+    .footnote {
+      font: 14px/1.2 'Roboto', sans-serif;
+      margin: 0 0 5px;
+      width: 500px;
+    }
+
+    .form {
+      margin-top: 20px;
+      display: none;
+    }
+
+  }
+
+  //
+  // MOBILE STYLES
+  //
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+
+    padding: 20px;
 
     #content {
-        padding-left: 360px;
+      padding-left: 0;
 
-        h2 {
-            @include heading(true);
-        }
+      h2 {
+        font-size: 30px;
+      }
 
-        h3 {
-            @include sub-heading();
-        }
+      h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
 
-        label {
-            font: 24px/1 'Roboto Condensed', sans-serif;
-            display: block;
-            color: #fff;
-            margin-bottom: 10px;
-        }
+      .form {
+        margin-top: 10px;
+      }
 
-        ul {
-            list-style: disc;
-        }
+      .info p,
+      ol li,
+      ul li {
+        width: auto;
+        font-size: 16px;
+      }
 
-        ul,
-        ol {
-            padding-left: 32px;
-            margin-bottom: 20px;
-            li {
-                width: 610px;
-                font-size: 20px;
-                font: 24px/1.2 'Roboto', sans-serif;
-                margin-bottom: 10px;
-            }
-        }
-
-        input[type="text"] {
-            border: 1px solid #494a4c;
-            height: 30px;
-            width: 404px;
-            padding: 4px;
-            font: 24px/1 'Roboto', sans-serif;
-            margin-bottom: 20px;
-            display: block;
-            &:focus {
-                background: #f2f3df;
-            }
-            &.error {
-                background: #fcc;
-            }
-
-            [readonly] {
-                background: #ddd;
-            }
-
-        }
-
-        .button[disabled] {
-            background: #ddd;
-        }
-
-        .info {
-
-            color: #eee;
-
-            p {
-                @include body-copy();
-            }
-
-            strong {
-                font-size: 28px;
-            }
-
-        }
-
-        .footnote {
-            font: 14px/1.2 'Roboto', sans-serif;
-            margin: 0 0 5px;
-            width: 500px;
-        }
-
-        .form {
-            margin-top: 20px;
-            display: none;
-        }
+      input[type="text"] {
+        width: auto;
+      }
 
     }
 
-    //
-    // MOBILE STYLES
-    //
-
-    @media screen and (max-width: $MOBILE-WIDTH) {
-
-        padding: 20px;
-
-        #content {
-            padding-left: 0;
-
-            h2 {
-                font-size: 30px;
-            }
-
-            h3 {
-                font-size: 24px;
-                margin-bottom: 20px;
-            }
-
-            .form {
-                margin-top: 10px;
-            }
-
-            .info p,
-            ol li,
-            ul li {
-                width: auto;
-                font-size: 16px;
-            }
-
-            input[type="text"] {
-                width: auto;
-            }
-
-        }
-
-    }
+  }
 
 }
 
 #typeahead {
-    position: absolute;
-    list-style: none;
-    background: #fff;
-    padding: 0;
+  position: absolute;
+  list-style: none;
+  background: #fff;
+  padding: 0;
+  margin: 0;
+  width: 404px;
+  z-index: $BASE-INDEX + 2;
+
+  li {
     margin: 0;
-    width: 404px;
-    z-index: $BASE-INDEX + 2;
+    padding: 10px 10px;
+    overflow: hidden;
+    position: relative;
 
-    li {
-        margin: 0;
-        padding: 10px 10px;
-        overflow: hidden;
-        position: relative;
+    font: 24px/1 'Roboto', sans-serif;
 
-        font: 24px/1 'Roboto', sans-serif;
-
-        &:hover,
-        &.selected {
-            background: $light;
-            cursor: pointer;
-        }
-
-        img {
-            float: left;
-            max-width: 50px;
-        }
-
-        h4,
-        h5 {
-            padding-left: 60px;
-        }
-
-        h4 {
-            font-family: 'Roboto Condensed';
-        }
-
-        &.verified:after {
-            content: '';
-            position: absolute;
-            right: 10px;
-            top: 25px;
-            border: 3px solid $dark;
-            border-top: 0;
-            border-right: 0;
-            width: 25px;
-            height: 10px;
-            transform: rotate(-45deg);
-        }
-
+    &:hover,
+    &.selected {
+      background: $light;
+      cursor: pointer;
     }
 
-    //
-    // MOBILE STYLES
-    //
-
-    @media screen and (max-width: $MOBILE-WIDTH) {
-        max-width: 100%;
+    img {
+      float: left;
+      max-width: 50px;
     }
+
+    h4,
+    h5 {
+      padding-left: 60px;
+    }
+
+    h4 {
+      font-family: 'Roboto Condensed';
+    }
+
+    &.verified:after {
+      content: '';
+      position: absolute;
+      right: 10px;
+      top: 25px;
+      border: 3px solid $dark;
+      border-top: 0;
+      border-right: 0;
+      width: 25px;
+      height: 10px;
+      transform: rotate(-45deg);
+    }
+
+  }
+
+  //
+  // MOBILE STYLES
+  //
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+    max-width: 100%;
+  }
 
 }

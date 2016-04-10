@@ -104,7 +104,7 @@ $spacing-2: spacing(2);
           background: get-color(gray);
           border-radius: 2px;
           padding: spacing(1);
-          font-size: 1rem;
+          font-size: 1.2rem;
           position: relative;
           margin-left: spacing(1);
           top: -3px;
@@ -116,7 +116,13 @@ $spacing-2: spacing(2);
           margin: 0 auto;
         }
 
+        .bracket-name {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
         &.action {
+          width: 85px;
           text-align: right;
         }
 
@@ -219,8 +225,15 @@ $spacing-2: spacing(2);
           top: -9999px;
         }
 
-        label {
+        label,
+        button {
           @include restyle(small button);
+          margin-right: spacing(2);
+        }
+
+        button.cancel {
+          background: transparent;
+          color: get-color(black);
         }
 
         button {

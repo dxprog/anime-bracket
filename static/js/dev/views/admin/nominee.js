@@ -28,9 +28,10 @@ export default Route('admin-nominee', {
       .on('change', '[name="upload"]', this.uploadChange.bind(this))
       .on('click', '.crop-submit', this.submitCrop.bind(this))
       .on('change', 'input[type="checkbox"]', this.ignoreCheck.bind(this))
-      .on('click', '.buttons button', this.submitNominee.bind(this))
+      .on('submit', 'form', this.submitNominee.bind(this))
       .on('click', 'button.copy', this.copyCharacterClick.bind(this))
-      .on('click', 'button.same', this.submitNominee.bind(this));
+      .on('click', 'button.cancel', this.hideCropper.bind(this))
+      .on('click', '.overlay', this.hideCropper.bind(this));
     this.renderComplete();
   },
 
@@ -86,7 +87,7 @@ export default Route('admin-nominee', {
   submitNominee(evt) {
     evt.preventDefault();
 
-    let $form = $('form');
+    let $form = $(evt.currentTarget);
     let data = $form.serialize();
     let ignore = $(evt.target).val() ? 'ignore=true' : '';
 
@@ -148,7 +149,7 @@ export default Route('admin-nominee', {
         // Replace the old image
         $('.nominee .image img').attr('src', data.fileName);
         $('[name="imageFile"]').val(data.fileName);
-        this._$cropper.fadeOut();
+        this.hideCropper();
       } else {
         alert(data.message);
       }
@@ -157,6 +158,14 @@ export default Route('admin-nominee', {
     });
 
 
+  },
+
+  hideCropper(evt) {
+    // We'll only close if this method was called directly,
+    // on the click of the cancel button, or clicking the overlay
+    if (!evt || evt.target.className === 'overlay' || evt.target.className === 'cancel') {
+      this._$cropper.fadeOut();
+    }
   },
 
   uploadChange(evt) {

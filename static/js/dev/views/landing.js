@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import Route from 'lib/route';
+import { Route } from 'molecule-router';
 
 import hexRound from 'templates/hexRound.hbs';
 

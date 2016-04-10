@@ -49,7 +49,6 @@ namespace Controller\Admin {
         $out->bracket = $bracket;
         $out->nominee = end($nominee);
         $out->message = isset($message) ? $message : null;
-        $out->similar = $out->nominee->getSimilar($bracket);
         $out->stats = Api\Nominee::getUnprocessedCount($bracket);
         $characters = Api\Character::getBySimilarName($out->nominee->name);
 
@@ -58,6 +57,8 @@ namespace Controller\Admin {
           $deduped = [];
           foreach ($characters as $character) {
             $character->thisBracket = $character->bracketId == $bracket->id;
+            $character->bracket = $bracket;
+            $character->nominee = $out->nominee;
             $hash = self::_cleanString($character->name) . '-' . self::_cleanString($character->source);
             if (!isset($deduped[$hash]) || $character->thisBracket) {
               $deduped[$hash] = $character;
@@ -103,48 +104,52 @@ namespace Controller\Admin {
       $imageFile = Lib\Url::Post('imageFile');
       $nomineeId = Lib\Url::Post('id', true);
       $ignore = Lib\Url::Post('ignore') === 'true';
-      $nominees = Lib\Url::Post('nominee');
-      $nominees = $nominees ?: [];
 
       if ((($name && $imageFile) || $ignore) && $nomineeId) {
 
-        if (!$ignore) {
+        $nominee = Api\Nominee::getById($nomineeId);
+        if ($nominee && $nominee->bracketId == $bracket->id) {
+          if (!$ignore) {
 
-          $imageFile = $imageFile{0} === '/' ? '.' . $imageFile : $imageFile;
+            $imageFile = $imageFile{0} === '/' ? '.' . $imageFile : $imageFile;
 
-          // Verify the image is an image and the correct size
-          if (self::_verifyImage($imageFile)) {
+            // Verify the image is an image and the correct size
+            if (self::_verifyImage($imageFile)) {
 
-            $character = new Api\Character();
-            $character->name = $name;
-            $character->bracketId = $bracket->id;
-            $character->source = $source;
+              $character = new Api\Character();
+              $character->name = $name;
+              $character->bracketId = $bracket->id;
+              $character->source = $source;
 
+              if ($character->sync()) {
+                // Save the character image off in the correct directory and as a JPEG
+                $image = Lib\ImageLoader::loadImage($imageFile);
+                imagejpeg($image->image, IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
+                imagedestroy($image->image);
+                $out->success = true;
+                $out->message = '"' . $character->name . '" successfully processed';
+              } else {
+                $out->message = 'Unable to save character to database';
+              }
 
-            if ($character->sync()) {
-              // Save the character image off in the correct directory and as a JPEG
-              $image = Lib\ImageLoader::loadImage($imageFile);
-              imagejpeg($image->image, IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
-              imagedestroy($image->image);
-              $out->success = true;
-              $out->message = '"' . $character->name . '" successfully processed';
             } else {
-              $out->message = 'Unable to save character to database';
+              $out->message = 'Image must by JPEG, GIF, or PNG and 150x150 pixels';
             }
 
           } else {
-            $out->message = 'Image must by JPEG, GIF, or PNG and 150x150 pixels';
+            $out = self::_displayNominations($bracket, true);
+            $out->success = true;
+            $out->message = 'Nominee' . (count($nominees) > 0 ? 's' : '') . ' deleted';
           }
-
         } else {
-          $out = self::_displayNominations($bracket, true);
-          $out->success = true;
-          $out->message = 'Nominee' . (count($nominees) > 0 ? 's' : '') . ' deleted';
+          $out = (object)[
+            'success' => false,
+            'message' => 'Unable to get nominee'
+          ];
         }
 
         if ($out->success) {
-          $nominees[] = $nomineeId;
-          Api\Nominee::markAsProcessed($nominees);
+          $nominee->markAsProcessed();
           $nominee = self::_displayNominations($bracket, true);
           $nominee->success = $out->success;
           $nominee->message = $out->message;

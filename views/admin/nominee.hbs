@@ -1,7 +1,6 @@
 <header>
   <h2>Process Nominees - {{bracket.name}}</h2>
   <div class="top-actions">
-    <a href="/me/process/{{bracket.perma}}/auto_process/">Clean Duplicates</a>
     <a href="/me/process/{{bracket.perma}}/nominees/" target="_blank">View All Unprocessed Nominees</a>
   </div>
 </header>
@@ -11,33 +10,32 @@
   <p class="message {{#if message}}success{{else}}hidden{{/if}}">{{message}}</p>
 
   <div class="nominee">
-
-  <form action="/me/process/{{bracket.perma}}/nominee/" method="post" enctype="multipart/form-data">
     <div class="col2">
       <h3>Process Manually</h3>
       <div class="form">
-        <dl>
-          <dt>Image</dt>
-          <dd class="image">
+        <form action="/me/process/{{bracket.perma}}/nominee/" method="post" enctype="multipart/form-data">
+          <div class="image">
             <img src="{{nominee.image}}" />
             <button type="button" id="changeImage">Change Image</button>
-          </dd>
-
-          <dt>Name</dt>
-          <dd class="name">
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name" value="{{nominee.name}}" />
-          </dd>
-          <dt>Source</dt>
-          <dd class="source">
-            <label for="source">Source</label>
-            <input type="text" name="source" id="source" value="{{nominee.source}}" />
-          </dd>
-        </dl>
-        <div class="buttons">
-          <button class="small-button">Add to Bracket</button>
-          <button class="small-button delete" value="ignore">Delete</button>
-        </div>
+          </div>
+          <div class="inputs">
+            <div class="input-group">
+              <label for="name">Name</label>
+              <input type="text" name="name" id="name" value="{{nominee.name}}" />
+            </div>
+            <div class="input-group">
+              <label for="source">Source</label>
+              <input type="text" name="source" id="source" value="{{nominee.source}}" />
+            </div>
+            <div class="buttons">
+              <button class="small-button">Add to Bracket</button>
+              <button class="small-button delete" value="ignore">Delete</button>
+              <input type="hidden" name="id" value="{{nominee.id}}" />
+              <input type="hidden" name="bracketId" value="{{bracket.id}}" />
+              <input type="hidden" name="imageFile" value="{{nominee.image}}" />
+            </div>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -62,26 +60,18 @@
                   <span class="bracket-name">{{source}}</span>
                 </td>
                 <td class="action">
-                  <button type="button" class="small-button" data-name="{{name}}" data-source="{{source}}" data-image="{{image}}">Copy</button>
-                </td>
-              </tr>
-            {{/each}}
-          {{/if}}
-
-          {{#if similar}}
-            <tr>
-              <td colspan="4"><h3>Are these nominees the same?</h3></td>
-            </tr>
-            {{#each similar}}
-              <tr>
-                <td>
-                  <a class="thumb" style="background-image:url({{image}})" href="{{image}}" target="_blank">Thumbnail</a>
-                </td>
-                <td>{{name}}</td>
-                <td>{{source}}</td>
-                <td class="action">
-                  <label for="nominee-{{id}}" class="button">Is Duplicate</label>
-                  <input type="checkbox" id="nominee-{{id}}" name="nominee[]" value="{{id}}" />
+                  <form action="/me/process/{{bracket.perma}}/nominee/" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="{{nominee.id}}" />
+                    {{#if thisBracket}}
+                      <input type="hidden" name="ignore" value="true" />
+                      <button type="submit" class="small-button" data-name="{{name}}" data-source="{{source}}" data-image="{{image}}">Copy</button>
+                    {{else}}
+                      <input type="hidden" name="name" value="{{name}}" />
+                      <input type="hidden" name="source" value="{{source}}" />
+                      <input type="hidden" name="imageFile" value="{{image}}" />
+                      <button type="submit" class="small-button" data-name="{{name}}" data-source="{{source}}" data-image="{{image}}">Copy</button>
+                    {{/if}}
+                  </form>
                 </td>
               </tr>
             {{/each}}
@@ -90,25 +80,23 @@
       </div>
     {{/if}}
 
-      <input type="hidden" name="id" value="{{nominee.id}}" />
-      <input type="hidden" name="bracketId" value="{{bracket.id}}" />
-      <input type="hidden" name="imageFile" value="{{nominee.image}}" />
-
-      <div class="overlay">
-        <div class="modal">
-          <div class="cropper">
-            <img src="{{nominee.image}}" />
-          </div>
-          <div class="side">
-            <h3>Edit Image</h3>
-            <p>All images must be 150x150 px. Use the tool to the left to crop your picture or upload a custom one.</p>
-            <label for="upload" class="button">Upload Image</label>
-            <input type="file" name="upload" id="upload" />
-            <button type="button" class="button crop-submit">Done</button>
+    <div class="overlay">
+      <div class="modal">
+        <div class="cropper">
+          <img src="{{nominee.image}}" />
+        </div>
+        <div class="side">
+          <h3>Edit Image</h3>
+          <p>All images must be 150x150 px. Use the tool to the left to crop your picture or upload a custom one.</p>
+          <label for="upload" class="button">Upload Image</label>
+          <input type="file" name="upload" id="upload" />
+          <div class="buttons">
+            <button type="button" class="crop-submit">Done</button>
+            <button type="button" class="cancel">Cancel</button>
           </div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 
 {{else}}

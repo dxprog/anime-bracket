@@ -1,27 +1,29 @@
-<h2>{{bracket.name}}</h2>
+<header>
+  <h2>{{bracket.name}}</h2>
+</header>
 <div class="info">
-    <h3>The Rules</h3>
-    <p>{{{rules}}}</p>
-    <button type="button" class="button accept">This seems fair. Take me to the form</button>
+  <h3>The Rules</h3>
+  <p>{{{rules}}}</p>
+  <button type="button" class="small-button accept">This seems fair. Take me to the form.</button>
 </div>
 
 <form class="form">
-    <h3>Character Nomination</h3>
+  <h3>Character Nomination</h3>
 
-    <p class="message hidden"></p>
+  <p class="message hidden"></p>
 
-    <label for="txtName">{{bracket.nameLabel}}:</label>
-    <input type="text" name="nomineeName" id="txtName" autocomplete="off" />
+  <label for="txtName">{{bracket.nameLabel}}:</label>
+  <input type="text" name="nomineeName" id="txtName" autocomplete="off" />
 
-    {{#if bracket.sourceLabel}}
-        <label for="txtSource">{{bracket.sourceLabel}}:</label>
-        <input type="text" name="nomineeSource" id="txtSource" autocomplete="off" />
-    {{/if}}
+  {{#if bracket.sourceLabel}}
+    <label for="txtSource">{{bracket.sourceLabel}}:</label>
+    <input type="text" name="nomineeSource" id="txtSource" autocomplete="off" />
+  {{/if}}
 
-    <label for="txtPic">Link to Picture:</label>
-    <input type="text" name="image" id="txtPic" autocomplete="off" />
+  <label for="txtPic">Link to Picture:</label>
+  <input type="text" name="image" id="txtPic" autocomplete="off" />
 
-    <input type="hidden" name="bracketId" value="{{bracket.id}}" />
-    <input type="hidden" name="verified" value="" />
-    <button type="submit" class="button">Nominate</button>
+  <input type="hidden" name="bracketId" value="{{bracket.id}}" />
+  <input type="hidden" name="verified" value="" />
+  <button type="submit" class="small-button">Nominate</button>
 </form>
