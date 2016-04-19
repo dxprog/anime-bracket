@@ -30,7 +30,8 @@
   ));
 
   @include restyle-define(page, (
-    width: 1240px,
+    restyle-var(page-width): 1240px,
+    width: restyle-var(page-width),
     margin: 0 auto,
     padding: 0 $page-gutter,
     box-sizing: border-box,
@@ -46,6 +47,9 @@
             margin: 0
           )
         )
+      ),
+      mobile: (
+        restyle-var(page-width): auto
       )
     )
   ));

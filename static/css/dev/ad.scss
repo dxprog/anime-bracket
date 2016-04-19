@@ -14,10 +14,12 @@
     //
 
     @media screen and (max-width: $MOBILE-WIDTH) {
-        position: relative;
-        top: auto;
-        left: -20px;
-        padding: 20px 0;
+        position: static;
+        height: 250px;
+        & .fallback {
+          width: 300px !important;
+          margin: spacing(4) auto;
+        }
     }
 
 }

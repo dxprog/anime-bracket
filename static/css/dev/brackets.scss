@@ -22,14 +22,10 @@ $BASE-INDEX: 1;
   }
 
   @media screen and (max-width: $MOBILE-WIDTH) {
-
-    padding: 20px;
-
-    h2 {
-      margin-bottom: 20px;
-      font-size: 30px;
+    #content {
+      width: auto;
+      padding: 20px;
     }
-
   }
 
 }
