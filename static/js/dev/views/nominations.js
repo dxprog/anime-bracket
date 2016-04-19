@@ -1,6 +1,6 @@
 import $ from 'jquery';
+import { Route } from 'molecule-router';
 
-import Route from 'lib/route';
 import Typeahead from '../controls/typeahead';
 
 const IS_IE = (/MSIE/).test(window.navigator.userAgent);

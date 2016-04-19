@@ -1,6 +1,5 @@
 import $ from 'jquery';
-
-import Route from 'lib/route';
+import { Route } from 'molecule-router';
 
 export default Route('admin-start-bracket', {
   initRoute() {

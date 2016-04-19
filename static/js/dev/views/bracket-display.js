@@ -1,10 +1,9 @@
 import Handlebars from 'handlebars/runtime';
+import { Route, Router } from 'molecule-router';
 import $ from 'jquery';
 
 import Entrant from '../model/entrant';
 import { default as Tier, ENTRANT_HEIGHT } from '../model/tier';
-import Route from 'lib/route';
-import Router from 'lib/router';
 
 import TPL_GROUP_PICKER from 'templates/groupPicker.hbs';
 import TPL_ENTRANT from 'templates/partials/_entrant.hbs';

@@ -1,5 +1,4 @@
-import Route from 'lib/route';
-import Router from 'lib/router';
+import { Route, Router } from 'molecule-router';
 import $ from 'jquery';
 
 import Characters from './admin/characters';

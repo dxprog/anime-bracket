@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import Route from 'lib/route';
+import { Route } from 'molecule-router';
 
 import characterList from 'templates/partials/_characterList.hbs';
 

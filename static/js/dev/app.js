@@ -1,4 +1,4 @@
-import Router from './lib/router';
+import { Router } from 'molecule-router';
 
 // Pages
 import BracketDisplay from './views/bracket-display';

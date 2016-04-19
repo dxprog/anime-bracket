@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import Singleton from 'lib/singleton';
+import Singleton from 'molecule-singleton';
 
 const CLICK = 'click';
 const SHOW_NAV = 'show';

@@ -53,8 +53,8 @@ module.exports = function(grunt) {
             },
             dist: {
               files: {
-                  './static/js/<%= pkg.name %>.js': [ './static/js/dev/app.js', './views/*.hbs' ],
-                  './tests/tests.js': [ './tests/specs/index.js', './views/*.hbs' ]
+                  './static/js/<%= pkg.name %>.js': [ './static/js/dev/app.js', './views/*.hbs' ]
+                  //, './tests/tests.js': [ './tests/specs/index.js', './views/*.hbs' ]
               }
             }
         },
