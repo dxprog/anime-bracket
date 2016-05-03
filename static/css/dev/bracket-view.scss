@@ -114,6 +114,10 @@ $ENTRANT_AFTER: 18px;
     margin-top: 60px;
   }
 
+  .bracket-display {
+    margin: 100px auto 0;
+  }
+
   .tier {
     list-style: none;
     margin: 0;
@@ -160,6 +164,12 @@ $ENTRANT_AFTER: 18px;
       h2 {
         @include heading();
         font-size: 36px;
+        color: get-color(white);
+      }
+
+      img {
+        width: 150px;
+        height: 150px;
       }
 
       dl {

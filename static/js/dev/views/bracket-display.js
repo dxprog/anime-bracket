@@ -82,12 +82,7 @@ export default Route(SINGLETON_NAME,{
     }
 
     // Add an additional column for the winner
-    columns++;
-    let width = columns * COLUMN_WIDTH;
-
-    this._$body.width(width);
-    this._$content.width(width).html(left + right);
-
+    this._$content.width(++columns * COLUMN_WIDTH).html(left + right);
   },
 
   /**
