@@ -116,7 +116,9 @@ namespace Api {
          */
         public function markAsProcessed() {
             // Mark all nominees with this name in this bracket as processed
-            return Lib\Db::Query('UPDATE `nominee` SET nominee_processed = 1 WHERE nominee_name LIKE :name AND nominee_source LIKE :source AND bracket_id = :bracketId', [
+            $this->processed = true;
+            return Lib\Db::Query('UPDATE `nominee` SET nominee_processed = 1 WHERE nominee_id = :nomineeId OR (nominee_name LIKE :name AND nominee_source LIKE :source AND bracket_id = :bracketId)', [
+                'nomineeId' => $this->id,
                 'name' => $this->name,
                 'source' => $this->source,
                 'bracketId' => $this->bracketId

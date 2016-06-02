@@ -28,6 +28,7 @@ export default Route('admin-nominee', {
       .on('click', '.crop-submit', this.submitCrop.bind(this))
       .on('change', 'input[type="checkbox"]', this.ignoreCheck.bind(this))
       .on('submit', 'form', this.submitNominee.bind(this))
+      .on('click', 'button.delete', this.deleteNominee.bind(this))
       .on('click', 'button.copy', this.copyCharacterClick.bind(this))
       .on('click', 'button.cancel', this.hideCropper.bind(this))
       .on('click', '.overlay', this.hideCropper.bind(this));
@@ -88,12 +89,6 @@ export default Route('admin-nominee', {
 
     let $form = $(evt.currentTarget);
     let data = $form.serialize();
-    let ignore = $(evt.target).val() ? 'ignore=true' : '';
-
-    if (ignore) {
-      ignore = (data.length ? '&' : '') + ignore;
-      data += ignore;
-    }
 
     $.ajax({
       url: $form.attr('action'),
@@ -114,6 +109,10 @@ export default Route('admin-nominee', {
       this.displayMessage('There was an error sending to the server', false);
     });
 
+  },
+
+  deleteNominee(evt) {
+    $(evt.currentTarget).closest('form').append('<input type="hidden" name="ignore" value="true" />');
   },
 
   ignoreCheck(evt) {
