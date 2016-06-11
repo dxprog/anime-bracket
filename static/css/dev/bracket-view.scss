@@ -24,6 +24,7 @@
 
 }
 
+$voted-dot-radius: 10px;
 $ENTRANT_HEIGHT: 50px;
 $ENTRANT_WIDTH: 225px;
 $ENTRANT_SPACING: 25px;
@@ -208,14 +209,13 @@ $ENTRANT_AFTER: 18px;
         content: '';
         display: block;
         position: absolute;
-        height: 25px;
-        border: 8px solid $dark;
-        border-bottom-color: transparent;
-        position: absolute;
-        right: 5px;
-        top: -2px;
+        border: $voted-dot-radius solid get-color(red);
+        border-radius: $voted-dot-radius;
+        right: -$voted-dot-radius;
+        top: -$voted-dot-radius;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+        z-index: 9001;
         @include border-box();
-
       }
 
       &:before {
@@ -412,17 +412,6 @@ $ENTRANT_AFTER: 18px;
         }
       }
 
-      &.user-voted .image:after {
-        content: '';
-        position: absolute;
-        bottom: -15px;
-        right: -15px;
-        display: block;
-        width: 60px;
-        height: 61px;
-        background: url(images/bracket_check.png) no-repeat;
-      }
-
     }
 
     &.right {
@@ -450,7 +439,7 @@ $ENTRANT_AFTER: 18px;
         }
 
         &.user-voted dl:before {
-          left: 5px;
+          left: -$voted-dot-radius;
           right: auto;
         }
 
