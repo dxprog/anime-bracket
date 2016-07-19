@@ -598,7 +598,8 @@ namespace Api {
          */
         public function getTotalVotes() {
             $retVal = 0;
-            $result = Lib\Db::Query('SELECT COUNT(1) AS total FROM `votes` WHERE `bracket_id`=:bracketId', [ ':bracketId' => $this->id ]);
+            $innerQuery = 'SELECT `round_id` FROM `round` WHERE `bracket_id`=:bracketId AND `round_tier` = 0';
+            $result = Lib\Db::Query('SELECT COUNT(1) AS total FROM `votes` WHERE `bracket_id`=:bracketId AND round_id NOT IN (' . $innerQuery . ')', [ ':bracketId' => $this->id ]);
             if ($result && $result->count) {
                 $retVal = Lib\Db::Fetch($result);
                 $retVal = $retVal->total;
