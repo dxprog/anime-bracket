@@ -412,6 +412,7 @@ namespace Api {
                 $round->final = true;
                 $round->sync();
 
+                $this->score = $this->getTotalVotes();
                 $this->winner = $round->getWinner();
                 $this->winnerCharacterId = $this->winner->id;
                 $this->state = BS_FINAL;
@@ -421,6 +422,8 @@ namespace Api {
                 // that to close out the bracket
                 $round = Round::queryReturnAll([ 'bracketId' => $this->id ], [ 'round_id' => 'desc' ], 1);
                 if (count($round) === 1) {
+                    // Get the total number of votes to use for the score
+                    $this->score = $this->getTotalVotes();
                     $this->winner = $round->getWinner();
                     $this->winnerCharacterId = $this->winner->id;
                     $this->state = BS_FINAL;
@@ -588,6 +591,19 @@ namespace Api {
             }
           }
           return $retVal;
+        }
+
+        /**
+         * Returns the number of votes for this bracket
+         */
+        public function getTotalVotes() {
+            $retVal = 0;
+            $result = Lib\Db::Query('SELECT COUNT(1) AS total FROM `votes` WHERE `bracket_id`=:bracketId', [ ':bracketId' => $this->id ]);
+            if ($result && $result->count) {
+                $retVal = Lib\Db::Fetch($result);
+                $retVal = $retVal->total;
+            }
+            return $retVal;
         }
 
         /**
