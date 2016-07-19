@@ -412,7 +412,7 @@ namespace Api {
                 $round->final = true;
                 $round->sync();
 
-                $this->score = $this->getTotalVotes();
+                $this->score = $this->getFinalScore();
                 $this->winner = $round->getWinner();
                 $this->winnerCharacterId = $this->winner->id;
                 $this->state = BS_FINAL;
@@ -423,7 +423,7 @@ namespace Api {
                 $round = Round::queryReturnAll([ 'bracketId' => $this->id ], [ 'round_id' => 'desc' ], 1);
                 if (count($round) === 1) {
                     // Get the total number of votes to use for the score
-                    $this->score = $this->getTotalVotes();
+                    $this->score = $this->getFinalScore();
                     $this->winner = $round->getWinner();
                     $this->winnerCharacterId = $this->winner->id;
                     $this->state = BS_FINAL;
@@ -594,12 +594,13 @@ namespace Api {
         }
 
         /**
-         * Returns the number of votes for this bracket
+         * Returns the score for a finalized bracket
          */
-        public function getTotalVotes() {
+        public function getFinalScore() {
             $retVal = 0;
-            $innerQuery = 'SELECT `round_id` FROM `round` WHERE `bracket_id`=:bracketId AND `round_tier` = 0';
-            $result = Lib\Db::Query('SELECT COUNT(1) AS total FROM `votes` WHERE `bracket_id`=:bracketId AND round_id NOT IN (' . $innerQuery . ')', [ ':bracketId' => $this->id ]);
+            $excludeEliminationsQuery = 'SELECT `round_id` FROM `round` WHERE `bracket_id`=:bracketId AND `round_tier` = 0';
+            $roundCountQuery = 'SELECT COUNT(1) FROM `round` WHERE `bracket_id`=:bracketId AND `round_tier` > 0';
+            $result = Lib\Db::Query('SELECT COUNT(1) / (' . $roundCountQuery . ') AS total FROM `votes` WHERE `bracket_id`=:bracketId AND round_id NOT IN (' . $excludeEliminationsQuery . ')', [ ':bracketId' => $this->id ]);
             if ($result && $result->count) {
                 $retVal = Lib\Db::Fetch($result);
                 $retVal = $retVal->total;
