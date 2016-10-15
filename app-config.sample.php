@@ -31,3 +31,6 @@ define('SESSION_DOMAIN', '.brakk.it');
 
 // Path to the /view directory (must be a full path, no trailing slash)
 define('VIEW_PATH', '/var/www/brakkit/views');
+
+// ID of a bracket to be featured on the landing page
+define('LANDING_FEATURE_BRACKET', 1);

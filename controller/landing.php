@@ -13,6 +13,12 @@ namespace Controller {
 
         public static function generate(array $params) {
             Lib\Display::setLayout('landing');
+            if (defined('LANDING_FEATURE_BRACKET')) {
+                $bracket = Api\Bracket::getById(LANDING_FEATURE_BRACKET);
+                if ($bracket) {
+                    Lib\Display::addKey('bracket', $bracket);
+                }
+            }
             Lib\Display::addKey('rounds', Api\Round::getRandomCompletedRounds(30));
             Lib\Display::addKey('phrase', static::$_phrases[rand() % count(static::$_phrases)]);
         }
