@@ -49,69 +49,62 @@ namespace Api {
          */
         public static function getLoginUrl($redirect = '') {
             $client = self::_createOAuth2();
-            $auth = new OAuth2\Strategy\AuthCode($client);
-            return $auth->authorizeUrl([
-                'scope' => 'identity',
-                'state' => $redirect,
-                'redirect_uri' => REDDIT_HANDLER
-            ]);
+            return $client->getLoginUrl('temporary', [
+                'identity'
+            ], $redirect);
         }
 
         public function logout() {
             Lib\Session::set('user', null);
         }
 
-       /**
+        /**
          * OAuth2 response handler
          */
         public static function authenticateUser($code) {
             $retVal = false;
             $client = self::_createOAuth2();
-            $auth = new OAuth2\Strategy\AuthCode($client);
 
-            try {
-                $token = $auth->getToken($code, [ 'redirect_uri' => REDDIT_HANDLER ]);
-                if ($token) {
-                    $response = $token->get('https://oauth.reddit.com/api/v1/me.json');
-                    $data = json_decode($response->body());
-                    if ($data) {
-
-                        $user = self::getByName($data->name);
-                        if (!$user) {
-                            $user = new User;
-                            $user->name = $data->name;
-                            $user->age = (int) $data->created;
-                            $user->ip = $_SERVER['REMOTE_ADDR'];
-                            if ($user->sync()) {
-                                $retVal = true;
-                            }
-                        } else {
-
-                            // This is to update any records that were created before age was tracked
-                            if (!$user->age) {
-                                $user->age = (int) $data->created;
-                                $user->sync();
-                            }
+            if ($client->getToken($code)) {
+                $data = $client->call('api/v1/me');
+                if ($data && isset($data->name)) {
+                    $user = self::getByName($data->name);
+                    if (!$user) {
+                        $user = new User;
+                        $user->name = $data->name;
+                        $user->age = (int) $data->created;
+                        $user->ip = $_SERVER['REMOTE_ADDR'];
+                        if ($user->sync()) {
                             $retVal = true;
                         }
+                    } else {
 
-                        Lib\Session::set('user', $user);
-
+                        // This is to update any records that were created before age was tracked
+                        if (!$user->age) {
+                            $user->age = (int) $data->created;
+                            $user->sync();
+                        }
+                        $retVal = true;
                     }
-                }
-            } catch (Exception $e) {
 
+                    Lib\Session::set('user', $user);
+                }
             }
 
             return $retVal;
         }
 
-        private static function _createOAuth2() {
-            return new OAuth2\Client(REDDIT_TOKEN, REDDIT_SECRET, [
-                'site' => 'https://ssl.reddit.com/api/v1',
-                'authorize_url' => '/authorize',
-                'token_url' => '/access_token'
-            ]);
+        private static function _createOAuth2(User $user = null) {
+            $retVal = new Lib\RedditOAuth(REDDIT_TOKEN, REDDIT_SECRET, HTTP_UA, REDDIT_HANDLER);
+
+            // If we have stashed tokens, set those up as well
+            if ($user && $user->token && $user->refreshToken && $user->tokenExpires) {
+                $retVal->setToken($user->token);
+                $retVal->setRefreshToken($user->refreshToken);
+                $retVal->setExpiration($user->tokenExpires);
+            }
+
+            return $retVal;
         }
 
     }
