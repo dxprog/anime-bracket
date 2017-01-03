@@ -279,6 +279,11 @@ namespace Lib {
 
             $retVal = null;
 
+            // Hacky way around WEBP. If there's no JPEG version, then:
+            // A) whoever is running that website can fuck off kindly
+            // B) it'll 404 and not work just like it wouldn't work anyways
+            $file = str_replace('.webp', '.jpg', $file);
+
             $type = self::getImageType($file);
 
             if (false !== $type) {
@@ -331,7 +336,7 @@ namespace Lib {
 
                     // Cache the image
                     self::_saveCacheFile($url, $retVal);
-                    
+
 
                 }
             }
