@@ -298,7 +298,7 @@ namespace Lib {
             if (self::_verifyProperties($this)) {
                 if (is_numeric($id)) {
                     $cacheKey = 'Lib:Dal:' . $this->_dbTable . '_getById_' . $id;
-                    $retVal = Cache::Get($cacheKey);
+                    $retVal = Cache::getInstance()->get($cacheKey);
 
                     if (!$retVal) {
                         $query  = 'SELECT `' . implode('`, `', $this->_dbMap) . '` FROM `' . $this->_dbTable . '` ';
@@ -307,7 +307,7 @@ namespace Lib {
                         $result = Db::Query($query, [ ':id' => $id ]);
                         if (null !== $result && $result->count === 1) {
                             $retVal = Db::Fetch($result);
-                            Cache::Set($cacheKey, $retVal);
+                            Cache::getInstance()->set($cacheKey, $retVal);
                         }
                     }
 

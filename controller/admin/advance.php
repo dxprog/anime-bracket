@@ -17,10 +17,11 @@ namespace Controller\Admin {
             $bracket = self::_getBracket(array_shift($params));
             if ($bracket) {
 
+                $cache = Lib\Cache::getInstance();
                 $cacheKey = 'Controller::Admin::Advance_bracketAdvanceTime_' . $bracket->id;
-                $lastBracketAdvance = Lib\Cache::Get($cacheKey);
+                $lastBracketAdvance = $cache->get($cacheKey);
                 if (!$lastBracketAdvance || $lastBracketAdvance + self::BRACKET_ADVANCE_DELAY < time()) {
-                    Lib\Cache::Set($cacheKey, time());
+                    $cache->set($cacheKey, time());
                     $bracket->advance();
                     $message = new stdClass;
                     $message->type = 'success';

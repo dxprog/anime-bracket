@@ -35,8 +35,9 @@ namespace Api {
          */
         public static function getNameTypeahead($query, $type) {
 
+            $cache = Lib\Cache::getInstance();
             $cacheKey = 'MalItem::getTypeahead_' . $query . '_' . $type;
-            $retVal = Lib\Cache::Get($cacheKey);
+            $retVal = $cache->get($cacheKey);
 
             if (false === $retVal && strlen($query) > 1) {
 
@@ -54,7 +55,7 @@ namespace Api {
 
                 }
 
-                Lib\Cache::Set($cacheKey, $retVal, 3600);
+                $cache->set($cacheKey, $retVal, 3600);
 
             }
 
@@ -67,8 +68,9 @@ namespace Api {
          */
         public function getParents() {
 
+            $cache = Lib\Cache::getInstance();
             $cacheKey = 'MalItem::getItemParents_' . $this->id;
-            $retVal = Lib\Cache::Get($cacheKey);
+            $cache->get($cacheKey);
 
             if (false === $retVal && $this->id) {
 
@@ -83,7 +85,7 @@ namespace Api {
 
                 }
 
-                Lib\Cache::Set($retVal, 3600);
+                $cache->set($retVal, 3600);
 
             }
 

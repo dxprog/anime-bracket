@@ -18,7 +18,7 @@ namespace Controller {
 
             if ($bracket->start <=  time() && ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING || $bracket->state == BS_WILDCARD)) {
                 $cacheKey = 'CurrentRound_' . $bracket->id . '_' . $user->id;
-                $out = Lib\Cache::fetch(function() use ($user, $bracket) {
+                $out = Lib\Cache::getInstance()->fetch(function() use ($user, $bracket) {
                     $out = new stdClass;
                     $out->userId = $user->id;
                     $out->round = Api\Round::getCurrentRounds($bracket->id);

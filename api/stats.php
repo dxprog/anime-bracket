@@ -24,8 +24,9 @@ namespace Api {
             $endDate = Lib\Url::GetInt('endDate', $time, $vars);
             $bracketId = Lib\Url::GetInt('bracketId', null, $vars);
             $granularity = Lib\Url::GetInt('granularity', 2, $vars);
+            $cache = Lib\Cache::getInstance();
             $cacheKey = '_getVotesOverTime_' . implode('_', [ $startDate, $endDate, $bracketId, $granularity, $users ]);
-            $retVal = Lib\Cache::Get($cacheKey);
+            $retVal = $cache->get($cacheKey);
 
             if (false === $retVal && $bracketId) {
 
@@ -42,7 +43,7 @@ namespace Api {
                         $obj->count = (int) $row->total;
                         $retVal[] = $obj;
                     }
-                    Lib\Cache::Set($cacheKey, $retVal, STATS_CACHE_DURATION);
+                    $cache->set($cacheKey, $retVal, STATS_CACHE_DURATION);
                 }
 
             }
@@ -57,7 +58,7 @@ namespace Api {
          */
         public static function getEntrantPerformanceStats(Bracket $bracket, $force = false) {
 
-            return Lib\Cache::fetchLongCache(function() use ($bracket) {
+            return Lib\Cache::getInstance()->fetchLongCache(function() use ($bracket) {
                 // Get all tourney rounds and characters for this bracket
                 $characters = Character::queryReturnAll([ 'bracketId' => $bracket->id, 'seed' => [ 'null' => false ] ], [ 'seed' => 'asc' ]);
                 $rounds = Round::queryReturnAll([ 'bracketId' => $bracket->id, 'final' => 1, 'tier' => [ 'gt' => 0 ] ], [ 'id' => 'asc' ]);

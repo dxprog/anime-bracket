@@ -129,8 +129,9 @@ namespace Api {
                 $user->id = 0;
             }
 
+            $cache = Lib\Cache::getInstance();
             $cacheKey = 'GetBracketRounds_' . $bracketId . '_' . $tier . '_' . ($group !== false ? $group : 'all') . '_' . $user->id;
-            $retVal = Lib\Cache::Get($cacheKey);
+            $retVal = $cache->get($cacheKey);
             if (false === $retVal || $ignoreCache) {
                 $params = [ ':bracketId' => $bracketId, ':tier' => $tier, ':userId' => $user->id ];
 
@@ -198,7 +199,7 @@ namespace Api {
                     }
 
                 }
-                Lib\Cache::Set($cacheKey, $retVal);
+                $cache->set($cacheKey, $retVal);
             }
 
             return $retVal;
@@ -241,7 +242,7 @@ namespace Api {
          * Returns the number of rounds for a given tier
          */
         public static function getRoundCountForTier(Bracket $bracket, $tier) {
-            return Lib\Cache::fetch(function() use ($bracket, $tier) {
+            return Lib\Cache::getInstance()->fetch(function() use ($bracket, $tier) {
                 $row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE round_tier = :tier AND bracket_id = :bracketId', [ ':tier' => $tier, ':bracketId' => $bracket->id ]));
                 return (int) $row->total;
             }, 'Api:Round:getRoundCountForTier_' . $bracket->id . '_' . $tier);
@@ -325,7 +326,7 @@ namespace Api {
         public static function getVotingStats($bracketId) {
             $retVal = null;
             if (is_numeric($bracketId)) {
-                $retVal = Lib\Cache::fetch(function() use ($bracketId) {
+                $retVal = Lib\Cache::getInstance()->fetch(function() use ($bracketId) {
                     $retVal = null;
                     $result = Lib\Db::Query('SELECT COUNT(1) AS total, COUNT(DISTINCT v.user_id) AS user_total, r.round_tier, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_tier, r.round_group', [ ':bracketId' => $bracketId ]);
                     if ($result && $result->count) {
@@ -351,7 +352,7 @@ namespace Api {
         public static function getRandomCompletedRounds($count) {
             $count = is_numeric($count) ? $count : 10;
 
-            return Lib\Cache::fetch(function() use ($count) {
+            return Lib\Cache::getInstance()->fetch(function() use ($count) {
 
                 $retVal = null;
 

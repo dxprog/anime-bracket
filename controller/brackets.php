@@ -11,7 +11,7 @@ namespace Controller {
 
             $active = array_shift($params) !== 'past';
 
-            $brackets = Lib\Cache::fetch(function() use ($active) {
+            $brackets = Lib\Cache::getInstance()->fetch(function() use ($active) {
 
                 $allBrackets = Api\Bracket::getAll();
 

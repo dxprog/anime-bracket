@@ -53,13 +53,13 @@ namespace Controller {
          */
         private static function _isFlooding($user) {
             $cacheKey = 'FloodGuard_' . $user->id;
-            $retVal = Lib\Cache::Get($cacheKey, true);
+            $retVal = Lib\Cache::getInstance()->get($cacheKey, true);
             return $retVal && $retVal + FLOOD_CONTROL > time();
         }
 
         private static function _setFloodMarker($user) {
             $cacheKey = 'FloodGuard_' . $user->id;
-            Lib\Cache::Set($cacheKey, time(), FLOOD_CONTROL);
+            Lib\Cache::getInstance()->set($cacheKey, time(), FLOOD_CONTROL);
         }
 
         private static function _nominate(Api\User $user) {
@@ -175,9 +175,10 @@ namespace Controller {
 
                                     // Clear any user related caches
                                     $round = Api\Round::getById($votes[0]->roundId);
-                                    Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
-                                    Lib\Cache::Set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_all_' . $user->id, false);
-                                    Lib\Cache::Set('CurrentRound_' . $bracketId . '_' . $user->id, false);
+                                    $cache = Lib\Cache::getInstance();
+                                    $cache->set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_' . $round->group . '_' . $user->id, false);
+                                    $cache->set('GetBracketRounds_' . $bracketId . '_' . $round->tier . '_all_' . $user->id, false);
+                                    $cache->set('CurrentRound_' . $bracketId . '_' . $user->id, false);
                                     $bracket->getVotesForUser($user, true);
                                 } else {
                                     $out->message = 'There was an unexpected error. Please try again in a few moments.';

@@ -75,14 +75,9 @@ namespace Api {
         public static function getByBracketId($bracketId) {
             $retVal = null;
             if (is_numeric($bracketId)) {
-                $cacheKey = 'Character_getByBracketId_' . $bracketId;
-                $retVal = Lib\Cache::Get($cacheKey);
-                if (false === $retVal) {
-                    $retVal = null;
-                    // TODO - make order by column configurable
-                    $retVal = Character::queryReturnAll([ 'bracketId' => $bracketId ], [ 'name' => 'ASC' ]);
-                    Lib\Cache::Set($cacheKey, $retVal);
-                }
+                $retVal = Lib\Cache::getInstance()->fetch(function() use ($bracketId) {
+                    return Character::queryReturnAll([ 'bracketId' => $bracketId ], [ 'name' => 'ASC' ]);
+                }, 'Character_getByBracketId_' . $bracketId);
             }
             return $retVal;
         }
@@ -124,7 +119,7 @@ namespace Api {
          * Does fuzzy searching for characters within a bracket
          */
         public static function searchBracketCharacters($query, $bracketId) {
-            return Lib\Cache::fetch(function() use ($query, $bracketId) {
+            return Lib\Cache::getInstance()->fetch(function() use ($query, $bracketId) {
 
                 $retVal = [];
                 $params = [
@@ -155,7 +150,7 @@ namespace Api {
         public static function getRandomCharacters(Bracket $bracket, $count) {
 
             if (is_numeric($count)) {
-                return Lib\Cache::fetch(function() use ($bracket, $count) {
+                return Lib\Cache::getInstance()->fetch(function() use ($bracket, $count) {
                     $retVal = [];
                     $result = Lib\Db::Query('SELECT * FROM `character` WHERE bracket_id = :id ORDER BY RAND() LIMIT ' . $count, [ ':id' => $bracket->id ]);
                     if ($result && $result->count) {

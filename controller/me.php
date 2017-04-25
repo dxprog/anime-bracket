@@ -206,7 +206,8 @@ namespace Controller {
          * Refreshes various generic caches. This is expensive; use sparingly
          */
         protected static function _refreshCaches(Api\Bracket $bracket = null) {
-            Lib\Cache::setDisabled(true);
+            $cache = Lib\Cache::getInstance();
+            $cache->setDisabled(true);
 
             // Refresh the main collections
             Api\Bracket::getAll();
@@ -222,7 +223,7 @@ namespace Controller {
                 $bracket->getResults();
             }
 
-            Lib\Cache::setDisabled(false);
+            $cache->setDisabled(false);
         }
 
         /**
@@ -238,7 +239,7 @@ namespace Controller {
 
             if ($stash && self::$_user) {
                 $cacheKey = self::_stashCacheKey();
-                Lib\Cache::Set($cacheKey, $retVal);
+                Lib\Cache::getInstance()->set($cacheKey, $retVal);
             }
 
             return $retVal;
@@ -255,9 +256,10 @@ namespace Controller {
         protected static function _getStashedMessage() {
             $retVal = null;
             if (self::$_user) {
+                $cache = Lib\Cache::getInstance();
                 $cacheKey = self::_stashCacheKey();
-                $retVal = Lib\Cache::Get($cacheKey);
-                Lib\Cache::Set($cacheKey, false);
+                $retVal = $cache->get($cacheKey);
+                $cache->set($cacheKey, false);
             }
             return $retVal;
         }

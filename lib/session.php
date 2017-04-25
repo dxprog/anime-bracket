@@ -19,7 +19,7 @@ namespace Lib {
                 self::$_id = bin2hex(openssl_random_pseudo_bytes(32));
                 setcookie(SESSION_NAME, self::$_id, time() + SESSION_EXPIRE, '/', SESSION_DOMAIN);
             }
-            self::$_sess = Cache::Get(SESSION_NAME . '_' . self::$_id, true);
+            self::$_sess = Cache::getInstance()->get(SESSION_NAME . '_' . self::$_id, true);
         }
 
         public static function get($key) {
@@ -35,7 +35,7 @@ namespace Lib {
                 self::$_sess = new stdClass;
             }
             self::$_sess->$key = $value;
-            Cache::Set(SESSION_NAME . '_' . self::$_id, self::$_sess, SESSION_EXPIRE);
+            Cache::getInstance()->set(SESSION_NAME . '_' . self::$_id, self::$_sess, SESSION_EXPIRE);
         }
 
         public static function isSessionKey($key) {

@@ -19,7 +19,7 @@ namespace Lib {
         public static function initialize($seed = null) {
 
             if (!self::$_initialized) {
-                self::$_tests = Cache::fetch(function() {
+                self::$_tests = Cache::getInstance()->fetch(function() {
                     return json_decode(@file_get_contents('buckets.json'));
                 }, TEST_BUCKET_CACHE_KEY);
                 self::$_initialized = true;
@@ -64,7 +64,7 @@ namespace Lib {
             $seed = $seed ?: self::$_seed;
             $cacheKey = 'test_' . $key . '_' . $seed;
 
-            return Cache::fetch(function() use ($key, $seed) {
+            return Cache::getInstance()->fetch(function() use ($key, $seed) {
                 $retVal = DEFAULT_TEST_VALUE;
                 $found = false;
 

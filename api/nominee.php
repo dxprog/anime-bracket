@@ -129,7 +129,7 @@ namespace Api {
          * Does fuzzy searching for characters within a bracket
          */
         public static function searchBracketNominees($query, $bracketId) {
-            return Lib\Cache::fetch(function() use ($query, $bracketId) {
+            return Lib\Cache::getInstance()->fetch(function() use ($query, $bracketId) {
 
                 $retVal = [];
                 $params = [

@@ -151,8 +151,9 @@ namespace Api {
          * Override for getAll to include the winner character object
          */
         public static function getAll($force = false, $getHidden = false) {
+            $cache = Lib\Cache::getInstance();
             $cacheKey = 'Api:Bracket:getAll_' . BRACKET_SOURCE;
-            $retVal = Lib\Cache::Get($cacheKey);
+            $retVal = $cache->get($cacheKey);
             if (false === $retVal || $force) {
                 $query = [ 'source' => BRACKET_SOURCE, 'state' => [ 'ne' => BS_HIDDEN ] ];
                 if (!$getHidden) {
@@ -170,7 +171,7 @@ namespace Api {
                         $retVal[] = $bracket;
                     }
                 }
-                Lib\Cache::Set($cacheKey, $retVal, 3600);
+                $cache->set($cacheKey, $retVal, 3600);
             }
             return $retVal;
         }
@@ -183,7 +184,8 @@ namespace Api {
 
             if ($user instanceof User) {
                 $cacheKey = 'Api:Bracket:getUserOwnedBrackets_' . implode('_', [ $user->id, BRACKET_SOURCE ]);
-                $retVal = Lib\Cache::get($cacheKey);
+                $cache = Lib\Cache::getInstance();
+                $retVal = $cache->get($cacheKey);
                 if (false === $retVal || $force) {
 
                     // Admins get all the fun
@@ -199,7 +201,7 @@ namespace Api {
                         }
                     }
 
-                    Lib\Cache::set($cacheKey, $retVal);
+                    $cache->set($cacheKey, $retVal);
 
                 }
             }
@@ -211,14 +213,15 @@ namespace Api {
          * Gets a bracket by perma lookup
          */
         public static function getBracketByPerma($perma, $force = false) {
+            $cache = Lib\Cache::getInstance();
             $cacheKey = 'Api:Bracket:getBracketByPerma_' . $perma;
-            $retVal = Lib\Cache::Get($cacheKey);
+            $retVal = $cache->get($cacheKey);
             if (false === $retVal || $force) {
                 $result = Lib\Db::Query('SELECT * FROM `bracket` WHERE `bracket_perma` = :perma', [ ':perma' => $perma ]);
                 if ($result && $result->count) {
                     $retVal = new Bracket(Lib\Db::Fetch($result));
                 }
-                Lib\Cache::Set($cacheKey, $retVal);
+                $cache->set($cacheKey, $retVal);
             }
             return $retVal;
         }
@@ -229,7 +232,7 @@ namespace Api {
         public function getResults($force = false) {
             $cacheKey = 'Api:Bracket:getResults_' . $this->id;
 
-            return Lib\Cache::fetchLongCache(function() {
+            return Lib\Cache::getInstance()->fetchLongCache(function() {
 
                 $retVal = [];
 
@@ -310,7 +313,7 @@ namespace Api {
             $retVal = null;
             if ($user instanceof User) {
                 $cacheKey = 'Api:Bracket:getVotesForUser_' . $this->id . '_' . $user->id;
-                $retVal = Lib\Cache::fetchLongCache(function() use ($user) {
+                $retVal = Lib\Cache::getInstance()->fetchLongCache(function() use ($user) {
                     $params = [ ':userId' => $user->id, ':bracketId' => $this->id ];
                     $result = Lib\Db::Query('SELECT round_id, character_id FROM votes WHERE user_id = :userId AND bracket_id = :bracketId', $params);
                     $retVal = [];
@@ -331,8 +334,9 @@ namespace Api {
         public function advance() {
 
             // Lock the bracket
+            $cache = Lib\Cache::getInstance();
             $cacheKey = $this->_lockedCacheKey();
-            Lib\Cache::set($cacheKey, true, CACHE_MEDIUM);
+            $cache->set($cacheKey, true, CACHE_MEDIUM);
 
             switch ($this->state) {
                 case BS_ELIMINATIONS:
@@ -349,7 +353,7 @@ namespace Api {
             Round::getCurrentRounds($this->id, true);
 
             // Unlock. Keep this on a short cache since it'll default back to false anyways
-            Lib\Cache::set($cacheKey, false, CACHE_SHORT);
+            $cache->set($cacheKey, false, CACHE_SHORT);
 
         }
 
@@ -357,7 +361,7 @@ namespace Api {
          * Returns the locked status of the bracket
          */
         public function isLocked() {
-            return Lib\Cache::get($this->_lockedCacheKey());
+            return Lib\Cache::getInstance()->get($this->_lockedCacheKey());
         }
 
         /**
@@ -432,7 +436,7 @@ namespace Api {
             }
 
             // Clear the results cache
-            Lib\Cache::Set('Api:Bracket:getResults_' . $this->id, false, 1);
+            Lib\Cache::getInstance()->set('Api:Bracket:getResults_' . $this->id, false, 1);
 
         }
 

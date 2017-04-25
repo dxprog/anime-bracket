@@ -2,7 +2,7 @@
 
 namespace Lib {
 
-	use Memcache;
+	use Memcached;
 	use Predis;
 
 	define('CACHE_VERY_LONG', 86400);
@@ -15,56 +15,64 @@ namespace Lib {
 		define('DISABLE_CACHE', false);
 	}
 
-	if (!DISABLE_CACHE) {
-		Cache::Connect();
-	}
-
 	// memcache class
 	class Cache {
 
-		private static $_memcache;
-		private static $_redis;
-		private static $_disabled = false;
+		private $_memcache;
+		private $_redis;
+		private $_disabled = false;
 
-		public static function Connect($host = 'localhost', $port = 11211) {
-			self::$_memcache = new Memcache();
-			if (!self::$_memcache->pconnect($host, $port)) {
-				self::$_memcache = null;
+		public static function getInstance() {
+			static $cache;
+			if (!$cache) {
+				$cache = new Cache();
 			}
-
-			self::setDisabled(isset($_GET['flushCache']));
-
+			return $cache;
 		}
 
-		public static function Set($key, $val, $expiration = 600) {
-			$retVal = false;
-			if (null != self::$_memcache && is_string($key)) {
-				$retVal = self::$_memcache->set(self::_createCacheKey($key), $val, null, time() + $expiration);
-			}
-			return $retVal;
-		}
-
-		public static function Get($key, $forceCacheGet = false, $ignoreLogging = false) {
-			$retVal = false;
-			$fetchFromCache = null != self::$_memcache && is_string($key) && ($forceCacheGet || !self::$_disabled);
-			if ($fetchFromCache) {
-				$retVal = self::$_memcache->get(self::_createCacheKey($key));
-			}
-
-			return $retVal;
-		}
-
-		public static function Inc($key, $inc = 1, $expiration = 600) {
-			$value = self::Get($key, true, true);
-			if (false !== $value) {
-				self::$_memcache->increment(self::_createCacheKey($key), $inc);
+		public function __construct($host = 'localhost', $port = 11211) {
+			if (DISABLE_CACHE) {
+				$this->setDisabled(true);
 			} else {
-				self::Set($key, $inc, $expiration);
+				$this->_memcache = new Memcached();
+				if (!$this->_memcache->addServer($host, $port)) {
+					$this->_memcache = null;
+				}
+
+				// Since this is self-running, we don't yet have the benefit of the URL
+				// parser having run. Pluck this out of the query string.
+				if (isset($_SERVER['REQUEST_URI'])) {
+					$requestUri = explode('?', $_SERVER['REQUEST_URI']);
+					$this->setDisabled(strpos(end($requestUri), 'flushCache') !== false);
+				} else {
+					// In a CLI environment, don't bother with cache
+					$this->setDisabled(true);
+				}
 			}
 		}
 
-		public static function setDisabled($disabled) {
-			self::$_disabled = $disabled;
+		public function set($key, $val, $expiration = 600) {
+			$retVal = false;
+			if (null !== $this->_memcache && is_string($key)) {
+				// Hash the key to obfuscate and to avoid the cache-key size limit
+				$key = $this->_formatCacheKey($key);
+				$retVal = $this->_memcache->set($key, $val, time() + $expiration);
+			}
+			return $retVal;
+		}
+
+		public function get($key, $forceCacheGet = false, $ignoreLogging = false) {
+			$retVal = false;
+			$fetchFromCache = null != $this->_memcache && is_string($key) && ($forceCacheGet || !$this->_disabled);
+			if ($fetchFromCache) {
+				$formattedKey = $this->_formatCacheKey($key);
+				$retVal = $this->_memcache->get($formattedKey);
+			}
+			return $retVal;
+		}
+
+		public function setDisabled($disabled) {
+			$this->_disabled = $disabled;
 		}
 
 		/**
@@ -85,11 +93,11 @@ namespace Lib {
 		/**
 		 * Attempts to get data from cache. On miss, executes the callback function, caches that value, and returns it
 		 */
-		public static function fetch($method, $cacheKey, $duration = CACHE_MEDIUM) {
-			$retVal = self::Get($cacheKey);
-			if (!$retVal && is_callable($method)) {
+		public function fetch(callable $method, $cacheKey, $duration = CACHE_MEDIUM) {
+			$retVal = $this->get($cacheKey);
+			if ($retVal === false && is_callable($method)) {
 				$retVal = $method();
-				self::Set($cacheKey, $retVal, $duration);
+				$this->set($cacheKey, $retVal, $duration);
 			}
 			return $retVal;
 		}
@@ -97,30 +105,30 @@ namespace Lib {
 		/**
 		 * Data fetcher/setter for long cache (redis)
 		 */
-		public static function fetchLongCache($method, $cacheKey, $force = false) {
-			self::_redisConnect();
-			$retVal = self::$_redis->get($cacheKey);
-			if (null === $retVal || $force || self::$_disabled) {
+		public function fetchLongCache(callable $method, $cacheKey, $force = false) {
+			$this->_redisConnect();
+			$retVal = $this->_redis->get($cacheKey);
+			if (null === $retVal || $force || $this->_disabled) {
 				$retVal = $method();
-				self::setLongCache($cacheKey, $retVal);
+				$this->setLongCache($cacheKey, $retVal);
 			} else {
 				$retVal = unserialize($retVal);
 			}
 			return $retVal;
 		}
 
-		public static function setLongCache($cacheKey, $data) {
-			self::_redisConnect();
-			self::$_redis->set($cacheKey, serialize($data));
+		public function setLongCache($cacheKey, $data) {
+			$this->_redisConnect();
+			$this->_redis->set($cacheKey, serialize($data));
 		}
 
-		private static function _createCacheKey($key) {
+		private static function _formatCacheKey($key) {
 			return CACHE_PREFIX . ':' . $key;
 		}
 
-		private static function _redisConnect() {
-			if (!self::$_redis) {
-				self::$_redis = new Predis\Client(REDIS_SERVER);
+		private function _redisConnect() {
+			if (!$this->_redis) {
+				$this->_redis = new Predis\Client(REDIS_SERVER);
 			}
 		}
 

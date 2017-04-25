@@ -40,9 +40,10 @@ namespace Controller\Admin {
     public static function _displayNominations(Api\Bracket $bracket, $jsonOnly = false, $message = null) {
       $retVal = null;
 
-      Lib\Cache::setDisabled(true);
+      $cache = Lib\Cache::getInstance();
+      $cache->setDisabled(true);
       $nominee = Api\Nominee::getUnprocessed($bracket->id, 1);
-      Lib\Cache::setDisabled(false);
+      $cache->setDisabled(false);
 
       if (count($nominee) > 0) {
         $out = new stdClass;
@@ -246,21 +247,23 @@ namespace Controller\Admin {
     }
 
     private static function _nomineeList(Api\Bracket $bracket) {
-      Lib\Cache::setDisabled(true);
+      $cache = Lib\Cache::getInstance();
+      $cache->setDisabled(true);
       Lib\Display::renderAndAddKey('content', 'admin/nominees', [
         'nominees' => Api\Nominee::queryReturnAll([ 'bracketId' => $bracket->id, 'processed' => [ 'null' => true ] ]),
         'bracket' => $bracket
       ]);
-      Lib\Cache::setDisabled(false);
+      $cache->setDisabled(false);
     }
 
     private static function _displayCharacters(Api\Bracket $bracket) {
       $out = new stdClass;
-      Lib\Cache::setDisabled(true);
+      $cache = Lib\Cache::getInstance();
+      $cache->setDisabled(true);
       $out->characters = Api\Character::getByBracketId($bracket->id);
       $out->bracket = $bracket;
       Lib\Display::renderAndAddKey('content', 'admin/characters', $out);
-      Lib\Cache::setDisabled(false);
+      $cache->setDisabled(false);
     }
 
     private static function _updateCharacter(Api\Bracket $bracket) {
