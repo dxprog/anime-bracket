@@ -66,10 +66,10 @@ namespace Controller\Admin {
             }
           }
 
-          // Sort anything from this bracket to the top and then by bracket count
+          // Sort anything from this bracket to the top
           $deduped = array_values($deduped);
           usort($deduped, function($a, $b) {
-            return $a->thisBracket ? -1 : ($a->bracketCount > $b->bracketCount ? -1 : 1);
+            return $a->thisBracket ? -1 : 1;
           });
           $out->characters = $deduped;
         }
@@ -140,7 +140,7 @@ namespace Controller\Admin {
           } else {
             $out = self::_displayNominations($bracket, true);
             $out->success = true;
-            $out->message = 'Nominee' . (count($nominees) > 0 ? 's' : '') . ' deleted';
+            $out->message = 'Nominee deleted';
           }
         } else {
           $out = (object)[
