@@ -146,3 +146,35 @@
   }
 
 }
+
+.entrant-lockup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .entrant-lockup__image {
+    display: block;
+    padding-right: spacing(4);
+    width: 75px;
+    height: 75px;
+  }
+
+  .entrant-lockup__name {
+    // semantic font naming... you've come to bite me again
+    @include restyle(subheading in a light page);
+    font-size: 2.4rem;
+  }
+
+  .entrant-lockup__source {
+    @include restyle(subheading in a light page);
+    font-size: 1.8rem;
+  }
+
+  input {
+    border: 0;
+    display: block;
+    border-bottom: 1px solid get-color(gray);
+    background: rgba(255, 255, 255, .15);
+    margin-top: spacing(2);
+  }
+}

@@ -320,68 +320,14 @@ $bracket-row-height: 75px;
 
   }
 
-  .characters {
+  button.standard {
+    @include restyle(small button);
+  }
 
-    h2 {
-      @include heading($hasSubHead: true);
-    }
-
-    h3 {
-      @include sub-heading();
-    }
-
-    table {
-      background: #fff;
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .image {
-      width: 75px;
-      img {
-        width: 75px;
-        height: 75px;
-      }
-    }
-
-    thead {
-      background: $standard;
-      font: 24px/1 'Roboto Condensed', sans-serif;
-      color: #fff;
-      th {
-        padding: 5px;
-      }
-    }
-
-    button {
-      @include small-button();
-    }
-
-    button.delete {
-      background: #a94442;
-      color: #fff;
-    }
-
-    .error {
-      background: #f00;
-    }
-
-    .success {
-      background: #0f0;
-    }
-
-    td.name,
-    td.source {
-      padding: 5px;
-    }
-
-    input[type="text"] {
-      font: 18px/1 'Roboto', sans-serif;
-      padding: 5px;
-      width: 100%;
-      @include border-box();
-    }
-
+  button.delete {
+    @include restyle(small button);
+    background: get-color(red);
+    color: #fff;
   }
 
 }
@@ -391,4 +337,50 @@ $bracket-row-height: 75px;
   background: #fff;
   padding: 25px;
   @include border-box();
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid get-color(gray);
+
+  thead {
+    background: get-color(gray);
+    th {
+      @include restyle(large body);
+      text-align: left;
+      padding: spacing(2);
+    }
+  }
+
+  tr:nth-child(2n) td {
+    background: get-color(light-gray);
+  }
+
+  tr.success td {
+    background: get-color(light-green);
+  }
+
+  td {
+    @include restyle(body);
+    padding: spacing(2);
+  }
+
+  .admin-table__number {
+    text-align: center;
+    width: 150px;
+  }
+
+  .admin-table__actions {
+    text-align: right;
+  }
+
+  // Probably isn't actually BEMy, but meh
+  .admin-table__index {
+    @include restyle(large body);
+    width: 25px;
+    text-align: center;
+    padding-right: 0;
+  }
+
 }

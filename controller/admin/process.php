@@ -74,7 +74,7 @@ namespace Controller\Admin {
           $out->characters = $deduped;
         }
 
-        $out->hasSimilar = isset($out->characters) || null !== $out->similar;
+        $out->hasSimilar = isset($out->characters) || (isset($out->similar) && null !== $out->similar);
 
         $retVal = $jsonOnly ? $out : Lib\Display::renderAndAddKey('content', 'admin/nominee', $out);
       } else {
@@ -274,17 +274,21 @@ namespace Controller\Admin {
       $name = Lib\Url::Post('name');
       $source = Lib\Url::Post('source');
       $action = Lib\Url::Post('action');
-      if ($id && $name && $action) {
+      if ($id && $action) {
         $out->action = $action;
         $character = Api\Character::getById($id);
         if ($character && $character->bracketId == $bracket->id) {
           if ($action == 'update') {
-            $character->name = $name;
-            $character->source = $source;
-            if ($character->sync()) {
-              $out->success = true;
+            if ($name) {
+              $character->name = $name;
+              $character->source = $source;
+              if ($character->sync()) {
+                $out->success = true;
+              } else {
+                $out->message = 'Error updating database';
+              }
             } else {
-              $out->message = 'Error updating database';
+              $out->message = 'Name must not be empty';
             }
           } else if ($action == 'delete') {
             if ($bracket->state == BS_NOMINATIONS || $bracket->state == BS_ELIMINATIONS) {

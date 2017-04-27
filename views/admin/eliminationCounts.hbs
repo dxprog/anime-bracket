@@ -1,0 +1,35 @@
+<header>
+  <h2>Elimination Vote Counts - {{bracket.name}}</h2>
+</header>
+
+<div class="section characters">
+  <table class="admin-table" data-bracket="{{bracket.perma}}" data-type="character">
+    <thead>
+      <tr>
+        <th colspan="2">Character</th>
+        <th class="admin-table__number">Actual Votes</th>
+        <th class="admin-table__number">Adjusted Votes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each characters}}
+        <tr data-id="{{id}}">
+          <td class="admin-table__index">{{place}}</td>
+          <td>
+            <div class="entrant-lockup">
+              <img src="{{image}}" alt="{{name}}" class="entrant-lockup__image" />
+              <div class="entrant-lockup__info">
+                <h3 class="entrant-lockup__name">{{name}}</h3>
+                <h4 class="entrant-lockup__source">{{source}}</h4>
+              </div>
+            </div>
+          </td>
+          <td class="admin-table__number">{{totalVotes}}</td>
+          <td class="admin-table__number">{{adjustedVotes}}</td>
+          <td class="admin-table__actions"><button class="delete" name="action" value="delete">Delete</button>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

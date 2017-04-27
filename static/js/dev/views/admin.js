@@ -20,6 +20,7 @@ export default Route('admin', {
       Router.addRoutes({
         '/me/process/:perma/characters/': Characters,
         '/me/process/:perma/nominees/': Characters,
+        '/me/counts/:perma/': Characters,
         '/me/process/:perma/nominations/': Nominee,
         '/me/start/:perma/voting/': StartBracket,
         '/me/stats/:perma/': Stats

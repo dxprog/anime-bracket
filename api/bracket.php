@@ -452,35 +452,8 @@ namespace Api {
                 // Generate the bracket template
                 $seeding = self::generateSeededBracket($entrants);
 
-                // Get the max vote counts for each day
-                $result = Lib\Db::Query('SELECT COUNT(1) AS total, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_group', [ ':bracketId' => $this->id ]);
-                $groupCounts = [];
-                $max = 0;
-                while ($row = Lib\Db::Fetch($result)) {
-                    $votes = (int) $row->total;
-                    $groupCounts[(int) $row->round_group] = $votes;
-                    $max = $votes > $max ? $votes : $max;
-                }
-
-                $characters = [];
-                $result = Lib\Db::Query('SELECT COUNT(1) AS total, c.*, r.round_group FROM `round` r INNER JOIN `character` c ON c.character_id = r.round_character1_id LEFT OUTER JOIN votes v ON v.character_id = c.character_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId GROUP BY c.character_id', [ ':bracketId' => $this->id ]);
-
-                // Ensure that we have characters and there are at least enough to meet the bracket constraints
-                if ($result && $result->count >= $entrants) {
-                    while ($row = Lib\Db::Fetch($result)) {
-                        $obj = new Character($row);
-
-                        // Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
-                        // $obj->adjustedVotes = round(($obj->votes / $groups[$obj->group]) * $max);
-                        $obj->adjustedVotes = round(((int) $row->total / $groupCounts[(int) $row->round_group]) * $max);
-
-                        $characters[] = $obj;
-                    }
-
-                    // Reorder by adjusted votes
-                    usort($characters, function($a, $b) {
-                        return $a->adjustedVotes < $b->adjustedVotes ? 1 : -1;
-                    });
+                $characters = $this->getVoteAdjustedEliminationsCharacters();
+                if (count($characters) >= $entrants) {
 
                     // Set up the rounds
                     $groupSplit = $entrants / $groups;
@@ -518,6 +491,52 @@ namespace Api {
 
             return $retVal;
 
+        }
+
+        /**
+         * Returns an array of characters, their vote counts, and adjusted vote counts
+         * for a bracket's elimination round
+         */
+        public function getVoteAdjustedEliminationsCharacters() {
+            $retVal = [];
+
+            // Get the max vote counts for each day
+            $result = Lib\Db::Query('SELECT COUNT(1) AS total, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_group', [ ':bracketId' => $this->id ]);
+            $groupCounts = [];
+            $max = 0;
+            while ($row = Lib\Db::Fetch($result)) {
+                $votes = (int) $row->total;
+                $groupCounts[(int) $row->round_group] = $votes;
+                $max = $votes > $max ? $votes : $max;
+            }
+
+            $result = Lib\Db::Query('SELECT COUNT(1) AS total, c.*, r.round_group FROM `round` r INNER JOIN `character` c ON c.character_id = r.round_character1_id LEFT OUTER JOIN votes v ON v.character_id = c.character_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId GROUP BY c.character_id', [ ':bracketId' => $this->id ]);
+
+            // Ensure that we have characters and there are at least enough to meet the bracket constraints
+            if ($result && $result->count) {
+                while ($row = Lib\Db::Fetch($result)) {
+                    $obj = new Character($row);
+                    $obj->totalVotes = (int) $row->total;
+
+                    // Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
+                    $obj->adjustedVotes = round(($obj->totalVotes / $groupCounts[(int) $row->round_group]) * $max);
+
+                    $retVal[] = $obj;
+                }
+
+                // Reorder by adjusted votes
+                usort($retVal, function($a, $b) {
+                    return $a->adjustedVotes < $b->adjustedVotes ? 1 : -1;
+                });
+
+                // Add a place value
+                $place = 0;
+                foreach($retVal as $character) {
+                    $character->place = ++$place;
+                }
+            }
+
+            return $retVal;
         }
 
         /**
