@@ -519,14 +519,30 @@ namespace Api {
                     $obj->totalVotes = (int) $row->total;
 
                     // Normalize the votes against the highest day of voting to ensure that seeding order is reflective of flucuations in daily voting
-                    $obj->adjustedVotes = round(($obj->totalVotes / $groupCounts[(int) $row->round_group]) * $max);
+                    $group = (int) $row->round_group;
+                    $groupCount = $group < count($groupCounts) ? $groupCounts[$group] : null;
+                    if ($groupCount !== null) {
+                        if ($groupCount !== 0) {
+                            $obj->adjustedVotes = round(($obj->totalVotes / $groupCount) * $max);
+                        } else {
+                            $obj->adjustedVotes = 0;
+                        }
+                    } else {
+                        // If there's no group count for this group, no
+                        // voting has actually happened
+                        $obj->adjustedVotes = 'N/A';
+                        $obj->totalVotes = 0;
+                    }
 
                     $retVal[] = $obj;
                 }
 
                 // Reorder by adjusted votes
                 usort($retVal, function($a, $b) {
-                    return $a->adjustedVotes < $b->adjustedVotes ? 1 : -1;
+                    // Having an expected mixed int/string is gross. But yam lazy
+                    $aValue = $a->adjustedVotes !== 'N/A' ? $a->adjustedVotes : 0;
+                    $bValue = $b->adjustedVotes !== 'N/A' ? $b->adjustedVotes : 0;
+                    return $aValue < $bValue ? 1 : -1;
                 });
 
                 // Add a place value
