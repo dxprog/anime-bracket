@@ -2,26 +2,22 @@
   <h2>Unprocessed Nominees - <span>{{bracket.name}}</span></h2>
 </header>
 <div class="characters">
-  <table data-bracket="{{bracket.perma}}" data-type="nominee">
+  <table data-bracket="{{bracket.perma}}" data-type="nominee" class="admin-table">
     <thead>
-      <th></th>
-      <th>Name</th>
-      <th>Source</th>
+      <th>Nominee</th>
       <th></th>
     </thead>
     <tbody>
       {{#each nominees}}
         <tr data-id="{{id}}">
-          <td class="image">
-            <img src="{{image}}" alt="{{name}}" />
-          </td>
-          <td class="name">
-            <input type="text" name="name" value="{{name}}" />
-          </td>
-          <td class="source">
-            <input type="text" name="source" value="{{source}}" />
-          </td>
           <td>
+            <div class="entrant-lockup">
+              <img class="entrant-lockup__image" src="{{image}}" alt="{{name}}" />
+              <h3 class="entrant-lockup__name">{{name}}</h3>
+              <h4 class="entrant-lockup__source">{{source}}</h4>
+            </div>
+          </td>
+          <td class="admin-table__actions">
             <button class="delete" name="action" value="delete">Delete</button>
           </td>
         </tr>

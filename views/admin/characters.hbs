@@ -1,28 +1,26 @@
 <header>
   <h2>Edit Entrants - <span>{{bracket.name}}</span></h2>
 </header>
-<div class="characters">
-  <table data-bracket="{{bracket.perma}}" data-type="character">
+<div class="section characters">
+  <table data-bracket="{{bracket.perma}}" data-type="character" class="admin-table">
     <thead>
-      <th></th>
-      <th>Name</th>
-      <th>Source</th>
+      <th>Character</th>
       <th></th>
     </thead>
     <tbody>
       {{#each characters}}
         <tr data-id="{{id}}">
-          <td class="image">
-            <img src="{{image}}" alt="{{name}}" />
-          </td>
-          <td class="name">
-            <input type="text" name="name" value="{{name}}" />
-          </td>
-          <td class="source">
-            <input type="text" name="source" value="{{source}}" />
-          </td>
           <td>
-            <button class="update" name="action" value="update">Update</button>
+            <div class="entrant-lockup">
+              <img class="entrant-lockup__image" src="{{image}}" alt="{{name}}" />
+              <div class="entrant-lockup__info">
+                <input class="entrant-lockup__name" type="text" name="name" value="{{name}}" />
+                <input class="entrant-lockup__source" type="text" name="source" value="{{source}}" />
+              </div>
+            </div>
+          </td>
+          <td class="admin-table__actions">
+            <button class="update standard" name="action" value="update">Update</button>
             {{#isBracketNominations ../bracket}}
               <button class="delete" name="action" value="delete">Delete</button>
             {{/isBracketNominations}}
