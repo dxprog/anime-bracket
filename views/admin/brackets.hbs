@@ -58,6 +58,9 @@
                 <li>
                   <a href="/me/process/{{perma}}/nominations/">Process Nominees</a>
                 </li>
+                <li>
+                  <a href="/me/process/{{perma}}/nominees/">Unprocessed Nominees</a>
+                </li>
               {{/if}}
               {{#if showEditEntrants}}
                 <li>
@@ -74,6 +77,11 @@
                   <a href="/me/users/{{perma}}/">Manage Admins</a>
                 </li>
               {{/unless}}
+              {{#isBracketEliminations .}}
+                <li>
+                  <a href="/me/counts/{{perma}}/">Current Vote Counts</a>
+                </li>
+              {{/isBracketEliminations}}
               <li>
                 <a href="/me/hide/{{perma}}/">{{#if hidden}}Unhide{{else}}Hide{{/if}} Bracket</a>
               </li>
