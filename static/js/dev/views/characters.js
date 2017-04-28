@@ -48,7 +48,7 @@ export default Route('characters', {
       case 'seed':
         dataSets.push({
           header: 'Seeded Entrants',
-          characters: seededSort.slice(0, maxSeed - 1)
+          characters: seededSort.slice(0, maxSeed)
         });
         dataSets.push({
           header: 'Eliminated Entrants',
