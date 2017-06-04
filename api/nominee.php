@@ -117,12 +117,32 @@ namespace Api {
         public function markAsProcessed() {
             // Mark all nominees with this name in this bracket as processed
             $this->processed = true;
-            return Lib\Db::Query('UPDATE `nominee` SET nominee_processed = 1 WHERE nominee_id = :nomineeId OR (nominee_name LIKE :name AND nominee_source LIKE :source AND bracket_id = :bracketId)', [
+            $params = [
                 'nomineeId' => $this->id,
                 'name' => $this->name,
-                'source' => $this->source,
                 'bracketId' => $this->bracketId
-            ]);
+            ];
+            $query = 'UPDATE `nominee` SET nominee_processed = 1 WHERE nominee_id = :nomineeId OR (nominee_name LIKE :name AND bracket_id = :bracketId AND nominee_source ';
+            $bracket = Bracket::getById($this->bracketId);
+            if ($bracket->hasSourceLabel) {
+                $query .= 'LIKE :source';
+                $params['source'] = $this->source;
+            } else {
+                $query .= 'IS NULL';
+            }
+            return Lib\Db::Query($query . ')', $params);
+        }
+
+        /**
+         * Marks multiple nominees as processed
+         */
+        public static function markMultipleNomineesAsProcessed(array $nomineeIds) {
+            foreach ($nomineeIds as $id) {
+                $nominee = Nominee::getById($id);
+                if ($nominee) {
+                    $nominee->markAsProcessed();
+                }
+            }
         }
 
         /**

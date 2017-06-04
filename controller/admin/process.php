@@ -226,7 +226,7 @@ namespace Controller\Admin {
           }
 
           // Mark as processed
-          Api\Nominee::markAsProcessed($nomineeIds);
+          Api\Nominee::markMultipleNomineesAsProcessed($nomineeIds);
 
         }
 
@@ -250,7 +250,7 @@ namespace Controller\Admin {
       $cache = Lib\Cache::getInstance();
       $cache->setDisabled(true);
       Lib\Display::renderAndAddKey('content', 'admin/nominees', [
-        'nominees' => Api\Nominee::queryReturnAll([ 'bracketId' => $bracket->id, 'processed' => [ 'null' => true ] ]),
+        'nominees' => Api\Nominee::queryReturnAll([ 'bracketId' => $bracket->id, 'processed' => [ 'null' => true ] ], [ 'name' => 'asc' ]),
         'bracket' => $bracket
       ]);
       $cache->setDisabled(false);
