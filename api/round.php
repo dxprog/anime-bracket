@@ -20,7 +20,8 @@ namespace Api {
             'character1Votes' => 'round_character1_votes',
             'character2Id' => 'round_character2_id',
             'character2Votes' => 'round_character2_votes',
-            'final' => 'round_final'
+            'final' => 'round_final',
+            'dateEnded' => 'round_end_date'
         );
 
         /**
@@ -102,6 +103,11 @@ namespace Api {
          * Whether the round voting has been finalized
          */
         public $final = false;
+
+        /**
+         * The timestamp of when this round ended
+         */
+        public $dateEnded = null;
 
         /**
          * Constructor
@@ -360,6 +366,16 @@ namespace Api {
                 return self::_getRoundsAndCharacters($query);
 
             }, 'Round::getRandomCompletedRounds_' . $count, CACHE_LONG * 24);
+        }
+
+        /**
+         * Finalizes this bracket round
+         */
+        public function finalizeRound() {
+            $this->getVoteCount();
+            $this->final = true;
+            $this->dateEnded = time();
+            $this->sync();
         }
 
         /**

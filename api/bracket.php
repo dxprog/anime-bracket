@@ -373,7 +373,11 @@ namespace Api {
             $result = Lib\Db::Query('SELECT MIN(round_group) AS current_group FROM `round` WHERE bracket_id = :bracketId AND round_final != 1 ORDER BY round_group', [ ':bracketId' => $this->id ]);
             if ($result && $result->count) {
                 $row = Lib\Db::Fetch($result);
-                Lib\Db::Query('UPDATE `round` SET round_final = 1 WHERE bracket_id = :bracketId AND round_group = :group', [ ':bracketId' => $this->id, ':group' => $row->current_group ]);
+                Lib\Db::Query('UPDATE `round` SET round_final = 1, round_end_date = :dateEnded WHERE bracket_id = :bracketId AND round_group = :group', [
+                    ':bracketId' => $this->id,
+                    ':group' => $row->current_group,
+                    ':dateEnded' => time()
+                ]);
             }
 
         }
@@ -402,22 +406,14 @@ namespace Api {
                     $newRound->sync();
 
                     // Finalize the current tier
-                    $rounds[$i]->getVoteCount();
-                    $rounds[$i]->final = true;
-                    $rounds[$i]->sync();
-                    $rounds[$i + 1]->getVoteCount();
-                    $rounds[$i + 1]->final = true;
-                    $rounds[$i + 1]->sync();
+                    $rounds[$i]->finalizeRound();
+                    $rounds[$i + 1]->finalizeRound();
 
                 }
             } else if (count($rounds) === 1) {
-                $round = $rounds[0];
-                $round->getVoteCount();
-                $round->final = true;
-                $round->sync();
-
+                $round[0]->finalizeRound();
                 $this->score = $this->getFinalScore();
-                $this->winner = $round->getWinner();
+                $this->winner = $round[0]->getWinner();
                 $this->winnerCharacterId = $this->winner->id;
                 $this->state = BS_FINAL;
                 $this->sync();
