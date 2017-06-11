@@ -124,7 +124,7 @@ namespace Api {
             ];
             $query = 'UPDATE `nominee` SET nominee_processed = 1 WHERE nominee_id = :nomineeId OR (nominee_name LIKE :name AND bracket_id = :bracketId AND nominee_source ';
             $bracket = Bracket::getById($this->bracketId);
-            if ($bracket->hasSourceLabel) {
+            if ($bracket->hasSourceLabel()) {
                 $query .= 'LIKE :source';
                 $params['source'] = $this->source;
             } else {
