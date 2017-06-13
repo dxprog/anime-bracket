@@ -11,11 +11,11 @@ import Admin from './views/admin';
 
 Router.addRoutes({
   'index': Landing,
-  '/results/:perma/': BracketDisplay,
-  '/vote/:perma/': Voting,
-  '/nominate/:perma/': Nominations,
-  '/characters/:perma/': Characters,
-  '/me/': Admin,
+  '/results/:perma': BracketDisplay,
+  '/vote/:perma': Voting,
+  '/nominate/:perma': Nominations,
+  '/characters/:perma': Characters,
+  '/me': Admin,
   '/me/*': Admin
 });
 
@@ -28,4 +28,7 @@ if (document.cookie.indexOf('utcOffset') === -1) {
 }
 
 Nav.init();
-Router.go(window.location.pathname);
+
+// Strip the trailing slash from the path so that the router doesn't break
+const path = window.location.pathname.replace(/\/$/, '');
+Router.go(path);
