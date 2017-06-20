@@ -54,33 +54,36 @@ $BASE-INDEX: 1;
     @include gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .5));
   }
 
-  .info {
-    padding: 20px;
-  }
-
   h3 {
     font: 36px/1 'Roboto', sans-serif;
-    margin: 20px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 116px;
-    color: #fff;
-    z-index: $BASE-INDEX + 1;
     text-shadow: 0 0 2px #000;
+    color: #fff;
+    margin: 10px;
   }
 
-  h4 {
-    font: 24px/1 'Roboto', sans-serif;
-    margin-bottom: 10px;
+  .info {
+    padding: 20px;
 
-    &.winner:after {
-      content: 'Winner';
-      display: block;
-      font: 18px/1 'Roboto', sans-serif;
-      color: #666;
+    h3 {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 116px;
+      z-index: $BASE-INDEX + 1;
     }
 
+    h4 {
+      font: 24px/1 'Roboto', sans-serif;
+      margin-bottom: 10px;
+
+      &.winner:after {
+        content: 'Winner';
+        display: block;
+        font: 18px/1 'Roboto', sans-serif;
+        color: #666;
+      }
+
+    }
   }
 
   .card-image {
@@ -106,6 +109,54 @@ $BASE-INDEX: 1;
         float: left;
       }
 
+    }
+
+    &.has-winner .inner {
+      opacity: .5;
+    }
+
+    .winner {
+      position: absolute;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 0 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+
+      img {
+        display: block;
+        box-shadow: 0 0 7px 2px rgba(#000, .7);
+        width: 150px;
+        margin: 0 auto;
+      }
+
+      h3 {
+        position: relative;
+        text-align: center;
+
+        span {
+          position: absolute;
+          left: 50%;
+          top: calc(100% + 5px);
+          transform: translateX(-50%);
+          font-size: 18px;
+          &:before,
+          &:after {
+            content: '';
+            position: absolute;
+            right: calc(100% + 10px);
+            top: 50%;
+            width: 50px;
+            border-top: 1px solid get-color(white);
+          }
+
+          &:after {
+            right: auto;
+            left: calc(100% + 10px);
+          }
+        }
+      }
     }
 
     &:after {
@@ -141,9 +192,8 @@ $BASE-INDEX: 1;
   }
 
   @media screen and (max-width: $MOBILE-WIDTH) {
-
     width: 100%;
-    height: 116px + 150px;
+    height: auto;
 
     .card-image {
       max-width: 100%;
@@ -151,13 +201,38 @@ $BASE-INDEX: 1;
     }
 
     .card-entrants {
+      width: 100%;
+    }
 
-      height: 150px;
+    .actions {
+      position: static;
+      display: flex;
 
-      .inner img {
-        width: 100px;
-        height: 100px;
+      li {
+        width: 100%;
+        float: none;
+        padding: 10px;
       }
+
+      a {
+        display: block;
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    h4 {
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .info {
+      padding: 10px;
+    }
+
+    &:after {
+      bottom: auto;
+      top: 135px;
     }
 
   }
