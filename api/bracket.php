@@ -411,9 +411,10 @@ namespace Api {
 
                 }
             } else if (count($rounds) === 1) {
-                $round[0]->finalizeRound();
+                $round = $rounds[0];
+                $round->finalizeRound();
                 $this->score = $this->getFinalScore();
-                $this->winner = $round[0]->getWinner();
+                $this->winner = $round->getWinner();
                 $this->winnerCharacterId = $this->winner->id;
                 $this->state = BS_FINAL;
                 $this->sync();
@@ -423,6 +424,7 @@ namespace Api {
                 $round = Round::queryReturnAll([ 'bracketId' => $this->id ], [ 'round_id' => 'desc' ], 1);
                 if (count($round) === 1) {
                     // Get the total number of votes to use for the score
+                    $round = $round[0];
                     $this->score = $this->getFinalScore();
                     $this->winner = $round->getWinner();
                     $this->winnerCharacterId = $this->winner->id;
