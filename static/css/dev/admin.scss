@@ -265,6 +265,10 @@ $bracket-row-height: 75px;
 
     textarea {
       height: 400px;
+
+      &.short {
+        height: 75px;
+      }
     }
 
     .foot {

@@ -24,6 +24,7 @@ namespace Controller\Admin {
                         $bracket->name = trim($name);
                         $bracket->rules = $rules;
                         $bracket->nameLabel = Lib\Url::Post('nameLabel');
+                        $bracket->blurb = Lib\Url::Post('blurb');
 
                         $hideSource = Lib\Url::Post('hideSource') === 'on';
                         $bracket->sourceLabel = $hideSource ? 'NO_SOURCE' : Lib\Url::Post('sourceLabel');
