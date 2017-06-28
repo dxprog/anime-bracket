@@ -8,7 +8,8 @@ $colors-def: (
   dark-red: #752f2e,
   light-green: #c4e5db,
   green: #96bcb1,
-  dark-green: #697e77
+  dark-green: #697e77,
+  dark-blue: #373d49
 );
 
 @function get-color($name) {

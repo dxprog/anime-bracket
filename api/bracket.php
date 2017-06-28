@@ -34,7 +34,8 @@ namespace Api {
             'score' => 'bracket_score',
             'externalId' => 'bracket_external_id',
             'minAge' => 'bracket_min_age',
-            'hidden' => 'bracket_hidden'
+            'hidden' => 'bracket_hidden',
+            'blurb' => 'bracket_blurb'
         );
 
         /**
@@ -131,6 +132,11 @@ namespace Api {
          * If this bracket is up for publically viewable
          */
         public $hidden;
+
+        /**
+         * Short blurb about the bracket
+         */
+        public $blurb;
 
         /**
          * Ints and bools things

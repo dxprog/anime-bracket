@@ -1,120 +1,202 @@
 @import "globals";
 
-#page-landing {
+#page-landing #content {
 
+  .hero {
     overflow: hidden;
+    position: relative;
 
-    #content {
-        width: 696px;
-        margin: 0 auto;
-        padding: 0 70px;
-        text-align: center;
+    &--fixed {
+      height: 400px;
     }
 
-    h1 {
-        @include logo();
-        margin: 100px auto 50px;
+    &--white {
+      background: white;
     }
 
-    h2 {
-        @include font-light(48px);
-        color: #fff;
-        margin-bottom: 100px;
-        text-shadow: 0 0 10px #000;
-        text-transform: none;
-    }
+    &__entrant-bg {
+      position: absolute;
+      left: 0;
+      // Leave enough room for images to go off the edge of the screen
+      right: -100px;
+      height: 400px;
 
-    nav a {
-
+      img {
         display: block;
-        width: 375px;
-        margin: 0 auto 20px;
-        padding: 15px 0;
-        text-align: center;
-        color: #fff;
-        text-decoration: none;
-        @include font-light(36px);
+        float: left;
+        width: 100px;
+        height: 100px;
+      }
 
-    }
-
-    .pair {
-
+      &:after {
+        display: block;
+        content: '';
         position: absolute;
-        opacity: 0;
-        -webkit-animation: hexFade 30s infinite;
-        animation: hexFade 30s infinite;
-
-        svg {
-            position: absolute;
-            top: 0;
-
-            &.last {
-                top: 115px;
-            }
-        }
-
-        &.forward svg.first {
-            left: 66px;
-        }
-
-        &.backslash svg.last {
-            left: 66px;
-        }
-
-        svg {
-            clip-path: url(#hexagon);
-        }
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba(55, 61, 73, .85);
+      }
     }
 
-    .defs {
-        position: absolute;
-        left: -9999px;
-        right: -9999px;
+    &__content {
+      // For z-index priority
+      position: relative;
+      box-sizing: border-box;
+      width: 1020px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 50px;
+      display: flex;
+      flex-direction: row;
+
+      @media screen and (max-width: $MOBILE-WIDTH) {
+        width: 100%;
+        padding: 0 20px;
+        flex-wrap: wrap;
+      }
     }
 
-    //
-    // MOBILE STYLES
-    //
+    &__top-four {
+      flex-shrink: 0;
+      width: 375px;
+      height: 325px;
+      margin: auto 0;
+      overflow: hidden;
 
-    @media screen and (max-width: $MOBILE-WIDTH) {
+      img {
+        display: block;
+        float: left;
+        margin: 0 25px 25px 0;
+        box-shadow: 0 0 7px 2px rgba(#000, .7);
+      }
 
-        overflow: visible;
+      @media screen and (max-width: $MOBILE-WIDTH) {
+        display: none;
+      }
 
-        #content {
-            width: auto;
-            padding: 20px;
+    }
+
+    &__tools {
+      flex-shrink: 0;
+      width: 375px;
+      height: 325px;
+      margin: auto 0;
+      overflow: hidden;
+      background: url(/static/images/bracket_tools.png) no-repeat center center;
+
+      @media screen and (max-width: $MOBILE-WIDTH) {
+        display: none;
+      }
+    }
+
+    &__text {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      h2 {
+        font: 700 48px/1 'Roboto', sans-serif;
+        color: get-color(dark-green);
+        margin-bottom: 30px;
+
+        @media screen and (max-width: $MOBILE-WIDTH) {
+          font-size: 36px;
         }
+      }
 
-        h1 {
-            width: auto;
-            margin: 20px 20px 0;
-            background-size: contain;
+      h3 {
+        font: 700 36px/1.2 'Roboto', sans-serif;
+        color: get-color(black);
+        margin-bottom: 20px;
+
+        @media screen and (max-width: $MOBILE-WIDTH) {
+          font-size: 24px;
         }
+      }
 
+      p {
+        font: 24px/1.2 'Roboto', sans-serif;
+        color: get-color(black);
+
+        @media screen and (max-width: $MOBILE-WIDTH) {
+          font-size: 18px;
+        }
+      }
+
+      &--inverse {
         h2 {
-            font-size: 30px;
-            margin-bottom: 50px;
+          color: get-color(light-green);
         }
 
-        nav a {
-            font-size: 24px;
-            width: auto;
+        h3 {
+          color: get-color(white);
         }
 
+        p {
+          color: get-color(white);
+        }
+      }
     }
 
-}
+    &__links {
+      margin-top: 40px;
 
-@keyframes hexFade {
-    0% { opacity: 0; }
-    3% { opacity: 1; }
-    13% { opacity: 1; }
-    17% { opacity: 0; }
-}
+      li {
+        display: inline-block;
+        padding-left: 20px;
 
-@-webkit-keyframes hexFade {
-    0% { opacity: 0; }
-    3% { opacity: 1; }
-    13% { opacity: 1; }
-    17% { opacity: 0; }
+        &:first-child {
+          padding: 0;
+        }
+
+        @media screen and (max-width: $MOBILE-WIDTH) {
+          padding: 0;
+          .inverse-small-button {
+            padding-right: 0;
+          }
+        }
+      }
+    }
+
+    &__bracket-list {
+      width: 50%;
+      margin-top: 50px;
+      padding-bottom: 20px;
+
+      h2 {
+        font: 700 36px/1.2 'Roboto', sans-serif;
+        color: get-color(white);
+      }
+
+      li {
+        height: 50px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-top: 20px;
+      }
+
+      a {
+        font: 18px/1.2 'Roboto', sans-serif;
+        color: get-color(white);
+        text-decoration: none;
+      }
+
+      img {
+        flex-shrink: 0;
+        display: block;
+        margin-right: 20px;
+        width: 50px;
+        height: 50px;
+        box-shadow: 0 0 7px 2px rgba(#000, .7);
+      }
+
+      @media screen and (max-width: $MOBILE-WIDTH) {
+        width: 100%;
+      }
+    }
+  }
 }

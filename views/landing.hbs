@@ -1,21 +1,67 @@
-<h2>Who is the most moe?</h2>
-<p>
-    Join <strong>/r/awwnime</strong> for our third year as we vote to crown the new <strong>Queen of Moe</strong>. Mark your calendars, nominations begin on <strong>October 13th</strong>!
-</p>
+<div class="hero hero--fixed">
+	<div class="hero__entrant-bg">
+		{{#each featuredCharacters}}
+			<img src="{{image}}" alt="{{name}}" />
+		{{/each}}
+	</div>
+	<div class="hero__content">
+		<div class="hero__top-four">
+			{{#each topFour}}
+				<img src="{{image}}" alt="{{name}}" />
+			{{/each}}
+		</div>
+		<div class="hero__text hero__text--inverse">
+			<h2>Featured Bracket</h2>
+			<h3>{{featuredBracket.name}}</h3>
+			<p>{{featuredBracket.blurb}}</p>
+			<ul class="hero__links">
+				<li>
+					<a href="/vote/{{featuredBracket.perma}}" class="small-button">Check It Out</a>
+				</li>
+				<li>
+					<a href="/brackets/" class="inverse-small-button">See Other Brackets</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
 
-{{#if .}}
-	{{#isBracketNominations .}}
-		<a href="/{{perma}}/nominate/" class="button">Nominate Characters</a>
-	{{/isBracketNominations}}
-	{{#isBracketEliminations .}}
-		<a href="/{{perma}}/vote/" class="button">Vote in Eliminations</a>
-	{{/isBracketEliminations}}
-	{{#isBracketVoting .}}
-		<a href="/{{perma}}/vote/" class="button">Vote Now</a>
-	{{/isBracketVoting}}
+<div class="hero hero--white hero--fixed">
+	<div class="hero__content">
+		<div class="hero__text">
+			<h2>Make Your Own Bracket!</h2>
+			<p>Who’s the Best Girl? Strongest fighter? Cutest couple? These are questions that need answering, AnimeBracket provides the tools. Make it happen!</p>
+			<div class="hero__links">
+				<a href="/me/" class="small-button">Get Started</a>
+			</div>
+		</div>
+		<div class="hero__tools"></div>
+	</div>
+</div>
 
-	<a href="/brackets" class="brackets-link">Check Out Bracket Results</a>
-
-{{else}}
-	<a href="/brackets" class="button">Check Out Previous Brackets</a>
-{{/if}}
+<div class="hero">
+	<div class="hero__content">
+		<div class="hero__bracket-list">
+			<h2>Popular Brackets</h2>
+			<ul>
+				{{#each topBrackets}}
+					<li>
+						<img src="{{winner.image}}" alt="{{winner.name}}" />
+						<a href="/vote/{{perma}}/">{{name}}</a>
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+		<div class="hero__bracket-list">
+			<h2>Past Brackets</h2>
+			<ul>
+				{{#each pastBrackets}}
+					<li>
+						<img src="{{winner.image}}" alt="{{winner.name}}" />
+						<a href="/results/{{perma}}/">{{name}}</a>
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+	</div>
+</div>

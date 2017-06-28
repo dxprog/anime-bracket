@@ -18,8 +18,12 @@
 
     restyle-modifiers: (
       small: (
-        restyle: 'body thin inverse',
+        restyle: 'body inverse',
         restyle-var(padding): 10px 20px
+      ),
+
+      inverse: (
+        restyle-var(background-color): transparent
       ),
 
       round: (
