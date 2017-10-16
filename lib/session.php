@@ -5,7 +5,7 @@ namespace Lib {
     use stdClass;
 
     define('SESSION_NAME', 'AB_SESS');
-    define('SESSION_EXPIRE', 86400 * 365); // session lasts for a year
+    define('SESSION_EXPIRE', 86400 * 1); // session lasts for one day
 
     class Session {
 
