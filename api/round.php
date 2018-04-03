@@ -212,6 +212,26 @@ namespace Api {
 
         }
 
+        public static function getBracketFinalRoundTitles(Bracket $bracket) {
+            $retVal = null;
+            $result = Lib\Db::Query(
+                'SELECT `round_tier`, `round_group` FROM `round` WHERE `bracket_id` = :bracketId AND `round_final` = 1 GROUP BY `round_tier`, `round_group`',
+                [ ':bracketId' =>  $bracket->id ]
+            );
+            if ($result && count($result)) {
+                $retVal = [];
+                while ($row = Lib\Db::Fetch($result)) {
+                    $round = new Round($row);
+                    $retVal[] = (object)[
+                        'tier' => $round->tier,
+                        'group' => $round->group,
+                        'title' => self::getBracketTitleForRound($bracket, $round)
+                    ];
+                }
+            }
+            return $retVal;
+        }
+
         public static function getRoundsByTier($bracketId, $tier) {
             $retVal = null;
             $params = array( ':bracketId' => $bracketId, ':tier' => $tier );
@@ -411,7 +431,9 @@ namespace Api {
             // Get all other rounds (if none were provided) in this tier to determine special titles
             $roundsInTier = self::getRoundsByTier($bracket->id, $round->tier);
             $roundCount = count($roundsInTier);
-            if ($bracket->state == BS_VOTING && $roundCount <= 4) {
+            if ($round->tier == 0) {
+                $retVal = 'Eliminations - Group ' . chr($round->group + 65);
+            } else if ($round->tier > 0 && $roundCount <= 4) {
                 switch ($roundCount) {
                     case 4:
                         $retVal = 'Quarter Finals';
@@ -427,7 +449,7 @@ namespace Api {
 
             // If no special title was generated, generate based on the group
             if (!$retVal) {
-                $retVal = $bracket->state == BS_ELIMINATIONS ? 'Eliminations - ' : 'Voting - Round ' . $round->tier . ', ';
+                $retVal = 'Voting - Round ' . $round->tier . ', ';
 
                 $group = 'All Groups';
                 $groups = [];

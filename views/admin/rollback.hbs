@@ -1,0 +1,16 @@
+<header>
+  <h2>Rollback Bracket - <span>{{bracket.name}}</span></h2>
+</header>
+<form action="/me/rollback/{{bracket.perma}}" method="post">
+  <h3>Note: Rolling back a bracket will delete all votes after the rollback point. THIS CANNOT BE REVERSED!</h3>
+  <div class="input-group">
+    <label for="round">Round to Rollback to</label>
+    <select id="round" name="round">
+      {{#each roundTitles}}
+        <option value="{{@index}}">{{title}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  <button class="small-button" type="submit">Rollback</button>
+</form>
