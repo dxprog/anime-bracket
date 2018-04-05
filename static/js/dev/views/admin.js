@@ -11,6 +11,9 @@ export default Route('admin', {
   initRoute() {
     const $brackets = $('.brackets');
 
+    // The "waiting" overlay
+    document.documentElement.addEventListener('click', this.showDisableOverlay);
+
     // If we're on the main brackets page, do that stuff, otherwise
     // kick in the admin routes
     if ($brackets.length) {
@@ -26,6 +29,12 @@ export default Route('admin', {
         '/me/stats/:perma/': Stats
       });
       Router.go(window.location.pathname);
+    }
+  },
+
+  showDisableOverlay(evt) {
+    if (evt.target.classList.contains('disable-on-click')) {
+      document.querySelector('body').classList.add('disabled');
     }
   },
 

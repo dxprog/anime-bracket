@@ -23,6 +23,17 @@ $bracket-row-height: 75px;
 
 #admin {
 
+  &.disabled:after {
+    content: 'Working on that. Hang tight...';
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(#000, 0.75) url(/static/images/loading.gif) no-repeat center center;
+    z-index: 9001;
+  }
+
   #content {
     @include restyle(light page);
     header {

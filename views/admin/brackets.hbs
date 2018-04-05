@@ -33,9 +33,9 @@
               {{#if showAdvance}}
                 <li class="primary-action">
                   {{#if nextIsFinal}}
-                    <a href="/me/advance/{{perma}}/">Finalize Bracket</a>
+                    <a href="/me/advance/{{perma}}/" class="disable-on-click">Finalize Bracket</a>
                   {{else}}
-                    <a href="/me/advance/{{perma}}/">Advance to {{nextTitle}}</a>
+                    <a href="/me/advance/{{perma}}/" class="disable-on-click">Advance to {{nextTitle}}</a>
                   {{/if}}
                 </li>
               {{/if}}
