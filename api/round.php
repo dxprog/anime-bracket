@@ -115,7 +115,7 @@ namespace Api {
         public function __construct($round = null) {
             if (is_object($round)) {
                 parent::copyFromDbRow($round);
-                $this->final = (bool) ord($this->final); // Because PHP is retarded about return BIT types from MySQL
+                $this->final = isset($round->round_final) && $round->round_final > 0;
                 if (isset($round->user_vote)) {
                     $this->voted = $round->user_vote > 0;
                     $this->votedCharacterId = (int) $round->user_vote;

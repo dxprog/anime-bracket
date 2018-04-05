@@ -4,6 +4,7 @@ namespace Api {
 
     use Lib;
     use stdClass;
+    use Error;
 
     define('BS_NOT_STARTED', 0);
     define('BS_NOMINATIONS', 1);
@@ -338,11 +339,7 @@ namespace Api {
          * Advances the bracket to the next tier/group
          */
         public function advance() {
-
-            // Lock the bracket
-            $cache = Lib\Cache::getInstance();
-            $cacheKey = $this->_lockedCacheKey();
-            $cache->set($cacheKey, true, CACHE_MEDIUM);
+            $this->_lock();
 
             switch ($this->state) {
                 case BS_ELIMINATIONS:
@@ -358,9 +355,29 @@ namespace Api {
             $this->getResults(true);
             Round::getCurrentRounds($this->id, true);
 
-            // Unlock. Keep this on a short cache since it'll default back to false anyways
-            $cache->set($cacheKey, false, CACHE_SHORT);
+            $this->_unlock();
+        }
 
+        /**
+         * Locks the bracket
+         */
+        private function _lock() {
+            if (!$this->isLocked()) {
+                $cache = Lib\Cache::getInstance();
+                $cacheKey = $this->_lockedCacheKey();
+                $cache->set($cacheKey, true, CACHE_MEDIUM);
+            } else {
+                throw new Error('This bracket is currently updating. Please check again in a few minutes.');
+            }
+        }
+
+        /**
+         * Unlocks the bracket
+         */
+        private function _unlock() {
+            $cache = Lib\Cache::getInstance();
+            $cacheKey = $this->_lockedCacheKey();
+            $cache->set($cacheKey, false, CACHE_SHORT);
         }
 
         /**
@@ -441,7 +458,6 @@ namespace Api {
 
             // Clear the results cache
             Lib\Cache::getInstance()->set('Api:Bracket:getResults_' . $this->id, false, 1);
-
         }
 
         /**
@@ -612,6 +628,29 @@ namespace Api {
                 }
             }
 
+        }
+
+        /**
+         * Rolls the bracket back to a previous state
+         */
+        public function rollback($tier, $group) {
+            $retVal = false;
+
+            // $this->_lock();
+
+            $this->state = $tier === 0 ? BS_ELIMINATIONS : BS_VOTING;
+
+            $result = Lib\Db::Query('CALL proc_RollbackBracket(:bracketId, :tier, :group)', [
+                'bracketId' => $this->id,
+                'tier' => $tier,
+                'group' => $group
+            ]);
+
+            $retVal = $result && $this->sync();
+
+            $this->_unlock();
+
+            return $retVal;
         }
 
         /**

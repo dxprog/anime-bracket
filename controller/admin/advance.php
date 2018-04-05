@@ -16,19 +16,22 @@ namespace Controller\Admin {
             $message = null;
             $bracket = self::_getBracket(array_shift($params));
             if ($bracket) {
-
+                $message = new stdClass;
                 $cache = Lib\Cache::getInstance();
                 $cacheKey = 'Controller::Admin::Advance_bracketAdvanceTime_' . $bracket->id;
                 $lastBracketAdvance = $cache->get($cacheKey);
                 if (!$lastBracketAdvance || $lastBracketAdvance + self::BRACKET_ADVANCE_DELAY < time()) {
                     $cache->set($cacheKey, time());
-                    $bracket->advance();
-                    $message = new stdClass;
-                    $message->type = 'success';
-                    $message->message = $bracket->name . ' has advanced to the next round';
-                    self::_refreshCaches($bracket);
+                    try {
+                        $bracket->advance();
+                        $message->type = 'success';
+                        $message->message = $bracket->name . ' has advanced to the next round';
+                        self::_refreshCaches($bracket);
+                    } catch (Exception $exc) {
+                        $message->type = 'error';
+                        $message->message = $exc->message;
+                    }
                 } else {
-                    $message = new stdClass;
                     $message->type = 'error';
                     $delta = $lastBracketAdvance + self::BRACKET_ADVANCE_DELAY - time();
                     $time = Lib\Util::relativeTime(time() - $delta);
