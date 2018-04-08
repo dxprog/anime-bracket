@@ -73,8 +73,16 @@ export default Route(SINGLETON_NAME,{
       } else {
         if (lastRound.entrant1.votes > lastRound.entrant2.votes) {
           winner = { entrant: lastRound.entrant1 };
-        } else {
+        } else if (lastRound.entrant1.votes < lastRound.entrant2.votes) {
           winner = { entrant: lastRound.entrant2 };
+        } else {
+          // In a tie scenario, use seed to determine winner.
+          winner = {
+            entrant: (
+              lastRound.entrant1.seed < lastRound.entrant2.seed ?
+                lastRound.entrant1 : lastRound.entrant2
+            )
+          }
         }
       }
       winner.height = bracketHeight;
