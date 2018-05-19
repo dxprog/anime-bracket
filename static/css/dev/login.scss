@@ -26,6 +26,11 @@
     color: #fff;
   }
 
+  p.error {
+    color: get-color(red);
+    margin-bottom: spacing(4);
+  }
+
   .read-only {
     display: block;
     margin-top: 40px;

@@ -82,8 +82,8 @@ namespace Api {
             $user->name = $data->name;
             $user->age = (int) $data->created;
             $user->ip = $_SERVER['REMOTE_ADDR'];
-            if ($user->sync()) {
-              $retVal = true;
+            if (!$user->sync()) {
+              $user = null;
             }
           } else {
 
@@ -92,10 +92,16 @@ namespace Api {
               $user->age = (int) $data->created;
               $user->sync();
             }
-            $retVal = true;
           }
 
-          Lib\Session::set('user', $user);
+          // Save the login attempt before verifying attempt count
+          self::_logLoginAttempt($user->id);
+
+          // Now verify the count
+          if ($user && self::_verifyLoginAttempts($user->id)) {
+            Lib\Session::set('user', $user);
+            $retVal = true;
+          }
         }
       }
 
@@ -113,6 +119,44 @@ namespace Api {
       }
 
       return $retVal;
+    }
+
+    /**
+     * Logs a login attempt to the database
+     */
+    private static function _logLoginAttempt($userId) {
+      $params = [
+        'userId' => $userId,
+        'date' => time(),
+        'ip' => $_SERVER['REMOTE_ADDR']
+      ];
+
+      return Lib\Db::Query(
+        'INSERT INTO `logins` (`user_id`, `login_date`, `login_ip`) VALUES (:userId, :date, :ip)',
+        $params
+      );
+    }
+
+    /**
+     * Verifies that the user trying to login can do so given
+     * the number of users per IP limitation
+     */
+    private static function _verifyLoginAttempts($userId) {
+      $params = [
+        'userId' => $userId,
+        // Attempts within the last 24 hours
+        'date' => time() - 86400,
+        'ip' => $_SERVER['REMOTE_ADDR']
+      ];
+
+      // Find all login attempts that aren't this user
+      $result = Lib\Db::Query(
+        'SELECT user_id FROM `logins` WHERE `user_id` != :userId AND login_ip=:ip AND login_date >= :date',
+        $params
+      );
+
+      // If the returned count is over the amount allowed (minus the currently logged in user), no es beuno
+      return $result->count < MAX_USERS_SHARING_IP;
     }
 
   }

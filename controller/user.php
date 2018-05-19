@@ -29,23 +29,30 @@ namespace Controller {
                     header('Location: ' . $redirect);
                     exit;
                 } else {
-                    Lib\Display::addKey('content', 'We were unable to verify your account at this time or your account age does not meet the requirements.');
+                    $obj = self::_loginPage();
+                    $obj->error = 'We were unable to verify your account at this time or your account does not meet the requirements.';
+                    Lib\Display::renderAndAddKey('content', 'login', $obj);
                 }
             } else {
-                $obj = new stdClass;
-                $obj->loginUrl = Api\User::getLoginUrl(Lib\Url::Get('redirect'));
-
-                // Do a mobile check
-                if (preg_match('/iphone|android|windows phone/i', $_SERVER['HTTP_USER_AGENT'])) {
-                    $obj->loginUrl = str_replace('authorize', 'authorize.compact', $obj->loginUrl);
-                }
-
-                $obj->originalUrl = Lib\Url::Get('redirect');
-                Lib\Display::addKey('page', 'login');
-                Lib\Display::addKey('title', 'Login' . DEFAULT_TITLE_SUFFIX);
+                $obj = self::_loginPage();
                 Lib\Display::renderAndAddKey('content', 'login', $obj);
             }
 
+        }
+
+        private static function _loginPage() {
+            $obj = new stdClass;
+            $obj->loginUrl = Api\User::getLoginUrl(Lib\Url::Get('redirect'));
+
+            // Do a mobile check
+            if (preg_match('/iphone|android|windows phone/i', $_SERVER['HTTP_USER_AGENT'])) {
+                $obj->loginUrl = str_replace('authorize', 'authorize.compact', $obj->loginUrl);
+            }
+
+            $obj->originalUrl = Lib\Url::Get('redirect');
+            Lib\Display::addKey('page', 'login');
+            Lib\Display::addKey('title', 'Login' . DEFAULT_TITLE_SUFFIX);
+            return $obj;
         }
 
     }

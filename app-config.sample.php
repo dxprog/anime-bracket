@@ -34,3 +34,6 @@ define('VIEW_PATH', '/var/www/brakkit/views');
 
 // ID of a bracket to be featured on the landing page
 define('LANDING_FEATURE_BRACKET', 1);
+
+// The maximum number of users that can be logged in under the same IP
+define('MAX_USERS_SHARING_IP', 5);
