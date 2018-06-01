@@ -14,8 +14,7 @@ namespace Api {
       'name' => 'user_name',
       'admin' => 'user_admin',
       'ip' => 'user_ip',
-      'age' => 'user_age',
-      'nextVerifyDate' => 'user_next_verify_date'
+      'age' => 'user_age'
     ];
 
     public $id = 0;
@@ -23,7 +22,6 @@ namespace Api {
     public $admin = false;
     public $ip;
     public $age;
-    private $nextVerifyDate;
 
     public function __construct($row = null) {
       parent::__construct($row);
