@@ -13,6 +13,7 @@ namespace Controller {
                 Lib\Display::addKey('title', $bracket->name . ' Entrants' . DEFAULT_TITLE_SUFFIX);
                 $hasSource = $bracket->hasSourceLabel();
                 $hasSeed = $bracket->state == BS_VOTING || $bracket->state == BS_FINAL;
+                Lib\Display::addKey('bracketNav', $bracket);
                 $content = Lib\Display::renderAndAddKey('content', 'characters', (object) [
                     'bracket' => $bracket,
                     'characters' => Api\Character::getByBracketId($bracket->id),

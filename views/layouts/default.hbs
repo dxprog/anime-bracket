@@ -8,6 +8,9 @@
     </head>
     <body id="page-{{page}}">
         {{>_nav}}
+        {{#if bracketNav}}
+            {{>_bracketNav bracket=bracketNav}}
+        {{/if}}
         <div id="content">
             {{{content}}}
 

@@ -1,27 +1,15 @@
 @import "globals";
 
 #page-results {
-
   margin: 0;
-
-  #nav-header {
-    box-sizing: border-box;
-    position: fixed;
-    width: 100%;
-  }
 
   h1 {
     display: none;
   }
 
-  #content {
-    padding: spacing(20) 0 0;
-  }
-
   footer {
     display: none;
   }
-
 }
 
 $voted-dot-radius: 10px;
@@ -31,16 +19,11 @@ $ENTRANT_SPACING: 25px;
 $ENTRANT_AFTER: 18px;
 
 .results {
-
   position: relative;
   z-index: $BASE-INDEX + 1;
 
   header {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    right: 0;
-    z-index: 9001;
+    padding-bottom: spacing(6);
 
     .title {
       @include restyle(subheading);
@@ -54,10 +37,11 @@ $ENTRANT_AFTER: 18px;
       background: #fff;
       list-style: none;
       width: 200px;
-      margin: 0 auto;
       box-shadow: 0 2px 2px rgba(0, 0, 0, .25);
-      position: relative;
+      position: absolute;
       z-index: 9002;
+      left: 50%;
+      transform: translateX(-50%);
 
       &:after {
         content: '';
@@ -115,8 +99,12 @@ $ENTRANT_AFTER: 18px;
     margin-top: 60px;
   }
 
+  .bracket-display-wrapper {
+    overflow-x: scroll;
+  }
+
   .bracket-display {
-    margin: 100px auto 0;
+    margin: 0 auto;
   }
 
   .tier {

@@ -22,6 +22,7 @@ namespace Controller {
                     'bracket' => $bracket
                 ];
                 Lib\Display::addKey('page', 'nominate');
+                Lib\Display::addKey('bracketNav', $bracket);
                 Lib\Display::renderAndAddKey('content', 'nominate', $out);
             }
         }

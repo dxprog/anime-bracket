@@ -113,3 +113,30 @@ $NAV_BG: #1b1e24;
   }
 
 }
+
+.bracket-nav {
+  background: rgba($NAV_BG, .75);
+  display: flex;
+  justify-content: space-around;
+
+  &__list {
+    display: flex;
+  }
+
+  &__item {
+    padding: spacing(4);
+  }
+
+  &__link {
+    font: 18px/1 Roboto, sans-serif;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  // Since none of the extra pages are mobile optimized, hide the
+  // secondary nav for mobile users until I probably rewrite the
+  // entire damn site...
+  @media screen and (max-width: $MOBILE-WIDTH) {
+    display: none;
+  }
+}
