@@ -25,6 +25,12 @@ $NAV_BG: #1b1e24;
       padding: 4px 15px 0;
       @include font-light();
       color: #fff;
+
+      &.user-divider:before {
+        content: '|';
+        position: relative;
+        left: -15px;
+      }
     }
   }
 
@@ -92,6 +98,15 @@ $NAV_BG: #1b1e24;
         display: block;
         font-size: 18px;
         padding: 10px 0;
+
+        &.user-divider {
+          border-top: 1px solid #fff;
+          margin-top: 5px;
+          padding-top: 15px;
+          &:before {
+            display: none;
+          }
+        }
       }
     }
 
