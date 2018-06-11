@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/",
+    "noImplicitAny": true,
+    "lib": [ "dom", "es2015.promise", "es5" ],
+    "target": "es5",
+    "inlineSources": true,
+    "inlineSourceMap": true,
+    "declaration": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "typeRoots": [ "node_modules/@types", "./typings" ]
+  },
+  "files": [
+    "./static/js/index.ts"
+  ]
+}
