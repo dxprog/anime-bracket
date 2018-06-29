@@ -21,6 +21,11 @@ namespace Api {
     public $name;
     public $admin = false;
     public $ip;
+
+    /**
+     * Reddit registration date of the account.
+     * If 0, user is banned.
+     */
     public $age;
 
     public function __construct($row = null) {
@@ -95,8 +100,12 @@ namespace Api {
           // Save the login attempt before verifying attempt count
           self::_logLoginAttempt($user->id);
 
-          // Now verify the count
-          if ($user && self::_verifyLoginAttempts($user->id)) {
+          // Now verify that the user isn't banned and hasn't tried logging in too much
+          if (
+            $user &&
+            $user->age > 0 &&
+            self::_verifyLoginAttempts($user->id)
+          ) {
             Lib\Session::set('user', $user);
             $retVal = true;
           }
