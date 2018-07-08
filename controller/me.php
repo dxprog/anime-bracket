@@ -124,6 +124,7 @@ namespace Controller {
                     $bracket->showStats = $bracket->state == BS_VOTING || $bracket->state == BS_FINAL;
                     $bracket->showEdit = $bracket->state != BS_FINAL;
                     $bracket->showDelete = $bracket->showEdit;
+                    $bracket->isSiteAdmin = self::$_user->admin;
                 }
 
             }

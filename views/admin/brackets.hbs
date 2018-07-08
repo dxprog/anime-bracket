@@ -68,9 +68,11 @@
                 </li>
               {{/if}}
               {{#if showAdvance}}
-                <li>
-                  <a href="/me/rollback/{{perma}}">Rollback Bracket</a>
-                </li>
+                {{#if isSiteAdmin}}
+                  <li>
+                    <a href="/me/rollback/{{perma}}">Rollback Bracket</a>
+                  </li>
+                {{/if}}
               {{/if}}
               {{#if showStats}}
                 <li>
@@ -81,17 +83,17 @@
                 <li>
                   <a href="/me/users/{{perma}}/">Manage Admins</a>
                 </li>
+                {{#if isSiteAdmin}}
+                  <li>
+                    <a href="/me/normalize/{{perma}}">Normalize Bracket</a>
+                  </li>
+                {{/if}}
               {{/unless}}
               {{#isBracketEliminations .}}
                 <li>
                   <a href="/me/counts/{{perma}}/">Current Vote Counts</a>
                 </li>
               {{/isBracketEliminations}}
-              {{#unless isFinal}}
-                <li>
-                  <a href="/me/normalize/{{perma}}">Normalize Bracket</a>
-                </li>
-              {{/unless}}
               <li>
                 <a href="/me/hide/{{perma}}/">{{#if hidden}}Unhide{{else}}Hide{{/if}} Bracket</a>
               </li>
