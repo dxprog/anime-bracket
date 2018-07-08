@@ -95,5 +95,26 @@ namespace Lib {
 			return $retVal;
 		}
 
+        /**
+         * Do bulk insert/update using transaction for faster processing
+         * @param $transactions
+         */
+		public static function BulkQuery($transactions)
+        {
+            self::$_conn->beginTransaction();
+            try {
+                foreach ($transactions as $transaction) {
+                    $sql = $transaction[0];
+                    $params = $transaction[1];
+
+                    $comm = self::$_conn->prepare($sql);
+                    $comm->execute($params);
+                }
+                self::$_conn->commit();
+            } catch (\Exception $e) {
+                self::$_conn->rollback();
+            }
+        }
+
 	}
 }
