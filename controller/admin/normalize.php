@@ -22,7 +22,7 @@ namespace Controller\Admin {
 
                 $bracketResults = $bracket->getResults(true);
                 foreach ($bracketResults as $results) {
-                    if (isset($results[0]->filler)) {
+                    if (isset($results[0]->filler) || $results[0]->tier < 1) {
                         break;
                     }
 
@@ -33,7 +33,7 @@ namespace Controller\Admin {
                     for ($i = 0, $count = count($results); $i < $count; $i += 2) {
                         $round = $results[$i];
 
-                        if (!isset($round->filler) && $round->final) {
+                        if (!isset($round->filler) && ($round->final || $round->dateEnded)) {
                             $query = Lib\Db::Query("SELECT round_id FROM `round` WHERE
                                     bracket_id = :bracketId AND
                                     round_tier = :tier AND
