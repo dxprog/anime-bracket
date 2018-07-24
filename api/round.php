@@ -150,10 +150,10 @@ namespace Api {
                         $retVal = self::getBracketRounds($bracketId, $tier, false, $ignoreCache);
                         $result = null;
                     } else {
-                        $result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE user_id = :userId AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier AND r.round_group = :group ORDER BY r.round_order', $params);
+                        $result = Lib\Db::Query('CALL proc_GetBracketRounds(:bracketId, :tier, :group, :userId)', $params);
                     }
                 } else {
-                    $result = Lib\Db::Query('SELECT *, (SELECT character_id FROM votes WHERE user_id = :userId AND round_id = r.round_id) AS user_vote FROM round r WHERE r.bracket_id = :bracketId AND r.round_tier = :tier ORDER BY r.round_order', $params);
+                    $result = Lib\Db::Query('CALL proc_GetBracketRounds(:bracketId, :tier, NULL, :userId)', $params);
                 }
 
                 if ($result && $result->count > 0) {
@@ -177,6 +177,8 @@ namespace Api {
 
                         $retVal[] = $round;
                     }
+
+                    $result->comm->closeCursor();
 
                     // Retrieve the characters
                     $result = Character::query([ 'id' => [ 'in' => array_keys($characters) ] ]);
@@ -205,6 +207,7 @@ namespace Api {
                     }
 
                 }
+
                 $cache->set($cacheKey, $retVal);
             }
 
@@ -214,10 +217,13 @@ namespace Api {
 
         public static function getBracketFinalRoundTitles(Bracket $bracket) {
             $retVal = null;
-            $result = Lib\Db::Query(
-                'SELECT `round_tier`, `round_group` FROM `round` WHERE `bracket_id` = :bracketId AND `round_final` = 1 GROUP BY `round_tier`, `round_group`',
-                [ ':bracketId' =>  $bracket->id ]
-            );
+            $result = self::createQuery()
+                ->select([ 'tier', 'group' ])
+                ->where('bracketId', $bracket->id)
+                ->where('final', 1)
+                ->groupBy([ 'tier', 'group' ])
+                ->execute();
+
             if ($result && count($result)) {
                 $retVal = [];
                 while ($row = Lib\Db::Fetch($result)) {
@@ -234,8 +240,13 @@ namespace Api {
 
         public static function getRoundsByTier($bracketId, $tier) {
             $retVal = null;
-            $params = array( ':bracketId' => $bracketId, ':tier' => $tier );
-            $result = Lib\Db::Query('SELECT * FROM round WHERE bracket_id = :bracketId AND round_tier = :tier ORDER BY round_tier, round_group, round_order', $params);
+            $result = self::createQuery()
+                ->where('bracketId', $bracketId)
+                ->where('tier', $tier)
+                ->orderBy('tier')
+                ->orderBy('group')
+                ->orderBy('order')
+                ->execute();
             if ($result && $result->count > 0) {
                 $retVal = [];
                 while ($row = Lib\Db::Fetch($result)) {
@@ -251,7 +262,14 @@ namespace Api {
         public static function getRoundsByGroup($bracketId, $tier, $group) {
             $retVal = null;
             $params = array( ':bracketId' => $bracketId, ':tier' => $tier, ':group' => $group );
-            $result = Lib\Db::Query('SELECT * FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_group = :group ORDER BY round_tier, round_group, round_order', $params);
+            $result = self::createQuery()
+                ->where('bracketId', $bracketId)
+                ->where('tier', $tier)
+                ->where('group', $group)
+                ->orderBy('tier')
+                ->orderBy('group')
+                ->orderBy('order')
+                ->execute();
             if ($result && $result->count > 0) {
                 $retVal = [];
                 while ($row = Lib\Db::Fetch($result)) {
@@ -269,7 +287,12 @@ namespace Api {
          */
         public static function getRoundCountForTier(Bracket $bracket, $tier) {
             return Lib\Cache::getInstance()->fetch(function() use ($bracket, $tier) {
-                $row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE round_tier = :tier AND bracket_id = :bracketId', [ ':tier' => $tier, ':bracketId' => $bracket->id ]));
+                $result = self::createQuery()
+                    ->count('total')
+                    ->where('tier', $tier)
+                    ->where('bracketId', $bracket->id)
+                    ->execute();
+                $row = Lib\Db::Fetch($result);
                 return (int) $row->total;
             }, 'Api:Round:getRoundCountForTier_' . $bracket->id . '_' . $tier);
         }
@@ -282,15 +305,10 @@ namespace Api {
             $retVal = false;
 
             $params = array( ':bracketId' => $bracketId );
-            $result = Lib\Db::Query('SELECT MIN(round_tier) AS tier FROM `round` WHERE bracket_id = :bracketId AND round_final = 0', $params);
+            $result = Lib\Db::Query('CALL proc_GetBracketActiveGroupTier(:bracketId)', $params);
             if ($result && $result->count > 0) {
                 $row = Lib\Db::Fetch($result);
-                $params[':tier'] = $row->tier;
-                $result = Lib\Db::Query('SELECT MIN(round_group) AS `group` FROM `round` WHERE bracket_id = :bracketId AND round_tier = :tier AND round_final = 0', $params);
-                if ($result && $result->count > 0) {
-                    $row = Lib\Db::Fetch($result);
-                    $retVal = self::getBracketRounds($bracketId, $params[':tier'], $row->group, $ignoreCache);
-                }
+                $retVal = self::getBracketRounds($bracketId, $row->round_tier, $row->round_group, $ignoreCache);
             }
 
             return $retVal;

@@ -199,7 +199,10 @@ namespace Api {
                     if ($user->admin) {
                         $retVal = self::getAll(false, true);
                     } else {
-                        $result = Lib\Db::Query('SELECT * FROM bracket WHERE bracket_source = :source AND bracket_id IN (SELECT bracket_id FROM bracket_owners WHERE user_id = :userId)', [ ':source' => BRACKET_SOURCE, ':userId' => $user->id ]);
+                        $result = Lib\Db::Query('CALL proc_GetUserBrackets(:source, :userId)', [
+                            ':source' => BRACKET_SOURCE,
+                            ':userId' => $user->id
+                        ]);
                         if ($result && $result->count) {
                             $retVal = [];
                             while ($row = Lib\Db::Fetch($result)) {
@@ -224,10 +227,8 @@ namespace Api {
             $cacheKey = 'Api:Bracket:getBracketByPerma_' . $perma;
             $retVal = $cache->get($cacheKey);
             if (false === $retVal || $force) {
-                $result = Lib\Db::Query('SELECT * FROM `bracket` WHERE `bracket_perma` = :perma', [ ':perma' => $perma ]);
-                if ($result && $result->count) {
-                    $retVal = new Bracket(Lib\Db::Fetch($result));
-                }
+                $result = self::queryReturnAll([ 'perma' => $perma ]);
+                $retVal = $result && count($result) ? $result[0] : null;
                 $cache->set($cacheKey, $retVal);
             }
             return $retVal;
@@ -243,8 +244,11 @@ namespace Api {
 
                 $retVal = [];
 
-                // Calculate the number of tiers in the bracket
-                $row = Lib\Db::Fetch(Lib\Db::Query('SELECT SUM(CASE WHEN round_tier = 1 THEN 1 ELSE 0 END) AS total, MAX(round_tier) AS max_tier, MAX(round_group) AS max_group FROM round WHERE bracket_id = :bracketId AND round_tier > 0', [ ':bracketId' => $this->id ]));
+                // Calculate the number of tiers in the bracketbracket
+                $row = Lib\Db::Fetch(
+                    Lib\Db::Query('CALL proc_GetBracketRoundInfo(:bracketId)',
+                    [ 'bracketId' => $this->id ]
+                ));
                 $groups = 1 + (int) $row->max_group;
                 $baseRounds = (int) $row->total;
 
@@ -391,18 +395,8 @@ namespace Api {
          * Advances the elmination round to the next group or the bracket proper
          */
         private function _advanceEliminations() {
-
             // Get a list of rounds not yet completed
-            $result = Lib\Db::Query('SELECT MIN(round_group) AS current_group FROM `round` WHERE bracket_id = :bracketId AND round_final != 1 ORDER BY round_group', [ ':bracketId' => $this->id ]);
-            if ($result && $result->count) {
-                $row = Lib\Db::Fetch($result);
-                Lib\Db::Query('UPDATE `round` SET round_final = 1, round_end_date = :dateEnded WHERE bracket_id = :bracketId AND round_group = :group', [
-                    ':bracketId' => $this->id,
-                    ':group' => $row->current_group,
-                    ':dateEnded' => time()
-                ]);
-            }
-
+            $result = Lib\Db::Query('CALL proc_AdvanceEliminationRound(:bracketId)', [ ':bracketId' => $this->id ]);
         }
 
         /**
@@ -618,7 +612,10 @@ namespace Api {
             $permaOkay = false;
             $counter = 0;
             while (!$permaOkay) {
-                $result = Lib\Db::Query('SELECT bracket_id FROM `bracket` WHERE `bracket_perma` = :perma', [ ':perma' => $perma ]);
+                $this->createQuery()
+                    ->select('id')
+                    ->where('perma', $perma)
+                    ->execute();
                 if ($result && $result->count) {
                     $counter++;
                     $perma = $this->perma . '-' . $counter;
