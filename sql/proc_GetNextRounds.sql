@@ -13,21 +13,16 @@ BEGIN
     DECLARE lastRoundInCurrentGroup INT;
 
     SELECT
-        MIN(round_tier) INTO currentTier
+        `round_tier`, `round_group` INTO currentTier, currentGroup
     FROM
         `round`
     WHERE
         `bracket_id` = bracketId
-        AND `round_final` = 0;
-
-    SELECT
-        MIN(round_group) INTO currentGroup
-    FROM
-        `round`
-    WHERE
-        `bracket_id` = bracketId
-        AND `round_tier` = currentTier
-        AND `round_final` = 0;
+        AND `round_final` = 0
+        AND `round_deleted` = 0
+    ORDER BY
+        `round_tier` ASC,
+        `round_group` ASC;
 
     SELECT
         MAX(round_id) INTO lastRoundInCurrentGroup
@@ -37,7 +32,8 @@ BEGIN
         `bracket_id` = bracketId
         AND `round_tier` = currentTier
         AND `round_group` = currentGroup
-        AND `round_final` = 0;
+        AND `round_final` = 0
+        AND `round_deleted` = 0;
 
     SELECT
         MIN(`round_tier`) AS nextTier,
@@ -49,6 +45,7 @@ BEGIN
         `bracket_id` = bracketId
         AND `round_final` = 0
         AND `round_id` > lastRoundInCurrentGroup
+        AND `round_deleted` = 0
     GROUP BY
         `round_group`,
         `round_tier`

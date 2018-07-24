@@ -16,7 +16,9 @@ BEGIN
     `round`
   WHERE
     `bracket_id` = bracketId AND
-    `round_final` != 1;
+    `round_final` != 1 AND
+    `round_deleted` = 0;
+
 
   UPDATE
     `round`

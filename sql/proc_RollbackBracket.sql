@@ -13,8 +13,10 @@ CREATE PROCEDURE `proc_RollbackBracket` (
 BEGIN
 
   /* Delete rounds in the next tier after (and including) the group to roll back to and all tiers after that */
-  DELETE FROM
+  UPDATE
     `round`
+  SET
+    `round_deleted` = 1
   WHERE
     `bracket_id` = bracketId
     AND (
@@ -35,6 +37,7 @@ BEGIN
     `round_end_date` = NULL
   WHERE
     `bracket_id` = bracketId
+    AND `round_deleted` = 0
     AND (
       (
         `round_tier` = roundTier
@@ -55,13 +58,16 @@ BEGIN
       WHERE
         `bracket_id` = bracketId
         AND `round_final` = 0
+        AND `round_deleted` = 0
     );
 
   /* If rolling back to an eliminations round, kill any actual bracket setup */
   IF roundTier = 0 THEN
     BEGIN
-      DELETE FROM
+      UPDATE
         `round`
+      SET
+        `round_deleted` = 1
       WHERE
         `bracket_id` = bracketId
         AND `round_tier` > 0;

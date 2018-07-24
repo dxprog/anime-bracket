@@ -18,6 +18,7 @@ BEGIN
     `round`
   WHERE
     `bracket_id` = bracketId AND
-    `round_tier` > 0;
+    `round_tier` > 0 AND
+    `round_deleted` = 0;
 
 END //

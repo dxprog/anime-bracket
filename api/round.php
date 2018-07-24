@@ -21,7 +21,8 @@ namespace Api {
             'character2Id' => 'round_character2_id',
             'character2Votes' => 'round_character2_votes',
             'final' => 'round_final',
-            'dateEnded' => 'round_end_date'
+            'dateEnded' => 'round_end_date',
+            'deleted' => 'round_deleted'
         );
 
         /**
@@ -110,12 +111,18 @@ namespace Api {
         public $dateEnded = null;
 
         /**
+         * Has this round been "deleted"
+         */
+        public $deleted = false;
+
+        /**
          * Constructor
          */
         public function __construct($round = null) {
             if (is_object($round)) {
                 parent::copyFromDbRow($round);
                 $this->final = isset($round->round_final) && $round->round_final > 0;
+                $this->deleted = isset($round->round_deleted) && $round->round_deleted > 0;
                 if (isset($round->user_vote)) {
                     $this->voted = $round->user_vote > 0;
                     $this->votedCharacterId = (int) $round->user_vote;
@@ -145,7 +152,14 @@ namespace Api {
                     $params[':group'] = $group;
 
                     // Check to see how many rounds there are in the group total. If there's only one, come back and get them all
-                    $row = Lib\Db::Fetch(Lib\Db::Query('SELECT COUNT(1) AS total FROM round WHERE bracket_id = :bracketId AND round_tier = :tier AND round_group = :group', [ ':bracketId' => $bracketId, ':tier' => $tier, ':group' => $group ]));
+                    $result = self::createQuery()
+                        ->count('total')
+                        ->where('bracketId', $bracketId)
+                        ->where('tier', $tier)
+                        ->where('group', $group)
+                        ->where('deleted', 0)
+                        ->execute();
+                    $row = Lib\Db::Fetch($result);
                     if (is_object($row) && (int)$row->total == 1) {
                         $retVal = self::getBracketRounds($bracketId, $tier, false, $ignoreCache);
                         $result = null;
@@ -221,6 +235,7 @@ namespace Api {
                 ->select([ 'tier', 'group' ])
                 ->where('bracketId', $bracket->id)
                 ->where('final', 1)
+                ->where('deleted', 0)
                 ->groupBy([ 'tier', 'group' ])
                 ->execute();
 
@@ -243,6 +258,7 @@ namespace Api {
             $result = self::createQuery()
                 ->where('bracketId', $bracketId)
                 ->where('tier', $tier)
+                ->where('deleted', 0)
                 ->orderBy('tier')
                 ->orderBy('group')
                 ->orderBy('order')
@@ -266,6 +282,7 @@ namespace Api {
                 ->where('bracketId', $bracketId)
                 ->where('tier', $tier)
                 ->where('group', $group)
+                ->where('deleted', 0)
                 ->orderBy('tier')
                 ->orderBy('group')
                 ->orderBy('order')
@@ -290,6 +307,7 @@ namespace Api {
                 $result = self::createQuery()
                     ->count('total')
                     ->where('tier', $tier)
+                    ->where('deleted', 0)
                     ->where('bracketId', $bracket->id)
                     ->execute();
                 $row = Lib\Db::Fetch($result);

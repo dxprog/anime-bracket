@@ -36,6 +36,7 @@ namespace Lib {
         throw new Error('Invalid COUNT field name: "' . $fieldName . '"');
       }
       $this->_countField = $fieldName;
+      return $this;
     }
 
     public function where($field, $condition) {
