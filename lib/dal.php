@@ -289,6 +289,11 @@ namespace Lib {
             return $obj;
         }
 
+        public static function createQuery() {
+            $obj = self::_instantiateThisObject();
+            return new Query($obj->_dbTable, $obj->_dbMap, $obj->_dbPrimaryKey);
+        }
+
         /**
          * Gets a record from the database by the primary key
          */
