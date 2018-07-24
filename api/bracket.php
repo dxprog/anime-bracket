@@ -692,21 +692,7 @@ namespace Api {
          */
         public function getFinalScore() {
             $retVal = 0;
-            $excludeEliminationsQuery = Round::createQuery()
-                ->select('id')
-                ->where('bracketId', $this->id)
-                ->where('tier', 0)
-                ->where('deleted', 0)
-                ->build()
-                ->sql;
-            $roundCountQuery = Round::createQuery()
-                ->count('total')
-                ->where('bracketId', $this->id)
-                ->where('tier', [ 'gt' => 0 ])
-                ->where('deleted', 0)
-                ->build()
-                ->sql;
-            $result = Lib\Db::Query('SELECT COUNT(1) / (' . $roundCountQuery . ') AS total FROM `votes` WHERE `bracket_id`=:bracketId AND round_id NOT IN (' . $excludeEliminationsQuery . ')', [ ':bracketId' => $this->id ]);
+            $result = Lib\Db::Query('CALL proc_GetBracketFinalScore(:bracketId)', [ 'bracketId' => $this->id ]);
             if ($result && $result->count) {
                 $retVal = Lib\Db::Fetch($result);
                 $retVal = $retVal->total;
