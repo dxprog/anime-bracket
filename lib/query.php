@@ -135,7 +135,7 @@ namespace Lib {
 
       if (count($this->_fields)) {
         $query .= '`' . implode('`,`', $this->_fields) . '`';
-      } else {
+      } else if (!$this->_countField) {
         $query .= '*';
       }
 

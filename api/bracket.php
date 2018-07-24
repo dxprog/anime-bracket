@@ -325,8 +325,8 @@ namespace Api {
             if ($user instanceof User) {
                 $cacheKey = 'Api:Bracket:getVotesForUser_' . $this->id . '_' . $user->id;
                 $retVal = Lib\Cache::getInstance()->fetchLongCache(function() use ($user) {
-                    $params = [ ':userId' => $user->id, ':bracketId' => $this->id ];
-                    $result = Lib\Db::Query('SELECT round_id, character_id FROM votes WHERE user_id = :userId AND bracket_id = :bracketId', $params);
+                    $params = [ 'userId' => $user->id, 'bracketId' => $this->id ];
+                    $result = Lib\Db::Query('CALL proc_GetBracketVotesForUser(:bracketId, :userId)', $params);
                     $retVal = [];
                     if ($result && $result->count) {
                         while ($row = Lib\Db::Fetch($result)) {
@@ -692,8 +692,20 @@ namespace Api {
          */
         public function getFinalScore() {
             $retVal = 0;
-            $excludeEliminationsQuery = 'SELECT `round_id` FROM `round` WHERE `bracket_id`=:bracketId AND `round_tier` = 0';
-            $roundCountQuery = 'SELECT COUNT(1) FROM `round` WHERE `bracket_id`=:bracketId AND `round_tier` > 0';
+            $excludeEliminationsQuery = Round::createQuery()
+                ->select('id')
+                ->where('bracketId', $this->id)
+                ->where('tier', 0)
+                ->where('deleted', 0)
+                ->build()
+                ->sql;
+            $roundCountQuery = Round::createQuery()
+                ->count('total')
+                ->where('bracketId', $this->id)
+                ->where('tier', [ 'gt' => 0 ])
+                ->where('deleted', 0)
+                ->build()
+                ->sql;
             $result = Lib\Db::Query('SELECT COUNT(1) / (' . $roundCountQuery . ') AS total FROM `votes` WHERE `bracket_id`=:bracketId AND round_id NOT IN (' . $excludeEliminationsQuery . ')', [ ':bracketId' => $this->id ]);
             if ($result && $result->count) {
                 $retVal = Lib\Db::Fetch($result);

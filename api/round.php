@@ -146,10 +146,10 @@ namespace Api {
             $cacheKey = 'GetBracketRounds_' . $bracketId . '_' . $tier . '_' . ($group !== false ? $group : 'all') . '_' . $user->id;
             $retVal = $cache->get($cacheKey);
             if (false === $retVal || $ignoreCache) {
-                $params = [ ':bracketId' => $bracketId, ':tier' => $tier, ':userId' => $user->id ];
+                $params = [ 'bracketId' => $bracketId, 'tier' => $tier, 'userId' => $user->id ];
 
                 if (false !== $group) {
-                    $params[':group'] = $group;
+                    $params['group'] = $group;
 
                     // Check to see how many rounds there are in the group total. If there's only one, come back and get them all
                     $result = self::createQuery()
@@ -277,7 +277,6 @@ namespace Api {
 
         public static function getRoundsByGroup($bracketId, $tier, $group) {
             $retVal = null;
-            $params = array( ':bracketId' => $bracketId, ':tier' => $tier, ':group' => $group );
             $result = self::createQuery()
                 ->where('bracketId', $bracketId)
                 ->where('tier', $tier)
@@ -322,10 +321,11 @@ namespace Api {
 
             $retVal = false;
 
-            $params = array( ':bracketId' => $bracketId );
+            $params = [ 'bracketId' => $bracketId ];
             $result = Lib\Db::Query('CALL proc_GetBracketActiveGroupTier(:bracketId)', $params);
             if ($result && $result->count > 0) {
                 $row = Lib\Db::Fetch($result);
+                $result->comm->closeCursor();
                 $retVal = self::getBracketRounds($bracketId, $row->round_tier, $row->round_group, $ignoreCache);
             }
 
@@ -339,7 +339,7 @@ namespace Api {
         public static function getNextRounds(Bracket $bracket) {
             $retVal = null;
             if ($bracket->state == BS_ELIMINATIONS || $bracket->state == BS_VOTING) {
-                $result = Lib\Db::Query('CALL proc_GetNextRounds(:bracketId)', [ ':bracketId' => $bracket->id ]);
+                $result = Lib\Db::Query('CALL proc_GetNextRounds(:bracketId)', [ 'bracketId' => $bracket->id ]);
                 if ($result && $result->count) {
                     $row = Lib\Db::Fetch($result);
                     $retVal = self::getBracketRounds($bracket->id, $row->nextTier, $row->nextGroup);
@@ -353,7 +353,7 @@ namespace Api {
          */
         public function getWinnerId() {
             $retVal = null;
-            $result = Lib\Db::Query('CALL proc_GetRoundWinner(:roundId)', [ ':roundId' => $this->id ]);
+            $result = Lib\Db::Query('CALL proc_GetRoundWinner(:roundId)', [ 'roundId' => $this->id ]);
             if ($result && $result->count) {
                 $row = Lib\Db::Fetch($result);
                 $retVal = $row->character_id;
@@ -370,7 +370,7 @@ namespace Api {
 
         public function getVoteCount() {
             $retVal = 0;
-            $result = Lib\Db::Query('SELECT COUNT(1) AS total, character_id FROM votes WHERE round_id = :id GROUP BY character_id', [ ':id' => $this->id ]);
+            $result = Lib\Db::Query('CALL proc_GetCharacterVotesForRound(:roundId)', [ 'roundId' => $this->id ]);
             if ($result && $result->count) {
                 while ($row = Lib\Db::Fetch($result)) {
                     if ($row->character_id == $this->character1Id) {
@@ -380,7 +380,7 @@ namespace Api {
                     }
                     $retVal += (int) $row->total;
                 }
-
+                $result->comm->closeCursor();
             }
             return $retVal;
         }
@@ -390,7 +390,7 @@ namespace Api {
             if (is_numeric($bracketId)) {
                 $retVal = Lib\Cache::getInstance()->fetch(function() use ($bracketId) {
                     $retVal = null;
-                    $result = Lib\Db::Query('SELECT COUNT(1) AS total, COUNT(DISTINCT v.user_id) AS user_total, r.round_tier, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId GROUP BY r.round_tier, r.round_group', [ ':bracketId' => $bracketId ]);
+                    $result = Lib\Db::Query('CALL proc_GetBracketVotingStats(:bracketId)', [ 'bracketId' => $bracketId ]);
                     if ($result && $result->count) {
                         $retVal = [];
                         while ($row = Lib\Db::Fetch($result)) {
@@ -415,12 +415,16 @@ namespace Api {
             $count = is_numeric($count) ? $count : 10;
 
             return Lib\Cache::getInstance()->fetch(function() use ($count) {
-
                 $retVal = null;
-
-                $query = 'SELECT * FROM `round` WHERE round_final = 1 AND round_tier > 0 AND round_character2_id > 1 ORDER BY RAND() LIMIT ' . $count;
+                $query = self::createQuery()
+                    ->where('final', 1)
+                    ->where('deleted', 0)
+                    ->where('tier', [ 'gt' => 0 ])
+                    ->where('character2Id', [ 'gt' => 1 ])
+                    ->limit($count)
+                    ->build()
+                    ->sql;
                 return self::_getRoundsAndCharacters($query);
-
             }, 'Round::getRandomCompletedRounds_' . $count, CACHE_LONG * 24);
         }
 
