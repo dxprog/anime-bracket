@@ -511,19 +511,17 @@ namespace Api {
          * Returns an array of characters, their vote counts, and adjusted vote counts
          * for a bracket's elimination round
          */
-        public function getVoteAdjustedEliminationsCharacters($maxDate = 0) {
+        public function getVoteAdjustedEliminationsCharacters($maxDate = false) {
             $retVal = [];
+            $maxDate = $maxDate ?: time();
 
             // Get the max vote counts for each day
-            $query = 'SELECT COUNT(1) AS total, r.round_group FROM votes v INNER JOIN round r ON r.round_id = v.round_id WHERE v.bracket_id = :bracketId';
-            $params = [ ':bracketId' => $this->id ];
-            if ($maxDate > 0) {
-                $query .= ' AND v.vote_date <= :maxDate';
-                $params[':maxDate'] = $maxDate;
-            }
-            $query .= ' GROUP BY r.round_group';
+            $params = [
+                'bracketId' => $this->id,
+                'maxDate' => $maxDate
+            ];
 
-            $result = Lib\Db::Query($query, $params);
+            $result = Lib\Db::Query('CALL proc_GetEliminationVotesForGroups(:bracketId, :maxDate)', $params);
             $groupCounts = [];
             $max = 0;
             while ($row = Lib\Db::Fetch($result)) {
@@ -531,15 +529,13 @@ namespace Api {
                 $groupCounts[(int) $row->round_group] = $votes;
                 $max = $votes > $max ? $votes : $max;
             }
+            $result->comm->closeCursor();
 
-            $query = 'SELECT COUNT(1) AS total, c.*, r.round_group FROM `round` r INNER JOIN `character` c ON c.character_id = r.round_character1_id LEFT OUTER JOIN votes v ON v.character_id = c.character_id WHERE r.round_tier = 0 AND r.bracket_id = :bracketId';
-            $params = [ ':bracketId' => $this->id ];
-            if ($maxDate > 0) {
-                $query .= ' AND v.vote_date <= :maxDate';
-                $params[':maxDate'] = $maxDate;
-            }
-            $query .= ' GROUP BY c.character_id';
-            $result = Lib\Db::Query($query, $params);
+            $params = [
+                'bracketId' => $this->id,
+                'maxDate' => $maxDate
+            ];
+            $result = Lib\Db::Query('CALL proc_GetEliminationGroupsCharacterVotes(:bracketId, :maxDate)', $params);
 
             // Ensure that we have characters and there are at least enough to meet the bracket constraints
             if ($result && $result->count) {
