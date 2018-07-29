@@ -657,14 +657,26 @@ namespace Api {
          * Assigns this bracket to a user
          */
         public function addUser(User $user) {
-            return Lib\Db::Query('INSERT INTO bracket_owners VALUES (:bracketId, :userId)', [ ':bracketId' => $this->id, ':userId' => $user->id ]);
+            return Lib\Db::Query(
+                'CALL proc_AddUserToBracket(:bracketId, :userId)',
+                [
+                    ':bracketId' => $this->id,
+                    ':userId' => $user->id
+                ]
+            );
         }
 
         /**
          * Removes a user's admin privileges from this bracket
          */
         public function removeUser(User $user) {
-          return Lib\Db::Query('DELETE FROM bracket_owners WHERE bracket_id=:bracketId AND user_id=:userId', [ 'bracketId' => $this->id, 'userId' => $user->id ]);
+            return Lib\Db::Query(
+                'CALL proc_RemoveUserFromBracket(:bracketId, :userId)',
+                [
+                    'bracketId' => $this->id,
+                    'userId' => $user->id
+                ]
+            );
         }
 
         /**
@@ -672,13 +684,14 @@ namespace Api {
          */
         public function getUsers() {
           $retVal = [];
-          $result = Lib\Db::Query('SELECT u.* FROM `bracket_owners` bo INNER JOIN `users` u ON u.user_id = bo.user_id WHERE bo.bracket_id=:bracketId', [
+          $result = Lib\Db::Query('CALL proc_GetBracketUsers(:bracketId)', [
             'bracketId' => $this->id
           ]);
           if ($result && $result->count) {
             while ($row = Lib\Db::Fetch($result)) {
               $retVal[] = new User($row);
             }
+            $result->comm->closeCursor();
           }
           return $retVal;
         }
