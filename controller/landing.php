@@ -13,7 +13,8 @@ namespace Controller {
             'state' => [ 'in' => [ BS_ELIMINATIONS, BS_VOTING ] ],
             'hidden' => 0
           ],
-          [ 'score' => 'desc' ], 1);
+          [ 'score' => 'desc' ], 1
+        );
         $featured = $featured[0];
         $featuredCharacters = Api\Character::queryReturnAll([ 'bracketId' => $featured->id, 'seed' => [ 'gt' => 0 ] ], [ 'seed' => 'asc' ], 100);
         usort($featuredCharacters, function($a, $b) {
@@ -36,7 +37,10 @@ namespace Controller {
      * Returns the top five popular completed brackets and their winners
      */
     private static function getPastBrackets() {
-      $pastBrackets = Api\Bracket::queryReturnAll([ 'state' => BS_FINAL ], [ 'score' => 'desc' ], 5);
+      $pastBrackets = Api\Bracket::queryReturnAll([
+        'state' => BS_FINAL,
+        'hidden' => 0
+      ], [ 'score' => 'desc' ], 5);
       $winnerIds = array_map(function($bracket) {
         return $bracket->winnerCharacterId;
       }, $pastBrackets);
@@ -57,7 +61,13 @@ namespace Controller {
      * Gets the top five popular brackets with some characters to represent
      */
     private static function getPopularBrackets() {
-      $topBrackets = Api\Bracket::queryReturnAll([ 'state' => [ 'in' => [ BS_ELIMINATIONS, BS_VOTING ] ] ], [ 'score' => 'desc' ], 6);
+      $topBrackets = Api\Bracket::queryReturnAll(
+        [
+          'state' => [ 'in' => [ BS_ELIMINATIONS, BS_VOTING ] ],
+          'hidden' => 0
+        ],
+        [ 'score' => 'desc' ], 6
+      );
       // Shift off the featured bracket
       array_shift($topBrackets);
 
