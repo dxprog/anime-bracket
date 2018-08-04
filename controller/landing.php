@@ -9,7 +9,10 @@ namespace Controller {
     public static function generate(array $params) {
       $out = Lib\Cache::getInstance()->fetch(function() {
         $featured = Api\Bracket::queryReturnAll(
-          [ 'state' => [ 'in' => [ BS_ELIMINATIONS, BS_VOTING ] ] ],
+          [
+            'state' => [ 'in' => [ BS_ELIMINATIONS, BS_VOTING ] ],
+            'hidden' => 0
+          ],
           [ 'score' => 'desc' ], 1);
         $featured = $featured[0];
         $featuredCharacters = Api\Character::queryReturnAll([ 'bracketId' => $featured->id, 'seed' => [ 'gt' => 0 ] ], [ 'seed' => 'asc' ], 100);
