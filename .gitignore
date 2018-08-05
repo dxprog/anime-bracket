@@ -19,3 +19,4 @@ images/*.jpg
 tests/tests.js
 typings/
 cache/*.jpg
+yarn-error.log
