@@ -1,11 +1,10 @@
-@import "restyle";
-@import "../globals";
-
 @at-root {
 
   $white: get-color(white);
   $black: get-color(black);
   $green: get-color(green);
+
+  $MOBILE-WIDTH: 414px;
 
   html {
     font-family: 'Roboto', sans-serif;

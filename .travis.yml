@@ -6,5 +6,5 @@ node_js:
 before_script:
   - sudo apt-get update -qq
   - sudo apt-get install php5-cli -y
-  - npm install grunt-cli -g
+  - yarn global add grunt-cli
   - php composer-install.php && php composer.phar install && rm composer.phar
