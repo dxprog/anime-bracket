@@ -28,7 +28,18 @@ namespace Controller {
 
                 if ($out) {
                     $out->bracket = $bracket;
+                    $out->showCaptcha = false;
+
                     $template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
+
+                    switch ($bracket->captcha) {
+                        case Api\Bracket::$CAPTCHA_STATUS['RANDOM']:
+                            $out->showCaptcha = rand() > 0.5;
+                            break;
+                        case Api\Bracket::$CAPTCHA_STATUS['ALWAYS']:
+                            $out->showCaptcha = true;
+                            break;
+                    }
 
                     if ($bracket->state != BS_ELIMINATIONS) {
                         $entrantSwap = Lib\TestBucket::get('entrantSwap');

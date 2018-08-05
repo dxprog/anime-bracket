@@ -28,6 +28,7 @@ namespace Controller\Admin {
 
                         $hideSource = Lib\Url::Post('hideSource') === 'on';
                         $bracket->sourceLabel = $hideSource ? 'NO_SOURCE' : Lib\Url::Post('sourceLabel');
+                        $bracket->captcha = Api\Bracket::$CAPTCHA_STATUS[Lib\Url::Post('captcha')];
 
                         $bracket->minAge = Lib\Url::Post('minAge', true);
 
@@ -47,6 +48,9 @@ namespace Controller\Admin {
                 }
 
                 $bracket->sourceHidden = $bracket->sourceLabel === 'NO_SOURCE';
+                $bracket->captchaNever = !$bracket->captcha;
+                $bracket->captchaRandom = $bracket->captcha == Api\Bracket::$CAPTCHA_STATUS['RANDOM'];
+                $bracket->captchaAlways = $bracket->captcha == Api\Bracket::$CAPTCHA_STATUS['ALWAYS'];
                 $bracket->times = self::_generateAdvanceTimes($bracket->advanceHour);
                 $bracket->ages = self::_generateAges($bracket->minAge);
                 Lib\Display::renderAndAddKey('content', 'admin/bracket', $bracket);

@@ -37,3 +37,6 @@ define('LANDING_FEATURE_BRACKET', 1);
 
 // The maximum number of users that can be logged in under the same IP
 define('MAX_USERS_SHARING_IP', 5);
+
+// The reCAPTCHA secret key
+define('RECAPTCHA_SECRET', 'RECAPTCHA_SECRET');

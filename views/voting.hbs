@@ -47,6 +47,13 @@
         {{/each}}
     </ul>
 
+    {{#if showCaptcha}}
+        <div class="captcha">
+            <script src="https://www.google.com/recaptcha/api.js"></script>
+            <div class="g-recaptcha" data-sitekey="6LdLPWgUAAAAAMWUFDYKtMFz0ppFaWI6DbEarLjj"></div>
+        </div>
+    {{/if}}
+
     <input type="hidden" name="bracketId" value="{{bracket.id}}" />
     <button type="submit" class="button">Submit Votes</button>
 </form>

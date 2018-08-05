@@ -16,6 +16,12 @@ namespace Api {
 
     class Bracket extends Lib\Dal {
 
+        public static $CAPTCHA_STATUS = [
+            'NEVER' => 0,
+            'RANDOM' => 1,
+            'ALWAYS' => 2
+        ];
+
         /**
          * Object property to table column map
          */
@@ -36,7 +42,8 @@ namespace Api {
             'externalId' => 'bracket_external_id',
             'minAge' => 'bracket_min_age',
             'hidden' => 'bracket_hidden',
-            'blurb' => 'bracket_blurb'
+            'blurb' => 'bracket_blurb',
+            'captcha' => 'bracket_captcha'
         );
 
         /**
@@ -138,6 +145,11 @@ namespace Api {
          * Short blurb about the bracket
          */
         public $blurb;
+
+        /**
+         * The captcha setting for this bracket
+         */
+        public $captcha;
 
         /**
          * Ints and bools things

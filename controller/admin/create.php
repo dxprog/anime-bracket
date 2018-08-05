@@ -26,6 +26,7 @@ namespace Controller\Admin {
 
                     $hideSource = Lib\Url::Post('hideSource') === 'on';
                     $bracket->sourceLabel = $hideSource ? 'NO_SOURCE' : Lib\Url::Post('sourceLabel');
+                    $bracket->captcha = Api\Bracket::$CAPTCHA_STATUS[Lib\Url::Post('captcha')];
 
                     $advanceHour = Lib\Url::Post('advanceHour', true);
                     if ($advanceHour !== null) {

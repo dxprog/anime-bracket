@@ -39,6 +39,14 @@
     </div>
 
     <div class="input-group">
+      <label for="captcha">Require captcha for voting?</label>
+      <select id="captcha" name="captcha">
+        <option value="NEVER" {{#if captchaNever}}selected{{/if}}>Never</option>
+        <option value="ALWAYS" {{#if captchaAlways}}selected{{/if}}>Always</option>
+      </select>
+    </div>
+
+    <div class="input-group">
       <label for="nameLabel">"Character name" field label:</label>
       <input type="text" id="nameLabel" name="nameLabel" value="{{#if nameLabel}}{{nameLabel}}{{else}}Character name{{/if}}" />
     </div>

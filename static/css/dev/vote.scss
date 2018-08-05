@@ -88,6 +88,12 @@
 
   }
 
+  .captcha {
+    display: flex;
+    justify-content: center;
+    padding: spacing(2) 0 spacing(4);
+  }
+
   .votes-code {
     display: none;
     margin-bottom: 20px;
