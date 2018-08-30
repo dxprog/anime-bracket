@@ -487,11 +487,14 @@ $ENTRANT_AFTER: 18px;
 
   @media screen and (max-width: $MOBILE-WIDTH) {
     top: 60px;
-    margin-top: 50px;
+    margin-top: 20px;
 
-    header .title {
-      font-size: 30px;
-      margin-top: 0;
+    header {
+      padding-bottom: 50px;
+      .title {
+        font-size: 30px;
+        margin-top: 0;
+      }
     }
   }
 
