@@ -23,12 +23,16 @@
           {{totalVotes}}
         </td>
         <td>
-          <a href="#entrant-{{closestRound.character.id}}">
-            {{>_entrantImage character=closestRound.character}}
-            <h4>{{closestRound.character.name}}</h4>
-            <h5>Round {{closestRound.round.tier}}</h5>
-            <h5>{{closestRound.difference}} vote difference</h5>
-          </a>
+          {{#if closestRound}}
+            <a href="#entrant-{{closestRound.character.id}}">
+              {{>_entrantImage character=closestRound.character}}
+              <h4>{{closestRound.character.name}}</h4>
+              <h5>Round {{closestRound.round.tier}}</h5>
+              <h5>{{closestRound.difference}} vote difference</h5>
+            </a>
+          {{else}}
+            N/A
+          {{/if}}
         </td>
         <td>
           {{#if lostTo}}
