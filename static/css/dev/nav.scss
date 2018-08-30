@@ -118,6 +118,7 @@ $NAV_BG: #1b1e24;
   background: rgba($NAV_BG, .75);
   display: flex;
   justify-content: space-around;
+  z-index: 6;
 
   &__list {
     display: flex;

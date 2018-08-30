@@ -7,6 +7,18 @@
     display: none;
   }
 
+  #nav-header,
+  .bracket-nav {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    box-sizing: border-box;
+  }
+
+  .bracket-nav {
+    top: 82px;
+  }
+
   footer {
     display: none;
   }
@@ -20,6 +32,7 @@ $ENTRANT_AFTER: 18px;
 
 .results {
   position: relative;
+  margin-top: 160px;
   z-index: $BASE-INDEX + 1;
 
   header {
@@ -97,10 +110,6 @@ $ENTRANT_AFTER: 18px;
   #content {
     overflow: hidden;
     margin-top: 60px;
-  }
-
-  .bracket-display-wrapper {
-    overflow-x: scroll;
   }
 
   .bracket-display {
