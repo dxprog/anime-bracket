@@ -26,8 +26,8 @@ namespace Controller\Admin {
                         $bracket->nameLabel = Lib\Url::Post('nameLabel');
                         $bracket->blurb = Lib\Url::Post('blurb');
 
-                        $hideSource = Lib\Url::Post('hideSource') === 'on';
-                        $bracket->sourceLabel = $hideSource ? 'NO_SOURCE' : Lib\Url::Post('sourceLabel');
+                        $showSource = Lib\Url::Post('showSource') === 'on';
+                        $bracket->sourceLabel = $showSource ? Lib\Url::Post('sourceLabel') : 'NO_SOURCE';
                         $bracket->captcha = Api\Bracket::$CAPTCHA_STATUS[Lib\Url::Post('captcha')];
 
                         $bracket->minAge = Lib\Url::Post('minAge', true);

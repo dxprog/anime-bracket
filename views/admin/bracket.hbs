@@ -52,8 +52,8 @@
     </div>
 
     <div class="input-group hide-source">
-      <input type="checkbox" name="hideSource" id="hideSource" {{#if sourceHidden}}checked{{/if}} />
-      <label for="hideSource" class="toggle">Show source field?</label>
+      <input type="checkbox" name="showSource" id="showSource" {{#unless sourceHidden}}checked{{/unless}} />
+      <label for="showSource" class="toggle">Show source field?</label>
       <div class="source">
           <label for="sourceLabel">"Source" field label:</label>
           <input type="text" id="sourceLabel" name="sourceLabel" value="{{#if sourceLabel}}{{sourceLabel}}{{else}}Source{{/if}}" />

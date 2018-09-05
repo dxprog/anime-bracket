@@ -85,7 +85,7 @@ $bracket-row-height: 75px;
         display: none;
       }
 
-      #hideSource {
+      #showSource {
         position: relative;
         top: -2px;
         &:checked + label + .source {
