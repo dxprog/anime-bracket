@@ -3,8 +3,10 @@
 require('config.php');
 require('lib/aal.php');
 
+require('/var/www/animebracket/app-config.php');
+
 // Disable caching
-Lib\Cache::setDisabled(true);
+Lib\Cache::getInstance()->setDisabled(true);
 
 // Get all brackets that need to be updated
 $brackets = Api\Bracket::queryReturnAll([ 'advanceHour' => gmdate('G'), 'state' => [ 'in' => [ BS_ELIMINATIONS, BS_VOTING ] ] ]);
