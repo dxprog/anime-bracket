@@ -641,7 +641,7 @@ namespace Api {
         public function rollback($tier, $group) {
             $retVal = false;
 
-            // $this->_lock();
+            $this->_lock();
 
             $this->state = $tier === 0 ? BS_ELIMINATIONS : BS_VOTING;
 

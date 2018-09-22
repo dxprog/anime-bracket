@@ -371,6 +371,11 @@ namespace Api {
         public function getVoteCount() {
             $retVal = 0;
             $result = Lib\Db::Query('CALL proc_GetCharacterVotesForRound(:roundId)', [ 'roundId' => $this->id ]);
+
+            // Default to zip
+            $this->character1Votes = 0;
+            $this->character2Votes = 0;
+
             if ($result && $result->count) {
                 while ($row = Lib\Db::Fetch($result)) {
                     if ($row->character_id == $this->character1Id) {
