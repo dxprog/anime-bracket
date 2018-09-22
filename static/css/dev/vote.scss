@@ -36,6 +36,11 @@
     clear: both;
   }
 
+  .button[disabled] {
+    background: #ddd;
+    cursor: pointer;
+  }
+
   .character-input {
     display: none;
 

@@ -66,7 +66,9 @@ export default Route('voting', {
 
   formSubmit(evt) {
     var $this = $(evt.currentTarget);
+    const $button = $this.find('button[type="submit"]');
     evt.preventDefault();
+    $button.prop('disabled', true);
 
     $.ajax({
       url: $this.attr('action'),
@@ -74,6 +76,7 @@ export default Route('voting', {
       dataType: 'json',
       type: 'POST'
     }).done((data) => {
+      $button.prop('disabled', false);
       this.setMessage(data.message, data.success);
 
       if (data.success) {
@@ -86,6 +89,7 @@ export default Route('voting', {
         this._$votesCode.show();
       }
     }).fail(() => {
+      $button.prop('disabled', false);
       this.setMessage('There was an unexpected error talking to the server. Please try again in a few moments.', false);
     });
 
