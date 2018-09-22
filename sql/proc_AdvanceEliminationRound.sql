@@ -28,6 +28,7 @@ BEGIN
   WHERE
     `bracket_id` = bracketId AND
     `round_tier` = 0 AND
-    `round_group` = currentGroup;
+    `round_group` = currentGroup AND
+    `round_final` = 0;
 
 END //
