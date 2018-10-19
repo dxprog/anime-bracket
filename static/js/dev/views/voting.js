@@ -74,7 +74,7 @@ export default Route('voting', {
       url: $this.attr('action'),
       data: $this.serialize(),
       dataType: 'json',
-      type: 'POST'
+      type: 'PUT'
     }).done((data) => {
       $button.prop('disabled', false);
       this.setMessage(data.message, data.success);
