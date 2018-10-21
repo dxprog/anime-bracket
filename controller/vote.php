@@ -29,6 +29,7 @@ namespace Controller {
                 if ($out) {
                     $out->bracket = $bracket;
                     $out->showCaptcha = false;
+                    $out->csrfToken = $user->csrfToken;
 
                     $template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
 
@@ -76,26 +77,6 @@ namespace Controller {
             $round->character2 = $char;
             $round->character2Id = $charId;
             $round->character2Votes = $charVotes;
-        }
-
-        private static function _getGroupName($rounds) {
-
-            $retVal = 'Group';
-
-            foreach($rounds as $round) {
-                if (!isset($groups[$round->group])) {
-                    $groups[$round->group] = 0;
-                }
-                $groups[$round->group]++;
-            }
-
-            if (count($groups) === 1) {
-                $retVal .= ' ' . chr(65 + array_keys($groups)[0]);
-            } else {
-
-            }
-
-            return $retVal;
         }
 
     }

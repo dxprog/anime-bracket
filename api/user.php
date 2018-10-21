@@ -21,6 +21,9 @@ namespace Api {
     public $name;
     public $admin = false;
     public $ip;
+    public $csrfToken;
+
+    const USER_CSRF_ENTROPY = 8;
 
     /**
      * Reddit registration date of the account.
@@ -106,6 +109,7 @@ namespace Api {
             $user->age > 0 &&
             self::_verifyLoginAttempts($user->id)
           ) {
+            $user->csrfToken = bin2hex(openssl_random_pseudo_bytes(self::USER_CSRF_ENTROPY));
             Lib\Session::set('user', $user);
             $retVal = true;
           }
