@@ -18,7 +18,7 @@ namespace Controller {
 
             $user = Api\User::getCurrentUser();
             if ($user) {
-                if (Lib\Url::Post('csrfToken', null) !== $user->csrfToken) {
+                if (!self::_verifyCsrf($user)) {
                     $out->message = 'There was an error authenticating your account. Please logout and log back in.';
                 } else if (self::_isFlooding($user)) {
                     $out->message = 'You\'re doing that too fast!';

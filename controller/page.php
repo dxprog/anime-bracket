@@ -130,6 +130,17 @@ namespace Controller {
             Lib\Display::addKey('isMobile', preg_match('/(iphone|android)/i', $_SERVER['HTTP_USER_AGENT']));
         }
 
+        /**
+         * Verifies that the request has the correct CSRF token either
+         * via query string or request body.
+         *
+         * @return bool
+         */
+        protected static function _verifyCsrf($user) {
+            $csrfToken = Lib\Url::Post('_auth', Lib\Url::Get('_auth', null));
+            return $user->csrfToken === $csrfToken;
+        }
+
     }
 
 }
