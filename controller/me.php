@@ -125,6 +125,7 @@ namespace Controller {
                     $bracket->showEdit = $bracket->state != BS_FINAL;
                     $bracket->showDelete = $bracket->showEdit;
                     $bracket->isSiteAdmin = self::$_user->admin;
+                    $bracket->csrfToken = self::$_user->csrfToken;
                 }
 
             }
@@ -279,6 +280,15 @@ namespace Controller {
                 (object)[ 'title' => '6 months or older', 'value' => 15552000, 'selected' => $selectedAge === 15552000 ],
                 (object)[ 'title' => '1 year or older', 'value' => 31104000, 'selected' => $selectedAge === 31104000 ]
             ];
+        }
+
+        protected static function authorize() {
+            $retVal = self::_verifyCsrf(self::$_user);
+            if (!$retVal) {
+                $message = self::_createMessage('error', 'There was an error authenticating your account. Please logout and log back in.');
+                self::_main($message);
+            }
+            return $retVal;
         }
 
     }
