@@ -22,6 +22,7 @@
 
     <div class="input-group">
       <label for="advanceHour">When would you like bracket rounds to advance (for eliminations and bracket voting)?</label>
+      <p class="note">Note: This will take into account your timezone when updating.</p>
       <select name="advanceHour" id="advanceHour">
           {{#each times}}
               <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
