@@ -74,6 +74,13 @@
                   </li>
                 {{/if}}
               {{/if}}
+              {{#if showStart}}
+                {{#if isSiteAdmin}}
+                  <li>
+                    <a href="/me/rollback/{{perma}}">Rollback Bracket</a>
+                  </li>
+                {{/if}}
+              {{/if}}
               {{#if showStats}}
                 <li>
                   <a href="/me/stats/{{perma}}/">Voting Stats</a>
