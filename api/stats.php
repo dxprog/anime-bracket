@@ -63,6 +63,11 @@ namespace Api {
                 $characters = Character::queryReturnAll([ 'bracketId' => $bracket->id, 'seed' => [ 'null' => false ] ], [ 'seed' => 'asc' ]);
                 $rounds = Round::queryReturnAll([ 'bracketId' => $bracket->id, 'final' => 1, 'tier' => [ 'gt' => 0 ] ], [ 'id' => 'asc' ]);
 
+                // If no final rounds came back (aka, we've just started round 1, group A), get the non-final rounds
+                if (!count($rounds)) {
+                    $rounds = Round::queryReturnAll([ 'bracketId' => $bracket->id, 'tier' => [ 'gt' => 0 ] ], [ 'id' => 'asc' ]);
+                }
+
                 // Create a hash out of the characters
                 $temp = [];
                 foreach ($characters as $character) {
@@ -95,7 +100,7 @@ namespace Api {
                             $totalVotes += $isCharacter1 ? $round->character1Votes : $round->character2Votes;
 
                             $diff = abs($round->character1Votes - $round->character2Votes);
-                            if ($diff < $closestDiff || $closestDiff === -1) {
+                            if (($diff < $closestDiff || $closestDiff === -1) && $round->final) {
                                 $closestDiff = $diff;
                                 // This case should be small enough that re-instantiating through a loop
                                 // shouldn't prove too much of a performance concern (especially since
