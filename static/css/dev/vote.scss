@@ -44,15 +44,20 @@
   .character-input {
     display: none;
 
-    &:checked + .mini-card .image:after {
+    & + .mini-card .image:after {
       content: '';
       display: block;
       background: url(/static/images/checkmark.png);
+      opacity: 0;
       position: absolute;
       top: 0;
       left: 0;
       height: 100px;
       width: 100px;
+    }
+
+    &:checked + .mini-card .image:after {
+      opacity: 1;
     }
 
     &:checked + .mini-card.right .image:after {
