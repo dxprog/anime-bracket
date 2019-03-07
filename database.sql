@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 22, 2018 at 09:19 PM
+-- Generation Time: Mar 07, 2019 at 01:09 AM
 -- Server version: 10.0.17-MariaDB-1~wheezy-log
--- PHP Version: 7.0.31-1~dotdeb+8.1
+-- PHP Version: 7.0.33-1~dotdeb+8.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -559,8 +559,8 @@ DELIMITER ;
 --
 
 DROP TABLE IF EXISTS `bot_users`;
-CREATE TABLE IF NOT EXISTS `bot_users` (
-  `bot_id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `bot_users` (
+  `bot_id` int(10) NOT NULL,
   `bot_name` varchar(50) NOT NULL,
   `bot_password` varchar(50) NOT NULL,
   `bot_hash` varchar(255) DEFAULT NULL,
@@ -569,9 +569,7 @@ CREATE TABLE IF NOT EXISTS `bot_users` (
   `bot_callback` varchar(30) NOT NULL,
   `bot_updated` int(10) NOT NULL,
   `bot_created` int(10) NOT NULL,
-  `bot_enabled` tinyint(4) NOT NULL,
-  PRIMARY KEY (`bot_id`),
-  UNIQUE KEY `bot_name` (`bot_name`)
+  `bot_enabled` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -581,8 +579,8 @@ CREATE TABLE IF NOT EXISTS `bot_users` (
 --
 
 DROP TABLE IF EXISTS `bracket`;
-CREATE TABLE IF NOT EXISTS `bracket` (
-  `bracket_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `bracket` (
+  `bracket_id` int(11) NOT NULL,
   `bracket_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `bracket_perma` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
   `bracket_start` int(11) NOT NULL,
@@ -599,10 +597,7 @@ CREATE TABLE IF NOT EXISTS `bracket` (
   `bracket_min_age` int(11) DEFAULT '2592000',
   `bracket_hidden` tinyint(4) DEFAULT '1',
   `bracket_blurb` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `bracket_captcha` int(11) NOT NULL,
-  PRIMARY KEY (`bracket_id`),
-  UNIQUE KEY `U_bracket_perma` (`bracket_perma`),
-  KEY `FK_winner_character_id` (`winner_character_id`)
+  `bracket_captcha` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -612,11 +607,9 @@ CREATE TABLE IF NOT EXISTS `bracket` (
 --
 
 DROP TABLE IF EXISTS `bracket_owners`;
-CREATE TABLE IF NOT EXISTS `bracket_owners` (
+CREATE TABLE `bracket_owners` (
   `bracket_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  KEY `FK_bracket_owners_user_id` (`user_id`),
-  KEY `FK_bracket_owners_bracket_id` (`bracket_id`)
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -626,10 +619,9 @@ CREATE TABLE IF NOT EXISTS `bracket_owners` (
 --
 
 DROP TABLE IF EXISTS `categories`;
-CREATE TABLE IF NOT EXISTS `categories` (
-  `category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`category_id`)
+CREATE TABLE `categories` (
+  `category_id` int(11) NOT NULL,
+  `category_name` varchar(25) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -639,14 +631,12 @@ CREATE TABLE IF NOT EXISTS `categories` (
 --
 
 DROP TABLE IF EXISTS `character`;
-CREATE TABLE IF NOT EXISTS `character` (
-  `character_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `character` (
+  `character_id` int(11) NOT NULL,
   `bracket_id` int(11) NOT NULL,
   `character_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `character_source` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `character_seed` int(11) DEFAULT NULL,
-  PRIMARY KEY (`character_id`),
-  KEY `FK_character_bracket_id` (`bracket_id`)
+  `character_seed` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -656,11 +646,10 @@ CREATE TABLE IF NOT EXISTS `character` (
 --
 
 DROP TABLE IF EXISTS `logins`;
-CREATE TABLE IF NOT EXISTS `logins` (
+CREATE TABLE `logins` (
   `user_id` int(11) NOT NULL,
   `login_date` int(11) NOT NULL,
-  `login_ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  KEY `user_id` (`user_id`,`login_ip`)
+  `login_ip` varchar(39) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -670,14 +659,12 @@ CREATE TABLE IF NOT EXISTS `logins` (
 --
 
 DROP TABLE IF EXISTS `mal_items`;
-CREATE TABLE IF NOT EXISTS `mal_items` (
+CREATE TABLE `mal_items` (
   `item_id` int(11) NOT NULL,
   `item_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `item_pic` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `item_perma` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `item_type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`item_id`),
-  UNIQUE KEY `item_perma` (`item_perma`)
+  `item_type` varchar(10) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -687,11 +674,9 @@ CREATE TABLE IF NOT EXISTS `mal_items` (
 --
 
 DROP TABLE IF EXISTS `mal_xref`;
-CREATE TABLE IF NOT EXISTS `mal_xref` (
+CREATE TABLE `mal_xref` (
   `mal_parent` int(11) NOT NULL,
-  `mal_child` int(11) NOT NULL,
-  KEY `FK_mal_xref_mal_parent` (`mal_parent`),
-  KEY `FK_mal_xref_mal_child` (`mal_child`)
+  `mal_child` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -701,16 +686,14 @@ CREATE TABLE IF NOT EXISTS `mal_xref` (
 --
 
 DROP TABLE IF EXISTS `nominee`;
-CREATE TABLE IF NOT EXISTS `nominee` (
-  `nominee_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `nominee` (
+  `nominee_id` int(11) NOT NULL,
   `bracket_id` int(11) NOT NULL,
   `nominee_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `nominee_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `nominee_created` int(11) NOT NULL,
   `nominee_processed` bit(1) DEFAULT NULL,
-  `nominee_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`nominee_id`),
-  KEY `FK_nominee_bracket_id` (`bracket_id`)
+  `nominee_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -720,8 +703,8 @@ CREATE TABLE IF NOT EXISTS `nominee` (
 --
 
 DROP TABLE IF EXISTS `round`;
-CREATE TABLE IF NOT EXISTS `round` (
-  `round_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `round` (
+  `round_id` int(11) NOT NULL,
   `bracket_id` int(11) NOT NULL,
   `round_tier` int(11) NOT NULL,
   `round_order` int(11) NOT NULL,
@@ -732,11 +715,7 @@ CREATE TABLE IF NOT EXISTS `round` (
   `round_character1_votes` int(11) DEFAULT NULL,
   `round_character2_votes` int(11) DEFAULT NULL,
   `round_end_date` int(11) DEFAULT NULL,
-  `round_deleted` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`round_id`),
-  KEY `FK_round_bracket_id` (`bracket_id`),
-  KEY `FK_round_character1_id` (`round_character1_id`),
-  KEY `FK_round_character2_id` (`round_character2_id`)
+  `round_deleted` tinyint(4) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -746,12 +725,11 @@ CREATE TABLE IF NOT EXISTS `round` (
 --
 
 DROP TABLE IF EXISTS `typeahead`;
-CREATE TABLE IF NOT EXISTS `typeahead` (
-  `typeahead_id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `typeahead` (
+  `typeahead_id` bigint(20) NOT NULL,
   `typeahead_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `typeahead_category` int(11) NOT NULL,
-  `typeahead_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`typeahead_id`)
+  `typeahead_image` varchar(255) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -761,13 +739,12 @@ CREATE TABLE IF NOT EXISTS `typeahead` (
 --
 
 DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
   `user_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `user_admin` tinyint(1) NOT NULL,
-  `user_ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  `user_age` int(11) DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
+  `user_ip` varchar(39) COLLATE utf8_unicode_ci NOT NULL,
+  `user_age` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -777,18 +754,162 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 DROP TABLE IF EXISTS `votes`;
-CREATE TABLE IF NOT EXISTS `votes` (
+CREATE TABLE `votes` (
   `vote_date` int(11) NOT NULL,
   `round_id` int(11) NOT NULL,
   `character_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `bracket_id` int(11) NOT NULL,
-  UNIQUE KEY `uc_user_id_round_id` (`user_id`,`round_id`),
-  KEY `FK_vote_round_id` (`round_id`),
-  KEY `FK_vote_character_id` (`character_id`),
-  KEY `FK_votes_bracket_id` (`bracket_id`),
-  KEY `FK_votes_user_id` (`user_id`)
+  `bracket_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `bot_users`
+--
+ALTER TABLE `bot_users`
+  ADD PRIMARY KEY (`bot_id`),
+  ADD UNIQUE KEY `bot_name` (`bot_name`);
+
+--
+-- Indexes for table `bracket`
+--
+ALTER TABLE `bracket`
+  ADD PRIMARY KEY (`bracket_id`),
+  ADD UNIQUE KEY `U_bracket_perma` (`bracket_perma`),
+  ADD KEY `FK_winner_character_id` (`winner_character_id`);
+
+--
+-- Indexes for table `bracket_owners`
+--
+ALTER TABLE `bracket_owners`
+  ADD KEY `FK_bracket_owners_user_id` (`user_id`),
+  ADD KEY `FK_bracket_owners_bracket_id` (`bracket_id`);
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`category_id`);
+
+--
+-- Indexes for table `character`
+--
+ALTER TABLE `character`
+  ADD PRIMARY KEY (`character_id`),
+  ADD KEY `FK_character_bracket_id` (`bracket_id`);
+
+--
+-- Indexes for table `logins`
+--
+ALTER TABLE `logins`
+  ADD KEY `user_id` (`user_id`,`login_ip`);
+
+--
+-- Indexes for table `mal_items`
+--
+ALTER TABLE `mal_items`
+  ADD PRIMARY KEY (`item_id`),
+  ADD UNIQUE KEY `item_perma` (`item_perma`);
+
+--
+-- Indexes for table `mal_xref`
+--
+ALTER TABLE `mal_xref`
+  ADD KEY `FK_mal_xref_mal_parent` (`mal_parent`),
+  ADD KEY `FK_mal_xref_mal_child` (`mal_child`);
+
+--
+-- Indexes for table `nominee`
+--
+ALTER TABLE `nominee`
+  ADD PRIMARY KEY (`nominee_id`),
+  ADD KEY `FK_nominee_bracket_id` (`bracket_id`);
+
+--
+-- Indexes for table `round`
+--
+ALTER TABLE `round`
+  ADD PRIMARY KEY (`round_id`),
+  ADD KEY `FK_round_bracket_id` (`bracket_id`),
+  ADD KEY `FK_round_character1_id` (`round_character1_id`),
+  ADD KEY `FK_round_character2_id` (`round_character2_id`);
+
+--
+-- Indexes for table `typeahead`
+--
+ALTER TABLE `typeahead`
+  ADD PRIMARY KEY (`typeahead_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `votes`
+--
+ALTER TABLE `votes`
+  ADD UNIQUE KEY `uc_user_id_round_id` (`user_id`,`round_id`),
+  ADD KEY `FK_vote_round_id` (`round_id`),
+  ADD KEY `FK_vote_character_id` (`character_id`),
+  ADD KEY `FK_votes_bracket_id` (`bracket_id`),
+  ADD KEY `FK_votes_user_id` (`user_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `bot_users`
+--
+ALTER TABLE `bot_users`
+  MODIFY `bot_id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `bracket`
+--
+ALTER TABLE `bracket`
+  MODIFY `bracket_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `character`
+--
+ALTER TABLE `character`
+  MODIFY `character_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `nominee`
+--
+ALTER TABLE `nominee`
+  MODIFY `nominee_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `round`
+--
+ALTER TABLE `round`
+  MODIFY `round_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `typeahead`
+--
+ALTER TABLE `typeahead`
+  MODIFY `typeahead_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -798,20 +919,20 @@ CREATE TABLE IF NOT EXISTS `votes` (
 -- Constraints for table `bracket`
 --
 ALTER TABLE `bracket`
-  ADD CONSTRAINT `FK_winner_character_id` FOREIGN KEY (`winner_character_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_winner_character_id` FOREIGN KEY (`winner_character_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `bracket_owners`
 --
 ALTER TABLE `bracket_owners`
-  ADD CONSTRAINT `FK_bracket_owners_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_bracket_owners_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_bracket_owners_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_bracket_owners_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `character`
 --
 ALTER TABLE `character`
-  ADD CONSTRAINT `FK_character_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_character_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `logins`
@@ -823,29 +944,29 @@ ALTER TABLE `logins`
 -- Constraints for table `mal_xref`
 --
 ALTER TABLE `mal_xref`
-  ADD CONSTRAINT `FK_mal_xref_mal_child` FOREIGN KEY (`mal_child`) REFERENCES `mal_items` (`item_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_mal_xref_mal_parent` FOREIGN KEY (`mal_parent`) REFERENCES `mal_items` (`item_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_mal_xref_mal_child` FOREIGN KEY (`mal_child`) REFERENCES `mal_items` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_mal_xref_mal_parent` FOREIGN KEY (`mal_parent`) REFERENCES `mal_items` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `nominee`
 --
 ALTER TABLE `nominee`
-  ADD CONSTRAINT `FK_nominee_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_nominee_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `round`
 --
 ALTER TABLE `round`
-  ADD CONSTRAINT `FK_round_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_round_character1_id` FOREIGN KEY (`round_character1_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_round_character2_id` FOREIGN KEY (`round_character2_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_round_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_round_character1_id` FOREIGN KEY (`round_character1_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_round_character2_id` FOREIGN KEY (`round_character2_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `votes`
 --
 ALTER TABLE `votes`
-  ADD CONSTRAINT `FK_vote_character_id` FOREIGN KEY (`character_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_vote_round_id` FOREIGN KEY (`round_id`) REFERENCES `round` (`round_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_votes_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_votes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_vote_character_id` FOREIGN KEY (`character_id`) REFERENCES `character` (`character_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_vote_round_id` FOREIGN KEY (`round_id`) REFERENCES `round` (`round_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_votes_bracket_id` FOREIGN KEY (`bracket_id`) REFERENCES `bracket` (`bracket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_votes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
