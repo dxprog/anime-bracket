@@ -12,7 +12,7 @@ CREATE PROCEDURE `proc_GetEliminationVotesForGroups` (
 BEGIN
 
   SELECT
-    COUNT(1) AS total,
+    COUNT(DISTINCT v.user_id) AS total,
     r.`round_group`
   FROM
     `votes` v
