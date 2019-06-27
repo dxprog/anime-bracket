@@ -5,21 +5,18 @@
     top: 100px;
     left: 0;
 
-    & .fallback {
-        display: block !important;
+    &__attribution {
+        font-size: 18px !important;
+        text-align: center;
+        margin-top: 10px;
     }
 
-    //
-    // MOBILE STYLES
-    //
+    &__link {
+        color: get-color(green);
+        text-decoration: none;
 
-    @media screen and (max-width: $MOBILE-WIDTH) {
-        position: static;
-        height: 250px;
-        & .fallback {
-          width: 300px !important;
-          margin: spacing(4) auto;
+        &:hover {
+            text-decoration: underline;
         }
     }
-
 }
