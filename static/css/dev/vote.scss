@@ -2,12 +2,24 @@
 @import "restyle";
 
 #page-vote {
+  min-height: 100vh;
+  position: relative;
 
   #content {
     @include restyle(page);
     header {
       @include restyle(header in a page with a subheading);
     }
+
+    // Account for the footer
+    padding-bottom: 158px;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 
   h2 {
@@ -157,7 +169,7 @@
 
     #content {
       @include restyle(mobile page);
-      padding: 0 spacing(4);
+      padding: 0 spacing(4) 200px;
 
       header h2 {
         margin: spacing(2) 0;
