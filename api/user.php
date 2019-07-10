@@ -153,21 +153,22 @@ namespace Api {
      * the number of users per IP limitation
      */
     private static function _verifyLoginAttempts($userId) {
+      // Return the number of login attempts from this IP that aren't this user
+      // within the last 24 hours
       $params = [
         'userId' => $userId,
-        // Attempts within the last 24 hours
         'date' => time() - 86400,
         'ip' => $_SERVER['REMOTE_ADDR']
       ];
-
-      // Find all login attempts that aren't this user
       $result = Lib\Db::Query(
-        'SELECT user_id FROM `logins` WHERE `user_id` != :userId AND login_ip=:ip AND login_date >= :date',
+        'SELECT COUNT(DISTINCT user_id) AS attempts FROM `logins` WHERE `user_id` != :userId AND login_ip=:ip AND login_date >= :date',
         $params
       );
 
+      $row = Lib\Db::Fetch($result);
+
       // If the returned count is over the amount allowed (minus the currently logged in user), no es beuno
-      return $result->count < MAX_USERS_SHARING_IP;
+      return $row->attempts < MAX_USERS_SHARING_IP;
     }
 
   }
