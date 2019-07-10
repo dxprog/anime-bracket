@@ -9,7 +9,7 @@
                 <li class="user-divider"><a href="/me/">My Brackets</a></li>
                 <li><a href="/user/logout/">Logout</a></li>
             {{else}}
-                <li class="user-divider"><a href="/user/login/?redirect=%2Fme%2F">Login</a></li>
+                <li class="user-divider"><a href="/user/login/?redirect={{route}}">Login</a></li>
             {{/if}}
         </ul>
     </nav>
