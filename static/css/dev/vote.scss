@@ -13,6 +13,7 @@
 
     // Account for the footer
     padding-bottom: 158px;
+    min-height: 874px + 158px;
   }
 
   footer {
@@ -170,6 +171,7 @@
     #content {
       @include restyle(mobile page);
       padding: 0 spacing(4) 200px;
+      min-height: auto;
 
       header h2 {
         margin: spacing(2) 0;
