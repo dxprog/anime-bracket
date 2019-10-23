@@ -29,7 +29,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-phpunit": "^0.3.6",
     "grunt-sass": "^1.1.0",
-    "jquery": "^2.2.0",
+    "jquery": "^3.4.0",
     "karma": "^0.13.19",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
