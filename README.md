@@ -15,7 +15,7 @@ A site for running standard elimination style brackets.
 
 ### Configuration
 
-Brakkit is set up to allow multiple front-ends run with a single back-end. As such, there are two config files:
+Brakkit is set up to allow multiple front-ends to be run with a single back-end. As such, there are two config files:
 
 - `config.php`: This is the configuration for the back-end system and is primarily database setup. The back-end portion houses the `api/`, `cache/`, `controller/`, `lib/`, and `images/` directories.
 - `app-config.php`: Configuration values for an individual front-end. The front-end consists of the `static/` and `views/` directories. Use `app-config.sample.php` to set up your app config.
@@ -36,14 +36,14 @@ At this point, you'll want to set the values in `config.php` to connect to your 
 
 You'll need node and npm for the following. If you don't have these, I recommend using [nvm](https://github.com/creationix/nvm) to install these on your system.
 
-Once you've installed that (or if you already have node), run the following to build all the static content:
+Once you've installed that (or if you already have node), run the following to build all of the static content:
 
 ```
 npm install
 grunt build
 ```
 
-This will build the following files that you'll want to ensure is served from your front-end:
+This will build the following files that you'll want to ensure are served from your front-end:
 
 ```
 static/
