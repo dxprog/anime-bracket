@@ -205,7 +205,10 @@ namespace Controller {
 
         private static function _verifyImage($url) {
             $headers = @get_headers($url, true);
-            return isset($headers['Content-Type']) && strpos($headers['Content-Type'], 'image/') !== false;
+            $contentType = isset($headers['Content-Type']) ? $headers['Content-Type'] : (
+                isset($headers['content-type']) ? $headers['content-type'] : ''
+            );
+            return strpos($contentType, 'image/') !== false;
         }
 
         private static function _verifyAccountAge(Api\User $user, Api\Bracket $bracket) {
