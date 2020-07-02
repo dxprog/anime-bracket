@@ -1,6 +1,6 @@
 import Round from './round';
 
-import TIER_TMPL from '../../../../views/tier.hbs';
+import TIER_TMPL from '@views/tier.hbs';
 
 export const ENTRANT_HEIGHT = 75;
 
