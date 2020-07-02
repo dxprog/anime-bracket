@@ -1,7 +1,6 @@
 import $ from 'jquery';
-import Molecule from 'molecule';
 
-import Typeahead from 'templates/typeahead.hbs';
+import TypeaheadTpl from '@views/typeahead.hbs';
 
 const MAX_NUM_ITEMS = 10;
 const KEYCODE_UP = 38;
@@ -11,8 +10,8 @@ const KEYCODE_TAB = 9;
 const KEYCODES = [ KEYCODE_ENTER, KEYCODE_DOWN, KEYCODE_UP, KEYCODE_TAB ];
 const SELECTED = 'selected';
 
-export default Molecule({
-  __construct($el, onSelect, bracketId) {
+export default class Typeahead {
+  constructor($el, onSelect, bracketId) {
 
     this._fullCache = [];
     this._itemCache = [];
@@ -31,7 +30,7 @@ export default Molecule({
       .hide()
       .on('click', 'li', this.handleItemClick.bind(this))
       .appendTo('body');
-  },
+  }
 
   // Handles keyboard selection navigation
   handleKeyDown(evt) {
@@ -71,11 +70,9 @@ export default Molecule({
           break;
       }
     }
-
-  },
+  }
 
   handleKeypress(evt) {
-
     const $container = this._$container;
     const text = this._$el.val();
     const keyCode = evt.keyCode || evt.charCode;
@@ -104,26 +101,25 @@ export default Molecule({
     } else if (text.length <= 1) {
       this.hideList();
     }
-
-  },
+  }
 
   handleItemClick(evt) {
     this.selectItem(evt.currentTarget.getAttribute('data-index'));
     this._itemSelected = true;
-  },
+  }
 
   selectItem(index) {
     if (index < this._itemCache.length) {
       this._onSelect(this._itemCache[index]);
       this.hideList();
     }
-  },
+  }
 
   // Displays the data provided in the dropdown
   displayMatches(data) {
     if (data.length > 0) {
       this._$container
-        .html(Typeahead(data))
+        .html(TypeaheadTpl(data))
         .show()
         .find('li:first')
         .addClass(SELECTED);
@@ -131,7 +127,7 @@ export default Molecule({
     } else {
       this.hideList();
     }
-  },
+  }
 
   findMatches() {
     const query = this._$el.val().toLowerCase();
@@ -155,8 +151,7 @@ export default Molecule({
     });
 
     this.displayMatches(out.splice(0, MAX_NUM_ITEMS));
-
-  },
+  }
 
   handleBlur(evt) {
     // NOOP for a moment to see if a click event was fired
@@ -166,12 +161,12 @@ export default Molecule({
       }
       this._itemSelected = false;
     }, 100);
-  },
+  }
 
   hideList() {
     this._$container.hide();
     this._listVisible = false;
-  },
+  }
 
   dataCallback(data) {
     this._currentDataset = this._loadingDataset;
@@ -180,5 +175,4 @@ export default Molecule({
     this._itemCache = data;
     this.findMatches();
   }
-
-});
+};

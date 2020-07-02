@@ -5,9 +5,9 @@ import $ from 'jquery';
 import Entrant from '../model/entrant';
 import { default as Tier, ENTRANT_HEIGHT } from '../model/tier';
 
-import TPL_GROUP_PICKER from 'templates/groupPicker.hbs';
-import TPL_ENTRANT from 'templates/partials/_entrant.hbs';
-import TPL_WINNER from 'templates/winner.hbs';
+import TPL_GROUP_PICKER from '@views/groupPicker.hbs';
+import TPL_ENTRANT from '@views/partials/_entrant.hbs';
+import TPL_WINNER from '@views/winner.hbs';
 
 const SINGLETON_NAME = 'bracket-display';
 const COLUMN_WIDTH = 225 + 18;

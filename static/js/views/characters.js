@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import { Route } from 'molecule-router';
 
-import characterList from 'templates/partials/_characterList.hbs';
+import characterList from '@views/partials/_characterList.hbs';
 
 export default Route('characters', {
 

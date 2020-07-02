@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import { Route } from 'molecule-router';
 
-import hexRound from 'templates/hexRound.hbs';
+import hexRound from '@views/hexRound.hbs';
 
 const HEX_WIDTH = 132;
 const HEX_HEIGHT = 113;

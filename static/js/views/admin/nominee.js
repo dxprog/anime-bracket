@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { Route } from 'molecule-router';
 
-import Nominee from 'templates/admin/nominee.hbs';
+import Nominee from '@views/admin/nominee.hbs';
 
 const CHECKED = 'checked';
 const UPLOAD_ENDPOINT = '/me/image/upload/';
