@@ -9,6 +9,8 @@ import Nominations from './views/nominations';
 import Voting from './views/voting';
 import Admin from './views/admin';
 
+import '../scss/index.scss';
+
 Router.addRoutes({
   'index': Landing,
   '/results/:perma': BracketDisplay,

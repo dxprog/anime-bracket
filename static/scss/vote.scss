@@ -1,19 +1,20 @@
 @import "globals";
-@import "restyle";
 
 #page-vote {
   min-height: 100vh;
   position: relative;
 
   #content {
-    @include restyle(page);
-    header {
-      @include restyle(header in a page with a subheading);
-    }
+    @include page;
 
     // Account for the footer
     padding-bottom: 158px;
     min-height: 874px + 158px;
+
+    header {
+      @include header;
+      @include header--with-subheading;
+    }
   }
 
   footer {
@@ -169,8 +170,8 @@
   @media screen and (max-width: $MOBILE-WIDTH) {
 
     #content {
-      @include restyle(mobile page);
-      padding: 0 spacing(4) 200px;
+      @include page;
+            padding: 0 spacing(4) 200px;
       min-height: auto;
 
       header h2 {

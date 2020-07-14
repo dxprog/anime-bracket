@@ -38,7 +38,7 @@ module.exports = {
     }
   },
   output: {
-    filename: 'RedditBooru.js',
+    filename: 'brakkit.js',
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [

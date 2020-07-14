@@ -89,7 +89,8 @@ $spacing-2: spacing(2);
       }
 
       td {
-        @include restyle(large body);
+        @include body;
+        @include body--large;
 
         &.thumb {
           width: 75px;
@@ -130,7 +131,7 @@ $spacing-2: spacing(2);
 
       .bracket-name {
         display: block;
-        @include restyle(body);
+        @include body;
         color: get-color(gray);
       }
 
@@ -211,7 +212,7 @@ $spacing-2: spacing(2);
       }
 
       h3 {
-        @include restyle(subheading);
+        @include subheading;
       }
 
       .side {
@@ -227,7 +228,8 @@ $spacing-2: spacing(2);
 
         label,
         button {
-          @include restyle(small button);
+          @include button;
+          @include button--small;
           margin-right: spacing(2);
         }
 
@@ -243,7 +245,7 @@ $spacing-2: spacing(2);
       }
 
       p {
-        @include restyle(body);
+        @include body;
         margin: spacing(4) 0;
       }
 

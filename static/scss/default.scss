@@ -83,11 +83,14 @@ footer {
 }
 
 .small-button {
-  @include restyle(small button);
+  @include button;
+  @include button--small;
 }
 
 .inverse-small-button {
-  @include restyle(small inverse button);
+  @include button;
+  @include button--small;
+  @include button--inverse;
 }
 
 @media screen and (max-width: 1280px), screen and (max-height: 768px) {

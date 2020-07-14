@@ -3,7 +3,7 @@
     <head>
         <title>{{title}}</title>
         <meta charset="utf-8" />
-        <link rel="stylesheet" type="text/css" href="/static/css/brakkit{{#if USE_MIN}}.min{{/if}}.css?{{CSS_VERSION}}" />
+        <link rel="stylesheet" type="text/css" href="/dist/styles{{#if USE_MIN}}.min{{/if}}.css?{{CSS_VERSION}}" />
         <link rel="stylesheet" type="text/css" href="/static/css/jquery.Jcrop.min.css" />
     </head>
     <body id="admin">
@@ -14,7 +14,7 @@
         <footer>
             <p>animebracket.com by <a href="http://dxprog.com/" target="_blank">Matt Hackmann</a>. Source code available on <a href="https://github.com/dxprog/anime-bracket" target="_blank">GitHub</a></p>
         </footer>
-        <script type="text/javascript" src="/static/js/brakkit{{#if USE_MIN}}.min{{/if}}.js?{{JS_VERSION}}"></script>
+        <script type="text/javascript" src="/dist/brakkit{{#if USE_MIN}}.min{{/if}}.js?{{JS_VERSION}}"></script>
         {{>_google_analytics}}
     </body>
 </html>

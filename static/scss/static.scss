@@ -3,10 +3,13 @@
 #page-static {
 
   #content {
-    @include restyle(light page);
+    @include page;
+    @include page--light;
     padding-bottom: spacing(10);
+
     header {
-      @include restyle(header in a light page);
+      @include header;
+      @include header--in-light-page;
     }
   }
 
