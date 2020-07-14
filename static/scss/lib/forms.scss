@@ -1,80 +1,72 @@
-@import "restyle";
+@mixin button {
 
-@at-root {
-  @include restyle-define(button, (
+  display: inline-block;
+  padding: 15px 40px;
+  border-radius: 2px;
+  background-color: get-color(green);
+  color: get-color(white);
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+}
 
-    restyle-var(padding): 15px 40px,
-    restyle-var(background-color): get-color(green),
-    restyle-var(border-color): transparent,
+@mixin button--small {
+  @include body;
+  @include body--inverse;
+  padding: 10px 20px;
+}
 
-    display: inline-block,
-    padding: restyle-var(padding),
-    border-radius: 2px,
-    background-color: restyle-var(background-color),
-    color: get-color(white),
-    text-decoration: none,
-    border: 0,
-    cursor: pointer,
+@mixin button--inverse {
+  background-color: transparent;
+}
 
-    restyle-modifiers: (
-      small: (
-        restyle: 'body inverse',
-        restyle-var(padding): 10px 20px
-      ),
+@mixin button--round {
+  border-radius: 50%;
+  height: 45px;
+  width: 45px;
+  border: 1px solid get-color(dark-green);
+  padding: 0;
+  box-sizing: border-box;
 
-      inverse: (
-        restyle-var(background-color): transparent
-      ),
+  // Round buttons should never have text
+  color: rgba(get-color(black), 0);
+  font-size: 0;
+}
 
-      round: (
-        restyle-var(border-color): get-color(dark-green),
-        border-radius: 50%,
-        height: 45px,
-        width: 45px,
-        border: 1px solid restyle-var(border-color),
-        restyle-var(padding): 0,
-        box-sizing: border-box,
+@mixin button--neutral {
+  border-color: get-color(gray);
+  background-color: get-color(light-gray);
+}
 
-        // Round buttons should never have text
-        color: rgba(#000, 0),
-        font-size: 0,
+@mixin button--critical {
+  border-color: get-color(dark-red);
+  background-color: get-color(red);
+}
 
-        restyle-modifiers: (
-          neutral: (
-            restyle-var(border-color): get-color(gray),
-            restyle-var(background-color): get-color(light-gray)
-          ),
-          critical: (
-            restyle-var(border-color): get-color(dark-red),
-            restyle-var(background-color): get-color(red)
-          )
-        )
-      )
-    )
-  ));
+@mixin label {
+  @include body;
+  @include body--large;
+  display: block;
+  color: get-color(dark-green);
+  padding-bottom: spacing(1);
+}
 
-  @include restyle-define(input-group, (
-    margin: spacing(2) 0,
-    '& label': (
-      restyle: label
-    ),
-    '& input[type="text"]': (
-      restyle: textbox
-    )
-  ));
+@mixin textbox {
+  @include body;
+  display: block;
+  padding: spacing(1);
+  border: 1px solid get-color(gray);
+  width: 33%;
+}
 
-  @include restyle-define(label, (
-    restyle: large body,
-    display: block,
-    color: get-color(dark-green),
-    padding-bottom: spacing(1)
-  ));
+@mixin input-group {
+  margin: spacing(2) 0;
 
-  @include restyle-define(textbox, (
-    restyle: body,
-    display: block,
-    padding: spacing(1),
-    border: 1px solid get-color(gray),
-    width: 33%
-  ));
+  & label {
+    @include label;
+  }
+
+  & input[type="text"] {
+    @include textbox;
+  }
 }

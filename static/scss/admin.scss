@@ -8,16 +8,23 @@ $bracket-row-height: 75px;
   background-repeat: no-repeat;
 
   @if $type == 'delete' {
-    @include restyle(round critical button);
+    @include button;
+    @include button--round;
+    @include button--critical;
     background-position: -45px center;
   } @else if $type == 'collapse' {
-    @include restyle(round neutral button);
+    @include button;
+    @include button--round;
+    @include button--neutral;
     background-position: -90px center;
   } @else if $type == 'open' {
-    @include restyle(round neutral button);
+    @include button;
+    @include button--round;
+    @include button--neutral;
     background-position: -135px center;
   } @else {
-    @include restyle(round button);
+    @include button;
+    @include button--round;
   }
 }
 
@@ -35,9 +42,12 @@ $bracket-row-height: 75px;
   }
 
   #content {
-    @include restyle(light page);
+    @include page;
+    @include page--light;
+
     header {
-      @include restyle(header in a light page);
+      @include header;
+      @include header--in-light-page;
 
       span {
         font-weight: normal;
@@ -56,7 +66,8 @@ $bracket-row-height: 75px;
     }
 
     h3 {
-      @include restyle(subheading in a light page);
+      @include subheading;
+      @include subheading--in-light-page;
       font-size: 2.4rem;
     }
 
@@ -65,11 +76,11 @@ $bracket-row-height: 75px;
     }
 
     .input-group {
-      @include restyle(input-group);
+      @include input-group;
     }
 
     .note {
-      @include restyle(body);
+      @include body;
       margin: spacing(1) 0;
     }
 
@@ -104,7 +115,7 @@ $bracket-row-height: 75px;
       }
 
       li {
-        @include restyle(body);
+        @include body;
         overflow: hidden;
         display: flex;
         flex-direction: row-reverse;
@@ -144,7 +155,7 @@ $bracket-row-height: 75px;
 
         h3,
         h4 {
-          @include restyle(identifier);
+          @include identifier;
           margin: 0;
         }
 
@@ -187,12 +198,12 @@ $bracket-row-height: 75px;
         transition: max-height 500ms;
 
         h5 {
-          @include restyle(body);
+          @include body;
           margin-bottom: spacing(2);
         }
 
         a {
-          @include restyle(body);
+          @include body;
           color: get-color(dark-green);
           text-decoration: none;
           &:hover {
@@ -260,7 +271,7 @@ $bracket-row-height: 75px;
     }
 
     label {
-      @include restyle(body);
+      @include body;
       display: block;
       margin-bottom: 10px;
     }
@@ -336,11 +347,13 @@ $bracket-row-height: 75px;
   }
 
   button.standard {
-    @include restyle(small button);
+    @include button;
+    @include button--small;
   }
 
   button.delete {
-    @include restyle(small button);
+    @include button;
+    @include button--small;
     background: get-color(red);
     color: #fff;
   }
@@ -362,7 +375,8 @@ $bracket-row-height: 75px;
   thead {
     background: get-color(gray);
     th {
-      @include restyle(large body);
+      @include body;
+      @include body--large;
       text-align: left;
       padding: spacing(2);
     }
@@ -377,7 +391,7 @@ $bracket-row-height: 75px;
   }
 
   td {
-    @include restyle(body);
+    @include body;
     padding: spacing(2);
   }
 
@@ -392,7 +406,8 @@ $bracket-row-height: 75px;
 
   // Probably isn't actually BEMy, but meh
   .admin-table__index {
-    @include restyle(large body);
+    @include body;
+    @include body--large;
     width: 25px;
     text-align: center;
     padding-right: 0;

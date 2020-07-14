@@ -1,15 +1,15 @@
 @import "globals";
-@import "restyle";
 
 $BASE-INDEX: 1;
 
 #page-brackets {
 
   #content {
-    @include restyle(page);
+    @include page;
+
     padding: 0;
     header {
-      @include restyle(header in a page);
+      @include header;
     }
   }
 

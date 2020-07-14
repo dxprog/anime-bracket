@@ -39,7 +39,7 @@ $ENTRANT_AFTER: 18px;
     padding-bottom: spacing(6);
 
     .title {
-      @include restyle(subheading);
+      @include subheading;
       text-align: center;
       margin: 25px 0 20px;
       text-shadow: 0 0 2px rgba(0, 0, 0, .15);

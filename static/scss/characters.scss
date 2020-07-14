@@ -3,10 +3,10 @@
 #page-characters {
 
   #content {
-    @include restyle(page);
+    @include page;
     padding: 0;
     header {
-      @include restyle(header in a page);
+      @include header;
     }
   }
 
@@ -161,12 +161,12 @@
 
   .entrant-lockup__name {
     // semantic font naming... you've come to bite me again
-    @include restyle(subheading in a light page);
+    @include subheading--in-light-page;
     font-size: 2.4rem;
   }
 
   .entrant-lockup__source {
-    @include restyle(subheading in a light page);
+    @include subheading--in-light-page;
     font-size: 1.8rem;
   }
 

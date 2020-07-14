@@ -3,9 +3,9 @@
 #page-nominate {
 
   #content {
-    @include restyle(page);
+    @include page;
     header {
-      @include restyle(header in a page);
+      @include header;
     }
 
     padding-left: 360px;

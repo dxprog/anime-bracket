@@ -73,20 +73,21 @@ $MOBILE-WIDTH: 414px;
 
 }
 
-@mixin button() {
-    display: inline-block;
-    padding: 15px 40px;
-    @include font-light(36px);
-    border-radius: 2px;
-    background: $MED_TURK;
-    color: #fff;
-    text-decoration: none;
-    border: 0;
-    cursor: pointer;
-}
+// @mixin button() {
+//     display: inline-block;
+//     padding: 15px 40px;
+//     @include font-light(36px);
+//     border-radius: 2px;
+//     background: $MED_TURK;
+//     color: #fff;
+//     text-decoration: none;
+//     border: 0;
+//     cursor: pointer;
+// }
 
 @mixin small-button() {
-  @include restyle(small button);
+  @include button;
+  @include button--small;
 }
 
 @mixin logo($type: light) {

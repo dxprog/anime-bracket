@@ -3,9 +3,12 @@
 #page-stats {
 
   #content {
-    @include restyle(light page);
+    @include page;
+    @include page--light;
+
     header {
-      @include restyle(header in a light page);
+      @include header;
+      @include header--in-light-page;
     }
   }
 

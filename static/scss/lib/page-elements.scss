@@ -1,56 +1,55 @@
-@import "restyle";
+$page-gutter: spacing(10);
 
-@at-root {
+@mixin header {
+  & h2 {
+    @include heading;
+  }
+}
 
-  $page-gutter: spacing(10);
-  $white: get-color(white);
+@mixin header--in-light-page {
+  background: get-color(light-gray);
+  position: relative;
+  left: -$page-gutter;
+  width: calc(100% + #{$page-gutter * 2});
+  padding: spacing(2.5) $page-gutter;
+  box-sizing: border-box;
 
-  @include restyle-define(header, (
-    '& h2': (
-      restyle: 'heading'
-    ),
-    restyle-modifiers: (
-      'in a light page': (
-        background: get-color(light-gray),
-        position: relative,
-        left: -$page-gutter,
-        width: calc(100% + #{$page-gutter * 2}),
-        padding: spacing(2.5) $page-gutter,
-        box-sizing: border-box,
-        '& h2': (
-          restyle: 'heading in a header'
-        )
-      ),
-      'with a subheading': (
-        '& h2': (
-          restyle: 'heading in a header with a subheading'
-        )
-      )
-    )
-  ));
+  & h2 {
+    @include heading;
+    @include heading--in-header;
+  }
+}
 
-  @include restyle-define(page, (
-    restyle-var(page-width): 1240px,
-    width: restyle-var(page-width),
-    margin: 0 auto,
-    padding: 0 $page-gutter,
-    box-sizing: border-box,
-    restyle-modifiers: (
-      light: (
-        background: $white,
-        padding-bottom: $page-gutter,
-        '& + footer': (
-          margin: 0,
-          background: get-color(dark-gray),
-          padding: spacing(4) 0,
-          '& p': (
-            margin: 0
-          )
-        )
-      ),
-      mobile: (
-        restyle-var(page-width): auto
-      )
-    )
-  ));
+@mixin header--with-subheading {
+  & h2 {
+    @include heading;
+    @include heading--in-header;
+    @include heading--with-subheading;
+  }
+}
+
+@mixin page {
+  width: 1240px;
+  margin: 0 auto;
+  padding: 0 $page-gutter;
+  box-sizing: border-box;
+}
+
+@mixin page--light {
+  background: get-color(white);
+  padding-bottom: $page-gutter;
+
+  & + footer {
+    margin: 0;
+    background: get-color(dark-gray);
+    padding: spacing(4) 0;
+
+    & p {
+      margin: 0
+    }
+  }
+}
+
+@mixin page--mobile {
+  width: auto;
 }
