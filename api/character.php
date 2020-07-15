@@ -15,7 +15,8 @@ namespace Api {
             'bracketId' => 'bracket_id',
             'name' => 'character_name',
             'source' => 'character_source',
-            'seed' => 'character_seed'
+            'seed' => 'character_seed',
+            'meta' => 'character_meta'
         );
 
         /**
@@ -59,6 +60,11 @@ namespace Api {
         public $seed;
 
         /**
+         * Assorted metadata, JSON encoded to the database
+         */
+        public $meta;
+
+        /**
          * Override for image
          */
         public function copyFromDbRow($row) {
@@ -67,6 +73,20 @@ namespace Api {
             $this->bracketId = (int) $this->bracketId;
             $this->seed = (int) $this->seed;
             $this->image = IMAGE_URL . '/' . base_convert($this->id, 10, 36) . '.jpg';
+            if ($this->meta) {
+                $this->meta = json_decode($this->meta);
+            }
+        }
+
+        /**
+         * Override to ensure meta is saved as JSON
+         */
+        public function sync($forceInsert = false) {
+            $oldMeta = $this->meta;
+            $this->meta = json_encode($this->meta);
+            $retVal = parent::sync($forceInsert);
+            $this->meta = $oldMeta;
+            return $retVal;
         }
 
         /**

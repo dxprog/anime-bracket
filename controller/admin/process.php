@@ -8,6 +8,27 @@ namespace Controller\Admin {
 
   class Process extends \Controller\Me {
 
+    private static $SITE_TO_META_TYPE = [
+      'youtube.com' => 'youtube',
+      'm.youtube.com' => 'youtube',
+      'www.youtube.com' => 'youtube',
+      'vimeo.com' => 'vimeo',
+      'www.vimeo.com' => 'vimeo'
+    ];
+
+    private static $EXT_TO_META_TYPE = [
+      'mov' => 'video',
+      'mp4' => 'video',
+      'm4v' => 'video',
+      'mp3' => 'audio',
+      'aac' => 'audio',
+      // Because why not?
+      'mid' => 'audio',
+      'wav' => 'audio',
+      'aif' => 'audio',
+      'aiff' => 'audio'
+    ];
+
     public static function generate(array $params) {
 
       $bracket = self::_getBracket(array_shift($params));
@@ -105,6 +126,7 @@ namespace Controller\Admin {
       $imageFile = Lib\Url::Post('imageFile');
       $nomineeId = Lib\Url::Post('id', true);
       $ignore = Lib\Url::Post('ignore') === 'true';
+      $link = Lib\Url::Post('link', null);
 
       if ((($name && $imageFile) || $ignore) && $nomineeId) {
 
@@ -121,6 +143,7 @@ namespace Controller\Admin {
               $character->name = $name;
               $character->bracketId = $bracket->id;
               $character->source = $source;
+              $character->meta = self::_processMeta($link);
 
               if ($character->sync()) {
                 // Save the character image off in the correct directory and as a JPEG
@@ -131,6 +154,7 @@ namespace Controller\Admin {
                 $out->message = '"' . $character->name . '" successfully processed';
               } else {
                 $out->message = 'Unable to save character to database';
+                print_r(Lib\Db::$lastError);
               }
 
             } else {
@@ -317,6 +341,29 @@ namespace Controller\Admin {
       $image = Lib\ImageLoader::loadImage($url);
       $retVal = $image && imagesx($image->image) === BRACKET_IMAGE_SIZE && imagesy($image->image) === BRACKET_IMAGE_SIZE;
       imagedestroy($image->image);
+      return $retVal;
+    }
+
+    private static function _processMeta($link) {
+      $retVal = null;
+
+      if ($link) {
+        $urlTokens = parse_url($link);
+        if ($urlTokens) {
+          $retVal = (object) [ 'link' => $link ];
+          $domain = trim(strtolower($urlTokens['host']));
+          $ext = pathinfo($urlTokens['path']);
+          $ext = isset($ext['extension']) ? trim(strtolower($ext['extension'])) : null;
+          if (isset(self::$SITE_TO_META_TYPE[$domain])) {
+            $retVal->type = self::$SITE_TO_META_TYPE[$domain];
+          } else if (isset(self::$EXT_TO_META_TYPE[$ext])) {
+            $retVal->type = self::$EXT_TO_META_TYPE[$ext];
+          } else {
+            $retVal->type = 'link';
+          }
+        }
+      }
+
       return $retVal;
     }
 
