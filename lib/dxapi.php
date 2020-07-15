@@ -63,7 +63,9 @@ namespace Api {
 			// Open up a connection to the database
 			Lib\Db::Connect('mysql:dbname=' . DB_NAME . ';host=' . DB_HOST, DB_USER, DB_PASS);
 
-			set_exception_handler('Api\\DxApi::exceptionHandler');
+			if (HANDLE_EXCEPTIONS) {
+				set_exception_handler('Api\\DxApi::exceptionHandler');
+			}
 
 			self::$_initialized = true;
 
