@@ -79,6 +79,8 @@ namespace Controller\Admin {
                             $round->order = $order;
                             $round->character1Id = $row->character_id;
                             $round->character2Id = 1;
+                            $round->final = 0;
+                            $round->deleted = 0;
                             $round->sync();
                             $order++;
                             $group = $order % $days;
