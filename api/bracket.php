@@ -162,7 +162,7 @@ namespace Api {
                 $this->state = (int) $this->state;
                 $this->start = (int) $this->start;
                 $this->winnerCharacterId = $this->winnerCharacterId ? (int) $this->winnerCharacterId : null;
-                $this->hidden = $this->hidden > 0;
+                $this->hidden = $this->hidden > 0 ? 1 : 0;
             }
         }
 
