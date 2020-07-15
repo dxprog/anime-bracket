@@ -88,6 +88,7 @@ namespace Api {
             $user->name = $data->name;
             $user->age = (int) $data->created;
             $user->ip = $_SERVER['REMOTE_ADDR'];
+            $user->admin = 0;
             if (!$user->sync()) {
               $user = null;
             }
