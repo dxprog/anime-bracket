@@ -64,38 +64,35 @@
 
 .mini-card {
 
-  box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
-  background: rgba(255, 255, 255, .8);
-  position: relative;
-  height: 100px;
-  margin: 0 20px 20px 0;
-  padding: 15px 15px 15px 115px;
   width: 380px;
   float: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  margin: 0 20px 20px 0;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
 
-  @include border-box();
+  &__content {
+    @include border-box();
 
-  dt {
-    position: absolute;
-    left: -9999px;
-    top: -9999px;
+    background: rgba(get-color(white), .8);
+    position: relative;
+    height: 100px;
+    padding: 15px 15px 15px 115px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  .name {
+  &__name {
     font: 24px/1 'Roboto', sans-serif;
     margin-bottom: 10px;
     color: $dark;
   }
 
-  .source {
+  &__source {
     font: 18px/1 'Roboto', sans-serif;
     color: #000;
   }
 
-  img {
+  &__image {
     position: absolute;
     top: 0;
     left: 0;
@@ -103,15 +100,63 @@
     width: 100px;
   }
 
-  &.right {
+  &--right {
     padding-left: 15px;
     padding-right: 115px;
-    dd {
+
+    .mini-card__name,
+    .mini-card__source {
       text-align: right;
     }
-    img {
+
+    .mini-card__image {
       left: auto;
       right: 0;
+    }
+  }
+
+  &__meta {
+    padding: spacing(2) spacing(2) spacing(2) (spacing(2) + 28px);
+    display: block;
+    position: relative;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    background: get-color(dark-green);
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: spacing(2);
+      bottom: spacing(2);
+      left: spacing(2);
+      width: 24px;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    &--youtube {
+      background: #f00;
+
+      &:before {
+        background-image: url(/static/images/youtube-brands.svg);
+      }
+    }
+
+    &--vimeo {
+      background: #1ab7ea;
+
+      &:before {
+        background-image: url(/static/images/vimeo-v-brands.svg);
+      }
+    }
+
+    &--link:before {
+      background-image: url(/static/images/link-solid.svg);
     }
   }
 
@@ -135,11 +180,11 @@
   @media screen and (max-width: $MOBILE-WIDTH) {
     width: 100%;
 
-    .name {
+    &__name {
       font-size: 20px;
     }
 
-    .source {
+    &__source {
       font-size: 16px;
     }
 

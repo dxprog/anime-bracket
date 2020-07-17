@@ -10,18 +10,36 @@
 <form action="/submit/?action=vote" method="post" id="vote-form">
     <ul class="eliminations mini-card-container">
         {{#each round}}
-            <li>
-                <input type="checkbox" name="round:{{id}}" id="entrant{{character1.id}}" value="{{character1.id}}" {{#if character1.voted}}checked="checked" disabled="disabled"{{/if}} class="character-input" />
-                <label for="entrant{{character1.id}}" class="mini-card">
-                    <dl>
-                        <dt>Image</dt>
-                        <dd class="image"><img src="{{character1.image}}" alt="{{character1.name}}" /></dd>
-                        <dt>Name</dt>
-                        <dd class="name">{{character1.name}}</dd>
-                        <dt>Source</dt>
-                        <dd class="source">{{character1.source}}</dd>
-                    </dl>
+            <li class="mini-card">
+                <input
+                    type="checkbox"
+                    name="round:{{id}}"
+                    id="entrant{{character1.id}}"
+                    value="{{character1.id}}"
+                    {{#if character1.voted}}checked="checked" disabled="disabled"{{/if}}
+                    class="character-input"
+                />
+                <label
+                    for="entrant{{character1.id}}"
+                    class="mini-card__content"
+                >
+                    <img
+                        src="{{character1.image}}"
+                        alt="{{character1.name}}"
+                        class="mini-card__image"
+                    />
+                    <div class="mini-card__name">{{character1.name}}</div>
+                    <div class="mini-card__source">{{character1.source}}</div>
                 </label>
+                {{#if character1.meta}}
+                    <a
+                        class="mini-card__meta mini-card__meta--{{character1.meta.type}}"
+                        href="{{character1.meta.link}}"
+                        target="_blank"
+                    >
+                        {{metaLabel character1.meta}}
+                    </a>
+                {{/if}}
             </li>
         {{/each}}
     </ul>
