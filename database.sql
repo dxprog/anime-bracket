@@ -636,7 +636,8 @@ CREATE TABLE `character` (
   `bracket_id` int(11) NOT NULL,
   `character_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `character_source` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `character_seed` int(11) DEFAULT NULL
+  `character_seed` int(11) DEFAULT NULL,
+  `character_meta` TEXT COLLATE utf8_unicode_ci NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
