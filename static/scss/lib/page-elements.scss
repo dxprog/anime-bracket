@@ -1,7 +1,7 @@
 $page-gutter: spacing(10);
 
 @mixin header {
-  & h2 {
+  h2 {
     @include heading;
   }
 }
@@ -14,14 +14,14 @@ $page-gutter: spacing(10);
   padding: spacing(2.5) $page-gutter;
   box-sizing: border-box;
 
-  & h2 {
+  h2 {
     @include heading;
     @include heading--in-header;
   }
 }
 
 @mixin header--with-subheading {
-  & h2 {
+  h2 {
     @include heading;
     @include heading--in-header;
     @include heading--with-subheading;

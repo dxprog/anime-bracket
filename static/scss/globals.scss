@@ -12,10 +12,6 @@ $light: #c4e6dd;
 $BASE-INDEX: 1;
 $MOBILE-WIDTH: 414px;
 
-@mixin heading($hasSubHead: false) {
-
-}
-
 @mixin font-light($size: 24px) {
   font: 300 $size/1 'Roboto', sans-serif;
 }
