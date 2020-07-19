@@ -6,9 +6,11 @@
   "author": "Matt (dxprog) Hackmann <matt@dxprog.com>",
   "license": "WTFPL",
   "scripts": {
-    "start": "webpack --mode development --progress --watch"
+    "start": "webpack --mode development --progress --watch",
+    "build": "webpack --mode production --config webpack.prod.js"
   },
   "devDependencies": {
+    "babel-minify-webpack-plugin": "^0.3.1",
     "css-loader": "^2.1.1",
     "handlebars": "^4.0.3",
     "handlebars-loader": "^1.7.1",
