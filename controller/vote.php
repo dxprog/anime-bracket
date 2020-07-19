@@ -92,6 +92,9 @@ namespace Controller {
                     case 'vimeo':
                         $retVal = 'Watch on Vimeo';
                         break;
+                    case 'dailymotion':
+                        $retVal = 'Watch on Dailymotion';
+                        break;
                     case 'video':
                         $retVal = 'Watch Video';
                         break;
