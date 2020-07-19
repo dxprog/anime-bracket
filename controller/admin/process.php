@@ -13,7 +13,9 @@ namespace Controller\Admin {
       'm.youtube.com' => 'youtube',
       'www.youtube.com' => 'youtube',
       'vimeo.com' => 'vimeo',
-      'www.vimeo.com' => 'vimeo'
+      'www.vimeo.com' => 'vimeo',
+      'dailymotion.com' => 'dailymotion',
+      'www.dailymotion.com' => 'dailymotion'
     ];
 
     private static $EXT_TO_META_TYPE = [
