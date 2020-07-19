@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -38,12 +39,17 @@ module.exports = {
     }
   },
   output: {
-    filename: 'brakkit.js',
+    filename: 'static/brakkit.js',
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'brakkit.css'
+      filename: 'static/brakkit.css'
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, 'static/images/'), to: 'static/images/' }
+      ],
     })
   ]
 }
