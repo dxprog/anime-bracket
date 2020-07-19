@@ -79,7 +79,7 @@ footer {
 }
 
 .button {
-  @include button();
+  @include button;
 }
 
 .small-button {

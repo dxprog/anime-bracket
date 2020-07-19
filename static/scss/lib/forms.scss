@@ -1,5 +1,5 @@
 @mixin button {
-
+  @include body;
   display: inline-block;
   padding: 15px 40px;
   border-radius: 2px;
