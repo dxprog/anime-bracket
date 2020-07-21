@@ -23,7 +23,6 @@ $page-gutter: spacing(10);
 @mixin header--with-subheading {
   h2 {
     @include heading;
-    @include heading--in-header;
     @include heading--with-subheading;
   }
 }
@@ -33,6 +32,10 @@ $page-gutter: spacing(10);
   margin: 0 auto;
   padding: 0 $page-gutter;
   box-sizing: border-box;
+
+  @media screen and (max-width: $MOBILE-WIDTH) {
+    width: auto;
+  }
 }
 
 @mixin page--light {
