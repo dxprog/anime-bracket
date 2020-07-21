@@ -489,6 +489,8 @@ namespace Api {
                         $round->tier = 1;
                         $round->order = ($i + 1) % $groupSplit;
                         $round->group = floor($i / $groupSplit);
+                        $round->final = 0;
+                        $round->deleted = 0;
 
                         // Get the correct character and save their seed
                         $character1 = $characters[$seeding[$i] - 1];
@@ -500,6 +502,7 @@ namespace Api {
 
                         $round->character1Id = $character1->id;
                         $round->character2Id = $character2->id;
+
                         $round->sync();
 
                     }
