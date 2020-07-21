@@ -18,31 +18,69 @@
 <form action="/submit/?action=vote" method="post" id="vote-form">
     <ul class="voting mini-card-container">
         {{#each round}}
-            <li class="entrant1">
-                <input type="radio" name="round:{{id}}" id="entrant{{character1.id}}" value="{{character1.id}}" {{#if character1.voted}}checked="checked" disabled="disabled"{{/if}} {{#if character2.voted}}disabled="disabled"{{/if}} class="character-input" autocomplete="off" />
-                <label for="entrant{{character1.id}}" class="mini-card left">
-                    <dl>
-                        <dt>Image</dt>
-                        <dd class="image"><img src="{{character1.image}}" alt="{{character1.name}}" /></dd>
-                        <dt>Name</dt>
-                        <dd class="name">{{character1.name}}</dd>
-                        <dt>Source</dt>
-                        <dd class="source">{{character1.source}}</dd>
-                    </dl>
+            <li class="mini-card mini-card--left entrant1">
+                <input
+                    type="radio"
+                    name="round:{{id}}"
+                    id="entrant{{character1.id}}"
+                    value="{{character1.id}}"
+                    {{#if character1.voted}}checked="checked" disabled="disabled"{{/if}}
+                    class="character-input"
+                    autocomplete="off"
+                />
+                <label
+                    for="entrant{{character1.id}}"
+                    class="mini-card__content"
+                >
+                    <img
+                        src="{{character1.image}}"
+                        alt="{{character1.name}}"
+                        class="mini-card__image"
+                    />
+                    <div class="mini-card__name">{{character1.name}}</div>
+                    <div class="mini-card__source">{{character1.source}}</div>
                 </label>
+                {{#if character1.meta}}
+                    <a
+                        class="mini-card__meta mini-card__meta--{{character1.meta.type}}"
+                        href="{{character1.meta.link}}"
+                        target="_blank"
+                    >
+                        {{metaLabel character1.meta}}
+                    </a>
+                {{/if}}
             </li>
-            <li class="entrant2">
-                <input type="radio" name="round:{{id}}" id="entrant{{character2.id}}" value="{{character2.id}}" {{#if character2.voted}}checked="checked" disabled="disabled"{{/if}} {{#if character1.voted}}disabled="disabled"{{/if}} class="character-input" autocomplete="off" />
-                <label for="entrant{{character2.id}}" class="mini-card right">
-                    <dl>
-                        <dt>Image</dt>
-                        <dd class="image"><img src="{{character2.image}}" alt="{{character2.name}}" /></dd>
-                        <dt>Name</dt>
-                        <dd class="name">{{character2.name}}</dd>
-                        <dt>Source</dt>
-                        <dd class="source">{{character2.source}}</dd>
-                    </dl>
+            <li class="mini-card mini-card--right entrant2">
+                <input
+                    type="radio"
+                    name="round:{{id}}"
+                    id="entrant{{character2.id}}"
+                    value="{{character2.id}}"
+                    {{#if character2.voted}}checked="checked" disabled="disabled"{{/if}}
+                    class="character-input"
+                    autocomplete="off"
+                />
+                <label
+                    for="entrant{{character2.id}}"
+                    class="mini-card__content"
+                >
+                    <img
+                        src="{{character2.image}}"
+                        alt="{{character2.name}}"
+                        class="mini-card__image"
+                    />
+                    <div class="mini-card__name">{{character2.name}}</div>
+                    <div class="mini-card__source">{{character2.source}}</div>
                 </label>
+                {{#if character2.meta}}
+                    <a
+                        class="mini-card__meta mini-card__meta--{{character2.meta.type}}"
+                        href="{{character2.meta.link}}"
+                        target="_blank"
+                    >
+                        {{metaLabel character2.meta}}
+                    </a>
+                {{/if}}
             </li>
         {{/each}}
     </ul>

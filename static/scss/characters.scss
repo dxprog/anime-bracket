@@ -63,7 +63,6 @@
 }
 
 .mini-card {
-
   width: 380px;
   float: left;
   margin: 0 20px 20px 0;
@@ -101,8 +100,10 @@
   }
 
   &--right {
-    padding-left: 15px;
-    padding-right: 115px;
+    .mini-card__content {
+      padding-left: 15px;
+      padding-right: 115px;
+    }
 
     .mini-card__name,
     .mini-card__source {

@@ -10,11 +10,6 @@
     // Account for the footer
     padding-bottom: 158px;
     min-height: 874px + 158px;
-
-    header {
-      @include header;
-      @include header--with-subheading;
-    }
   }
 
   footer {
@@ -58,7 +53,7 @@
   .character-input {
     display: none;
 
-    & + .mini-card .image:after {
+    & + .mini-card__content:after {
       content: '';
       display: block;
       background: url(/static/images/checkmark.png);
@@ -70,46 +65,46 @@
       width: 100px;
     }
 
-    &:checked + .mini-card .image:after {
+    &:checked + .mini-card__content:after {
       opacity: 1;
     }
+  }
 
-    &:checked + .mini-card.right .image:after {
-      left: auto;
-      right: 0;
-    }
+  .mini-card--right .character-input:checked + .mini-card__content:after {
+    left: auto;
+    right: 0;
+  }
 
-    & + .left {
-      position: relative;
-      &:after {
-        content: 'vs';
-        position: absolute;
-        padding-top: 12px;
-        text-align: center;
-        @include border-box();
-        font: 28px 'Roboto Condensed', sans-serif;
-        right: -40px;
-        top: 18px;
-        color: #fff;
-        background: $standard;
-        height: 60px;
-        width: 60px;
-        overflow: hidden;
-        border-radius: 30px;
-        z-index: 9001;
-        box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
-      }
-    }
+  .mini-card--left {
+    position: relative;
+    &:after {
+      content: 'vs';
+      position: absolute;
+      padding-top: 12px;
+      text-align: center;
+      @include border-box();
+      font: 28px 'Roboto Condensed', sans-serif;
+      right: -40px;
+      top: 18px;
+      color: #fff;
+      background: $standard;
+      height: 60px;
+      width: 60px;
+      overflow: hidden;
+      border-radius: 30px;
+      z-index: 9001;
+      box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
 
-    @media screen and (max-width: 1170px) {
-      & + .left:after {
-        right: 50%;
-        margin-right: -25px;
+      @media screen and (max-width: 1170px) {
+        right: calc(50% - #{spacing(5)});
+        font-size: 24px;
+        padding-top: 2px;
         top: auto;
-        bottom: -40px;
+        bottom: -30px;
+        width: 40px;
+        height: 40px;
       }
     }
-
   }
 
   .captcha {
@@ -171,7 +166,7 @@
 
     #content {
       @include page;
-            padding: 0 spacing(4) 200px;
+      padding: 0 spacing(4) 200px;
       min-height: auto;
 
       header h2 {
