@@ -4,7 +4,7 @@ import { Route } from 'molecule-router';
 export default Route('admin-stats', {
   initRoute() {
     if (window.statsData) {
-      $.getScript('/static/js/Chart.min.js').done((script) => {
+      $.getScript('/static/Chart.min.js').done((script) => {
         const data = this.getChartData(window.statsData);
         data.datasets = [
           {
@@ -32,7 +32,6 @@ export default Route('admin-stats', {
         const canvas = document.getElementById('chart');
         canvas.setAttribute('width', $('#content').width());
         const ctx = canvas.getContext('2d');
-        console.log(Chart);
         const chart = new Chart(ctx).Line(data);
       });
     }
@@ -44,7 +43,8 @@ export default Route('admin-stats', {
     const userCount = [];
 
     data.forEach((item) => {
-      labels.push('Round ' + (item.tier + 1) + ', Group ' + String.fromCharCode(item.group + 65));
+      const label = item.tier === 0 ? 'Eliminations' : `Round ${item.tier}`;
+      labels.push(`${label}, Group ${String.fromCharCode(item.group + 65)}`);
       totalVotes.push(item.total);
       userCount.push(item.userTotal);
     });
