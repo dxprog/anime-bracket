@@ -18,6 +18,7 @@
                     value="{{character1.id}}"
                     {{#if character1.voted}}checked="checked" disabled="disabled"{{/if}}
                     class="character-input"
+                    autocomplete="off"
                 />
                 <label
                     for="entrant{{character1.id}}"
@@ -52,5 +53,6 @@
     {{/if}}
 
     <input type="hidden" name="bracketId" value="{{bracket.id}}" />
+    <input type="hidden" name="_auth" value="{{csrfToken}}" />
     <button type="submit" class="button">Submit Votes</button>
 </form>
