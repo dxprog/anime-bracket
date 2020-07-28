@@ -300,15 +300,39 @@ namespace Controller\Admin {
       $name = Lib\Url::Post('name');
       $source = Lib\Url::Post('source');
       $action = Lib\Url::Post('action');
-      if ($id && $action) {
+      $imageFile = Lib\Url::Post('imageFile');
+      $metaLink = Lib\Url::Post('metaLink');
+
+      if (($id && $action) || $action === 'create') {
         $out->action = $action;
-        $character = Api\Character::getById($id);
+
+        $character = null;
+        if ($action === 'create') {
+          $character = new Api\Character();
+          $character->bracketId = $bracket->id;
+        } else {
+          $character = Api\Character::getById($id);
+        }
+
         if ($character && $character->bracketId == $bracket->id) {
-          if ($action == 'update') {
+          if ($action == 'update' || $action == 'create') {
             if ($name) {
               $character->name = $name;
               $character->source = $source;
+              $character->meta = self::_processMeta($metaLink);
+
               if ($character->sync()) {
+                // Update the image if one was sent along. Doing this after syncing
+                // to the database ensures we've got an ID for newly created characters
+                if ($imageFile) {
+                  $imageFile = $imageFile{0} === '/' ? '.' . $imageFile : $imageFile;
+                  $image = Lib\ImageLoader::loadImage($imageFile);
+                  if ($image) {
+                    imagejpeg($image->image, IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
+                    imagedestroy($image->image);
+                  }
+                }
+
                 $out->success = true;
               } else {
                 $out->message = 'Error updating database';
@@ -349,7 +373,7 @@ namespace Controller\Admin {
     private static function _processMeta($link) {
       $retVal = null;
 
-      if ($link) {
+      if (trim($link)) {
         $urlTokens = parse_url($link);
         if ($urlTokens) {
           $retVal = (object) [ 'link' => $link ];

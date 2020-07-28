@@ -1,5 +1,9 @@
 import $ from 'jquery';
 import { Route } from 'molecule-router';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import AdminEntrantList from '../../components/AdminEntrantList';
 
 const LOADING = 'loading';
 
@@ -55,9 +59,21 @@ export default Route('admin-characters', {
   },
 
   initRoute() {
-    this._$admin = $('#admin');
-    $('.characters')
-      .on('click', 'button.update', this._updateCharacter.bind(this))
-      .on('click', 'button.delete', this.deleteConfirmation.bind(this));
+    if (false) {
+      ReactDOM.render(
+        (
+          <AdminEntrantList
+            entrants={window.initData.characters}
+            bracket={window.initData.bracket}
+          />
+        ),
+        document.getElementById('characterList')
+      );
+    } else {
+      this._$admin = $('#admin');
+      $('.characters')
+        .on('click', 'button.update', this._updateCharacter.bind(this))
+        .on('click', 'button.delete', this.deleteConfirmation.bind(this));
+    }
   }
 });
