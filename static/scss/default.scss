@@ -80,6 +80,14 @@ footer {
 
 .button {
   @include button;
+
+  &--secondary {
+    background-color: get-color(gray);
+  }
+
+  &--small {
+    @include button--small;
+  }
 }
 
 .small-button {

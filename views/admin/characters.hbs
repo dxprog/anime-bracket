@@ -1,7 +1,7 @@
 <header>
   <h2>Edit Entrants - <span>{{bracket.name}}</span></h2>
 </header>
-<div class="section characters">
+<div class="section characters" id="characterList">
   <table data-bracket="{{bracket.perma}}" data-type="character" class="admin-table">
     <thead>
       <th>Character</th>
@@ -32,4 +32,10 @@
       {{/each}}
     </tbody>
   </table>
+  <script>
+    window.initData = {
+      bracket: {{{jsonBlob bracket}}},
+      characters: {{{jsonBlob characters}}}
+    };
+  </script>
 </div>

@@ -1,0 +1,54 @@
+.entrant-modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(#000, .7);
+  z-index: 9001;
+
+  &__window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 640px;
+    background: #fff;
+    box-shadow: 0 0 3px rgba(#000, .2);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1 1 0;
+  }
+
+  &__crop,
+  &__form {
+    width: 50%;
+  }
+
+  &__form .input-group__text {
+    // TODO: when everything else is nice, don't important this
+    width: 100% !important;
+  }
+
+  &__crop-image {
+    max-width: 300px;
+  }
+
+  &__actions {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+    .button {
+      margin-left: 10px;
+    }
+  }
+}
+
+.input-group {
+  &__text {
+    width: 100%;
+    display: block;
+  }
+}
