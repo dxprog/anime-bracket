@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { Route } from 'molecule-router';
 
 import Nominee from '@views/admin/nominee.hbs';
+import '../../../scss/jquery.Jcrop.min.scss';
 
 const CHECKED = 'checked';
 const UPLOAD_ENDPOINT = '/me/image/upload/';
