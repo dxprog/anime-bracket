@@ -6,6 +6,26 @@ import './EntrantModal.scss';
 
 const IMAGE_WIDTH = 150;
 const IMAGE_HEIGHT = 150;
+const ACCEPTED_FORMATS = [
+  'image/jpeg',
+  'image/gif',
+  'image/png'
+];
+
+const EmptyImageLockup = ({ onFileUpload }) => (
+  <div className="file-upload">
+    <input
+      className="file-upload__input"
+      type="file"
+      onChange={onFileUpload}
+      id="imageUpload"
+    />
+    <label htmlFor="imageUpload" className="file-upload__label">
+      <img src="/static/images/upload-icon.svg" className="file-upload__icon" />
+      <span className="file-upload__cta">Upload Picture</span>
+    </label>
+  </div>
+);
 
 const EntrantModal = ({
   entrant,
@@ -45,6 +65,38 @@ const EntrantModal = ({
     });
   };
 
+  const handleFileUpload = async (evt) => {
+    const { files } = evt.target;
+    if (!files.length) {
+      return;
+    }
+
+    const [ file ] = files;
+    if (ACCEPTED_FORMATS.indexOf(file.type) === -1) {
+      alert('Image must be a JPEG, GIF, or PNG');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('upload', file);
+
+    const data = await fetch('/me/image/upload/', {
+      method: 'POST',
+      headers: { 'X-FileName': file.name },
+      body: formData
+    }).then(response => response.json());
+
+    if (data.success) {
+      setNewEntrant({
+        ...newEntrant,
+        image: data.fileName
+      });
+    } else {
+      alert(data.message);
+    }
+
+  };
+
   const handleSubmitClick = () => {
     // Ensure the crop coordinates are scaled correctly
     // depending on how the image was displayed
@@ -57,7 +109,7 @@ const EntrantModal = ({
       crop.height *= scaleY;
     }
 
-    onSubmit(isDataDirty && newEntrant, isCropDirty && crop)
+    onSubmit(isDataDirty && newEntrant, isCropDirty && crop);
   };
 
   return (
@@ -67,15 +119,19 @@ const EntrantModal = ({
     >
       <div className="entrant-modal__window">
         <div className="entrant-modal__crop">
-          <ReactCrop
-            src={entrant.image}
-            className="entrant-modal__crop-image"
-            crop={crop}
-            minWidth={IMAGE_WIDTH}
-            minHeight={IMAGE_HEIGHT}
-            onChange={handleCropChange}
-            onImageLoaded={setImage}
-          />
+          {newEntrant.image ? (
+            <ReactCrop
+              src={newEntrant.image}
+              className="entrant-modal__crop-image"
+              crop={crop}
+              minWidth={IMAGE_WIDTH}
+              minHeight={IMAGE_HEIGHT}
+              onChange={handleCropChange}
+              onImageLoaded={setImage}
+            />
+          ) : (
+            <EmptyImageLockup onFileUpload={handleFileUpload} />
+          )}
         </div>
         <div className="entrant-modal__form">
           <div className="input-group">
@@ -107,7 +163,7 @@ const EntrantModal = ({
               id="entrantSource"
               name="meta"
               className="input-group__text"
-              value={newEntrant.meta ? newEntrant.meta.link : ''}
+              value={newEntrant.meta ? newEntrant.meta : ''}
               onChange={handleFieldChange}
             />
           </div>

@@ -86,8 +86,6 @@ const AdminEntrantList = ({ entrants, bracket }) => {
           imageFile: newEntrant.image !== editingEntrant.image ? newEntrant.image : ''
         })
       }).then(res => res.json());
-
-      console.log(response);
     }
 
     setModalOpen(false);
@@ -106,7 +104,7 @@ const AdminEntrantList = ({ entrants, bracket }) => {
           <AdminEntrantItem
             onEdit={onEntrantEdit}
             onDelete={onEntrantDelete}
-            entrant={{ ...entrant, image: 'https://cdn.awwni.me/2aw4d.jpg' }}
+            entrant={entrant}
             key={`entrant${entrant.id}`}
           />
         ))}
