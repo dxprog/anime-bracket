@@ -4,6 +4,8 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/lib/ReactCrop.scss';
 import './EntrantModal.scss';
 
+const MAX_WIDTH = 600;
+const MAX_HEIGHT = 500;
 const IMAGE_WIDTH = 150;
 const IMAGE_HEIGHT = 150;
 const ACCEPTED_FORMATS = [
@@ -59,9 +61,11 @@ const EntrantModal = ({
 
   const handleFieldChange = evt => {
     setIsDataDirty(true);
+    const { value, name } = evt.target;
+    const prop = name === 'meta' ? { ...newEntrant.meta || {}, link: value } : value;
     setNewEntrant({
       ...newEntrant,
-      [evt.target.name]: evt.target.value,
+      [name]: prop,
     });
   };
 
@@ -98,18 +102,38 @@ const EntrantModal = ({
   };
 
   const handleSubmitClick = () => {
+    const adjustedCrop = { ...crop };
+    const { naturalWidth, naturalHeight } = image;
+
+    let adjustedWidth = naturalWidth;
+    let adjustedHeight = naturalHeight;
+
+    // Since the backend scales the image down to a maximum size,
+    // change the "natural" size of the image to accommodate
+    if (naturalWidth > MAX_WIDTH || naturalHeight > MAX_HEIGHT) {
+      if (naturalWidth > naturalHeight) {
+        adjustedWidth = MAX_WIDTH;
+        adjustedHeight = MAX_WIDTH * (naturalHeight / naturalWidth);
+      } else {
+        adjustedWidth = MAX_HEIGHT * (naturalWidth / naturalHeight);
+        adjustedHeight = MAX_HEIGHT;
+      }
+    }
+
     // Ensure the crop coordinates are scaled correctly
     // depending on how the image was displayed
     if (isCropDirty) {
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-      crop.x *= scaleX;
-      crop.y *= scaleY;
-      crop.width *= scaleX;
-      crop.height *= scaleY;
+      const scaleX = adjustedWidth / image.width;
+      const scaleY = adjustedHeight / image.height;
+      adjustedCrop.x *= scaleX;
+      adjustedCrop.y *= scaleY;
+      adjustedCrop.width *= scaleX;
+      adjustedCrop.height *= scaleY;
     }
 
-    onSubmit(isDataDirty && newEntrant, isCropDirty && crop);
+    console.log(adjustedCrop);
+
+    onSubmit(isDataDirty && newEntrant, isCropDirty && adjustedCrop);
   };
 
   return (
