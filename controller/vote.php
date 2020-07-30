@@ -12,8 +12,6 @@ namespace Controller {
             $user = self::_checkLogin();
             self::_enableAd();
 
-            self::_registerHelpers();
-
             $perma = array_shift($params);
             $bracket = Api\Bracket::getBracketByPerma($perma);
 
@@ -78,38 +76,6 @@ namespace Controller {
             $round->character2 = $char;
             $round->character2Id = $charId;
             $round->character2Votes = $charVotes;
-        }
-
-        private static function _registerHelpers() {
-            Lib\Display::addHelper('metaLabel', function($template, $context, $args, $source) {
-                $meta = $context->get($args);
-                $retVal = 'More info';
-
-                switch ($meta->type) {
-                    case 'youtube':
-                        $retVal = 'Watch on YouTube';
-                        break;
-                    case 'vimeo':
-                        $retVal = 'Watch on Vimeo';
-                        break;
-                    case 'dailymotion':
-                        $retVal = 'Watch on Dailymotion';
-                        break;
-                    case 'video':
-                        $retVal = 'Watch Video';
-                        break;
-                    case 'audio':
-                        $retVal = 'Listen';
-                        break;
-                    default:
-                        $url = parse_url($meta->link);
-                        $retVal = 'See more info at ' . $url['host'];
-                        break;
-                }
-
-                return $retVal;
-            });
-
         }
 
     }
