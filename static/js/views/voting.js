@@ -46,16 +46,17 @@ export default Route('voting', {
     $('.voting li').each(function() {
       let $this = $(this);
       let voted = !!$this.find('input:checked').length;
-      let name = $this.find('dd.name').text();
+      let name = $this.find('.mini-card__name').text();
       let img = $this.find('img').attr('src');
       let isFirst = $this.hasClass('entrant1');
 
       // This might actually be the most disgusting single line of code I've ever written... I'm so proud of myself!
-      markdown += ' - [' + (voted ? '**' : '~~') + name + (voted ? '**' : '~~') + '](' + img + ')' + (isFirst ? '' : '\n');
+      // 2020 update: made slightly less ugly with JS string templates!
+      markdown += ` - [' + ${voted ? '**' : '~~'}${name}${voted ? '**' : '~~'}](${img})${isFirst ? '' : '\n'}`;
     });
 
     this._$markdown.val(markdown);
-    this._$overlay.fadeIn().done(this._$markdown.focus);
+    this._$overlay.fadeIn(() => this._$markdown.select());
   },
 
   hideMarkdownModal(evt) {
