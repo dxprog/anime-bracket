@@ -116,6 +116,19 @@
     }
   }
 
+  &__seed {
+    border: 1px solid $dark;
+    position: absolute;
+    bottom: 0;
+    width: 22px;
+    text-align: center;
+    right: 280px;
+    padding: 2px;
+    font: 12px/1 'Roboto', sans-serif;
+    background: $dark;
+    color: #fff;
+  }
+
   &__meta {
     padding: spacing(2) spacing(2) spacing(2) (spacing(2) + 28px);
     display: block;
@@ -167,19 +180,6 @@
     &--link:before {
       background-image: url(/static/images/link-solid.svg);
     }
-  }
-
-  .seed {
-    border: 1px solid $dark;
-    position: absolute;
-    bottom: 0;
-    width: 22px;
-    text-align: center;
-    right: 280px;
-    padding: 2px;
-    font: 12px/1 'Roboto', sans-serif;
-    background: $dark;
-    color: #fff;
   }
 
   //

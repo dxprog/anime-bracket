@@ -11,6 +11,9 @@
                 />
                 <div class="mini-card__name">{{name}}</div>
                 <div class="mini-card__source">{{source}}</div>
+                {{#if seed}}
+                    <div class="mini-card__seed">{{seed}}</div>
+                {{/if}}
             </div>
             {{#if meta}}
                 <a
