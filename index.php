@@ -22,11 +22,17 @@ Lib\Session::start();
 
 // Check for the controller and either throw a 404 or let the controller do its thing
 $route = Lib\Url::getRoute();
-if (!class_exists('Controller\\' . $route->controller, true)) {
+if (class_exists('Controller\\' . $route->controller, true)) {
+	call_user_func([ 'Controller\\' . $route->controller, 'render' ], $route->route);
+// Catch the route being passed as the second part of the path to catch `bracket-perma/route` style URLs
+// Eventually, this will be the default, but is a hack for now.
+} else if (class_exists('Controller\\' . $route->route[0], true)) {
+	$controller = array_shift($route->route);
+	array_unshift($route->route, $route->controller);
+	call_user_func([ 'Controller\\' . $controller, 'render' ], $route->route);
+} else {
 	header('HTTP/1.1 404 Content Not Found');
 	exit;
-} else {
-	call_user_func([ 'Controller\\' . $route->controller, 'render' ], $route->route);
 }
 
 // Render the page to output
