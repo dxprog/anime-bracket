@@ -13,10 +13,17 @@ import '../scss/index.scss';
 
 Router.addRoutes({
   'index': Landing,
+  // Old URL scheme
   '/results/:perma': BracketDisplay,
   '/vote/:perma': Voting,
   '/nominate/:perma': Nominations,
   '/characters/:perma': Characters,
+  // New URL scheme
+  '/:perma/results': BracketDisplay,
+  '/:perma/vote': Voting,
+  '/:perma/nominate': Nominations,
+  '/:perma/characters': Characters,
+  // Admin
   '/me': Admin,
   '/me/*': Admin
 });
