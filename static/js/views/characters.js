@@ -3,7 +3,6 @@ import Handlebars from 'handlebars/runtime';
 import { Route } from 'molecule-router';
 
 import characterList from '@views/partials/_characterList.hbs';
-import { isBreakOrContinueStatement } from 'typescript';
 
 export default Route('characters', {
 

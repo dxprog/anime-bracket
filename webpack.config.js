@@ -34,7 +34,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [ '.ts', '.js' ],
+    extensions: [ '.js' ],
     alias: {
       '@views': path.resolve(__dirname, 'views'),
       '@scss': path.resolve(__dirname, 'static/scss')
