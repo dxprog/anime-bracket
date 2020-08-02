@@ -1,0 +1,23 @@
+<article class="info">
+  <header>
+    <h2 class="info__header">{{bracket.name}}</h2>
+  </header>
+
+  {{{rules}}}
+
+  {{#isBracketNominations bracket}}
+    <a href="/{{bracket.perma}}/nominate" class="button">Nominate Entrants</a>
+  {{/isBracketNominations}}
+
+  {{#isBracketEliminations bracket}}
+    <a href="/{{bracket.perma}}/vote" class="button">Vote Now</a>
+  {{/isBracketEliminations}}
+
+  {{#isBracketVoting bracket}}
+    <a href="/{{bracket.perma}}/vote" class="button">Vote Now</a>
+  {{/isBracketVoting}}
+
+  {{#isBracketFinal bracket}}
+    <a href="/{{bracket.perma}}/vote" class="button">See Results</a>
+  {{/isBracketFinal}}
+</article>

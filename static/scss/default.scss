@@ -25,6 +25,7 @@ h2 {
 #content {
   z-index: $BASE-INDEX + 1;
   position: relative;
+  min-height: calc(100vh - 280px);
 }
 
 .logo {

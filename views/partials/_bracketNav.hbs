@@ -2,46 +2,46 @@
   <ul class="bracket-nav__list">
     {{#isBracketNominations bracket}}
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/nominate/{{bracket.perma}}/">Nominate</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/nominate">Nominate</a>
       </li>
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/characters/{{bracket.perma}}/">Entrants</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/characters">Entrants</a>
       </li>
     {{/isBracketNominations}}
 
     {{#isBracketEliminations bracket}}
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/vote/{{bracket.perma}}/">Vote</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/vote">Vote</a>
       </li>
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/characters/{{bracket.perma}}/">Entrants</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/characters">Entrants</a>
       </li>
     {{/isBracketEliminations}}
 
     {{#isBracketVoting bracket}}
       <li class="bracket-nav__item"i>
-        <a class="bracket-nav__link" href="/vote/{{bracket.perma}}/">Vote</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/vote">Vote</a>
       </li>
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/characters/{{bracket.perma}}/">Entrants</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/characters">Entrants</a>
       </li>
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/results/{{bracket.perma}}/">Bracket Results</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/results">Bracket Results</a>
       </li>
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/stats/{{bracket.perma}}/">Entrant Stats</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/stats">Entrant Stats</a>
       </li>
     {{/isBracketVoting}}
 
     {{#isBracketFinal bracket}}
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/characters/{{bracket.perma}}/">Entrants</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/characters">Entrants</a>
       </li>
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/results/{{bracket.perma}}/">Bracket Results</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/results">Bracket Results</a>
       </li>
       <li class="bracket-nav__item">
-        <a class="bracket-nav__link" href="/stats/{{bracket.perma}}/">Entrant Stats</a>
+        <a class="bracket-nav__link" href="/{{bracket.perma}}/stats">Entrant Stats</a>
       </li>
     {{/isBracketFinal}}
   </ul>

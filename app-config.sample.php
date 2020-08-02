@@ -40,3 +40,6 @@ define('MAX_USERS_SHARING_IP', 5);
 
 // The reCAPTCHA secret key
 define('RECAPTCHA_SECRET', 'RECAPTCHA_SECRET');
+
+// The FQ domain that this site is hosted on. Used for "canonical" tags. No trailing slash
+define('CANONICAL_DOMAIN', 'https://brakkit.domain');
