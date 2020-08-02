@@ -131,8 +131,6 @@ const EntrantModal = ({
       adjustedCrop.height *= scaleY;
     }
 
-    console.log(adjustedCrop);
-
     onSubmit(isDataDirty && newEntrant, isCropDirty && adjustedCrop);
   };
 
@@ -144,15 +142,26 @@ const EntrantModal = ({
       <div className="entrant-modal__window">
         <div className="entrant-modal__crop">
           {newEntrant.image ? (
-            <ReactCrop
-              src={newEntrant.image}
-              className="entrant-modal__crop-image"
-              crop={crop}
-              minWidth={IMAGE_WIDTH}
-              minHeight={IMAGE_HEIGHT}
-              onChange={handleCropChange}
-              onImageLoaded={setImage}
-            />
+            <>
+              <ReactCrop
+                src={newEntrant.image}
+                className="entrant-modal__crop-image"
+                crop={crop}
+                minWidth={IMAGE_WIDTH}
+                minHeight={IMAGE_HEIGHT}
+                onChange={handleCropChange}
+                onImageLoaded={setImage}
+              />
+              <input
+                type="file"
+                className="file-upload__input"
+                id="changeImage"
+                onChange={handleFileUpload}
+              />
+              <label htmlFor="changeImage" className="button button--small">
+                Change Image
+              </label>
+            </>
           ) : (
             <EmptyImageLockup onFileUpload={handleFileUpload} />
           )}
