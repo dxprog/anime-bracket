@@ -33,6 +33,7 @@ const AdminEntrantList = ({ entrants, bracket }) => {
 
   const onModalSubmit = async (newEntrant, cropInfo) => {
     let error = null;
+    let forceNewImage = false;
 
     if (cropInfo) {
       // Regardless of whether information changed, we'll need to
@@ -58,6 +59,7 @@ const AdminEntrantList = ({ entrants, bracket }) => {
 
         if (response.success) {
           newEntrant.image = response.fileName;
+          forceNewImage = true;
         } else {
           error = {
             message: response.message
@@ -83,7 +85,9 @@ const AdminEntrantList = ({ entrants, bracket }) => {
           name: newEntrant.name || '',
           source: newEntrant.source || '',
           metaLink: typeof newEntrant.meta === 'string' ? newEntrant.meta : '',
-          imageFile: newEntrant.image !== editingEntrant.image ? newEntrant.image : ''
+          imageFile: (
+            newEntrant.image !== editingEntrant.image || forceNewImage
+          ) ? newEntrant.image : ''
         })
       }).then(res => res.json());
     }
