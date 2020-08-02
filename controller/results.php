@@ -19,6 +19,7 @@ namespace Controller {
                 }
                 Lib\Display::addKey('page', 'results');
                 Lib\Display::addKey('bracketNav', $bracket);
+                Lib\Display::addKey('CANONICAL_PATH', '/' . $bracket->perma . '/results');
                 Lib\Display::addKey('title', $bracket->name . ' Results' . DEFAULT_TITLE_SUFFIX);
                 Lib\Display::renderAndAddKey('content', 'results', $bracket);
             }

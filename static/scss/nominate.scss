@@ -70,6 +70,15 @@
 
       color: #eee;
 
+      h1 {
+        font-size: 30px;
+      }
+
+      h2:not(.info__header) {
+        color: get-color(white);
+        font-size: 24px;
+      }
+
       p {
         @include body-copy();
       }
@@ -98,11 +107,8 @@
   //
 
   @media screen and (max-width: $MOBILE-WIDTH) {
-
-    padding: 20px;
-
     #content {
-      padding-left: 0;
+      padding-left: 20px;
 
       h2 {
         font-size: 30px;

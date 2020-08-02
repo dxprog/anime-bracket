@@ -26,13 +26,15 @@ if (class_exists('Controller\\' . $route->controller, true)) {
 	call_user_func([ 'Controller\\' . $route->controller, 'render' ], $route->route);
 // Catch the route being passed as the second part of the path to catch `bracket-perma/route` style URLs
 // Eventually, this will be the default, but is a hack for now.
-} else if (class_exists('Controller\\' . $route->route[0], true)) {
+} else if (count($route->route) && class_exists('Controller\\' . $route->route[0], true)) {
 	$controller = array_shift($route->route);
 	array_unshift($route->route, $route->controller);
 	call_user_func([ 'Controller\\' . $controller, 'render' ], $route->route);
+// For any unrecognized URL with a "controller" in the route, pass over to the
+// Bracket view in the hopes that it's a bracket slud. If that bracket can't
+// be found, that controller will 404 the whole request
 } else {
-	header('HTTP/1.1 404 Content Not Found');
-	exit;
+	Controller\Bracket::render(array_merge([ $route->controller ], $route->route));
 }
 
 // Render the page to output

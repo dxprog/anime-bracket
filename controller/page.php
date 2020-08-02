@@ -20,6 +20,7 @@ namespace Controller {
             Lib\Display::addKey('CSS_VERSION', CSS_VERSION);
             Lib\Display::addKey('JS_VERSION', JS_VERSION);
             Lib\Display::addKey('USE_MIN', USE_MIN);
+            Lib\Display::addKey('CANONICAL_DOMAIN', CANONICAL_DOMAIN);
 
             $user = Api\User::getCurrentUser();
             Lib\Display::addKey('user', $user);
@@ -108,7 +109,9 @@ namespace Controller {
                         break;
                     default:
                         $url = parse_url($meta->link);
-                        $retVal = 'See more info at ' . $url['host'];
+                        if ($url && isset($url['host'])) {
+                            $retVal = 'See more info at ' . $url['host'];
+                        }
                         break;
                 }
 

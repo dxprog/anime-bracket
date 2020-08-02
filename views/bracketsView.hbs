@@ -17,16 +17,16 @@
                     {{/if}}
                     <ul class="actions">
                         {{#hasResults .}}
-                            <li><a href="/results/{{perma}}/">Results</a></li>
+                            <li><a href="/{{perma}}/results">Results</a></li>
                         {{/hasResults}}
                         {{#isBracketNominations .}}
-                            <li><a href="/nominate/{{perma}}/">Nominate</a></li>
+                            <li><a href="/{{perma}}/nominate">Nominate</a></li>
                         {{/isBracketNominations}}
                         {{#isBracketVoting .}}
-                            <li><a href="/vote/{{perma}}/">Vote</a></li>
+                            <li><a href="/{{perma}}/vote">Vote</a></li>
                         {{/isBracketVoting}}
                         {{#isBracketEliminations .}}
-                            <li><a href="/vote/{{perma}}/">Vote</a></li>
+                            <li><a href="/{{perma}}/vote">Vote</a></li>
                         {{/isBracketEliminations}}
                     </ul>
                 </div>

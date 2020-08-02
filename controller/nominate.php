@@ -25,6 +25,7 @@ namespace Controller {
 
                 Lib\Display::addKey('page', 'nominate');
                 Lib\Display::addKey('bracketNav', $bracket);
+                Lib\Display::addKey('CANONICAL_PATH', '/' . $bracket->perma . '/nominate');
                 Lib\Display::renderAndAddKey('content', 'nominate', $out);
             }
         }

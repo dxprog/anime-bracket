@@ -16,7 +16,7 @@
 			<p>{{featuredBracket.blurb}}</p>
 			<ul class="hero__links">
 				<li>
-					<a href="/vote/{{featuredBracket.perma}}" class="small-button">Check It Out</a>
+					<a href="/{{featuredBracket.perma}}/vote" class="small-button">Check It Out</a>
 				</li>
 				<li>
 					<a href="/brackets/" class="inverse-small-button">See Other Brackets</a>
@@ -47,7 +47,7 @@
 				{{#each topBrackets}}
 					<li>
 						<img src="{{winner.image}}" alt="{{winner.name}}" />
-						<a href="/vote/{{perma}}/">{{name}}</a>
+						<a href="/{{perma}}/vote">{{name}}</a>
 					</li>
 				{{/each}}
 			</ul>
@@ -58,7 +58,7 @@
 				{{#each pastBrackets}}
 					<li>
 						<img src="{{winner.image}}" alt="{{winner.name}}" />
-						<a href="/results/{{perma}}/">{{name}}</a>
+						<a href="/{{perma}}/results">{{name}}</a>
 					</li>
 				{{/each}}
 			</ul>

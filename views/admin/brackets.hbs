@@ -111,22 +111,22 @@
               <h5>Bracket Links</h5>
               <ul class="links">
                 {{#isBracketNominations .}}
-                  <li><a href="/nominate/{{perma}}/" target="_blank">Nominate Form</a></li>
+                  <li><a href="/{{perma}}/nominate" target="_blank">Nominate Form</a></li>
                 {{/isBracketNominations}}
                 {{#isBracketEliminations .}}
-                  <li><a href="/vote/{{perma}}/" target="_blank">Elimination Ballot</a></li>
-                  <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
+                  <li><a href="/{{perma}}/vote" target="_blank">Elimination Ballot</a></li>
+                  <li><a href="/{{perma}}/characters" target="_blank">Entered Characters</a></li>
                 {{/isBracketEliminations}}
                 {{#isBracketVoting .}}
-                  <li><a href="/vote/{{perma}}/" target="_blank">Ballot</a></li>
-                  <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
-                  <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
-                  <li><a href="/stats/{{perma}}/" target="_blank">Entrant Stats</a></li>
+                  <li><a href="/{{perma}}/vote" target="_blank">Ballot</a></li>
+                  <li><a href="/{{perma}}/characters" target="_blank">Entered Characters</a></li>
+                  <li><a href="/{{perma}}/results" target="_blank">Bracket Results</a></li>
+                  <li><a href="/{{perma}}/stats" target="_blank">Entrant Stats</a></li>
                 {{/isBracketVoting}}
                 {{#isBracketFinal .}}
-                  <li><a href="/characters/{{perma}}/" target="_blank">Entered Characters</a></li>
-                  <li><a href="/results/{{perma}}/" target="_blank">Bracket Results</a></li>
-                  <li><a href="/stats/{{perma}}/" target="_blank">Entrant Stats</a></li>
+                  <li><a href="/{{perma}}/characters" target="_blank">Entered Characters</a></li>
+                  <li><a href="/{{perma}}/results" target="_blank">Bracket Results</a></li>
+                  <li><a href="/{{perma}}/stats" target="_blank">Entrant Stats</a></li>
                 {{/isBracketFinal}}
               </ul>
             </div>
