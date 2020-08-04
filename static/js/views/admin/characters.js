@@ -59,7 +59,7 @@ export default Route('admin-characters', {
   },
 
   initRoute() {
-    if (false) {
+    if (window.initData) {
       ReactDOM.render(
         (
           <AdminEntrantList

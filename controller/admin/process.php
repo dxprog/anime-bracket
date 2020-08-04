@@ -288,6 +288,7 @@ namespace Controller\Admin {
       $cache->setDisabled(true);
       $out->characters = Api\Character::getByBracketId($bracket->id);
       $out->bracket = $bracket;
+      $out->newEntrantEditor = Lib\TestBucket::get('newEntrantEditor') === 'treatment';
       Lib\Display::renderAndAddKey('content', 'admin/characters', $out);
       $cache->setDisabled(false);
     }

@@ -14,5 +14,17 @@
                 "value": "flip"
             }
         ]
+    },
+    "newEntrantEditor": {
+        "ramps": [
+            {
+                "percent": 100,
+                "value": "control"
+            },
+            {
+                "percent": 0,
+                "value": "treatment"
+            }
+        ]
     }
 }

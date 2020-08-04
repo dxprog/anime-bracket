@@ -2,40 +2,43 @@
   <h2>Edit Entrants - <span>{{bracket.name}}</span></h2>
 </header>
 <div class="section characters" id="characterList">
-  <table data-bracket="{{bracket.perma}}" data-type="character" class="admin-table">
-    <thead>
-      <th>Character</th>
-      <th></th>
-    </thead>
-    <tbody>
-      {{#each characters}}
-        <tr data-id="{{id}}">
-          <td>
-            <div class="entrant-lockup">
-              <img class="entrant-lockup__image" src="{{image}}" alt="{{name}}" />
-              <div class="entrant-lockup__info">
-                <input class="entrant-lockup__name" type="text" name="name" value="{{name}}" />
-                <input class="entrant-lockup__source" type="text" name="source" value="{{source}}" />
+  {{#if newEntrantEditor}}
+    <script>
+      window.initData = {
+        bracket: {{{jsonBlob bracket}}},
+        characters: {{{jsonBlob characters}}}
+      };
+    </script>
+  {{else}}
+    <table data-bracket="{{bracket.perma}}" data-type="character" class="admin-table">
+      <thead>
+        <th>Character</th>
+        <th></th>
+      </thead>
+      <tbody>
+        {{#each characters}}
+          <tr data-id="{{id}}">
+            <td>
+              <div class="entrant-lockup">
+                <img class="entrant-lockup__image" src="{{image}}" alt="{{name}}" />
+                <div class="entrant-lockup__info">
+                  <input class="entrant-lockup__name" type="text" name="name" value="{{name}}" />
+                  <input class="entrant-lockup__source" type="text" name="source" value="{{source}}" />
+                </div>
               </div>
-            </div>
-          </td>
-          <td class="admin-table__actions">
-            <button class="update standard" name="action" value="update">Update</button>
-            {{#isBracketNominations ../bracket}}
-              <button class="delete" name="action" value="delete">Delete</button>
-            {{/isBracketNominations}}
-            {{#isBracketEliminations ../bracket}}
-              <button class="delete" name="action" value="delete">Delete</button>
-            {{/isBracketEliminations}}
-          </td>
-        </tr>
-      {{/each}}
-    </tbody>
-  </table>
-  <script>
-    window.initData = {
-      bracket: {{{jsonBlob bracket}}},
-      characters: {{{jsonBlob characters}}}
-    };
-  </script>
+            </td>
+            <td class="admin-table__actions">
+              <button class="update standard" name="action" value="update">Update</button>
+              {{#isBracketNominations ../bracket}}
+                <button class="delete" name="action" value="delete">Delete</button>
+              {{/isBracketNominations}}
+              {{#isBracketEliminations ../bracket}}
+                <button class="delete" name="action" value="delete">Delete</button>
+              {{/isBracketEliminations}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{/if}}
 </div>
