@@ -9,18 +9,20 @@ const AdminEntrantItem = ({
   onDelete
 }) => {
   return (
-    <li className="admin-entrant-item">
-      <div className="entrant-lockup">
-        <img className="entrant-lockup__image" src={entrant.image} alt={entrant.name} />
-        <div className="entrant-lockup__info">
-          <span className="entrant-lockup__name" type="text" name="name" value={entrant.name} />
-          <span className="entrant-lockup__source" type="text" name="source" value={entrant.source} />
+    <tr className="admin-entrant-item">
+      <td>
+        <div className="entrant-lockup">
+          <img className="entrant-lockup__image" src={entrant.image} alt={entrant.name} />
+          <div className="entrant-lockup__info">
+            <span className="entrant-lockup__name" type="text" name="name">{entrant.name}</span>
+            <span className="entrant-lockup__source" type="text" name="source">{entrant.source}</span>
+          </div>
         </div>
-      </div>
-      <div className="admin-entrant-item__actions">
-        <button onClick={() => onEdit(entrant)}>Edit</button>
-      </div>
-    </li>
+      </td>
+      <td className="admin-table__actions">
+        <button onClick={() => onEdit(entrant)} className="button button--small">Edit</button>
+      </td>
+    </tr>
   );
 };
 

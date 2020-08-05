@@ -196,7 +196,7 @@ const EntrantModal = ({
               id="entrantSource"
               name="meta"
               className="input-group__text"
-              value={newEntrant.meta ? newEntrant.meta : ''}
+              value={newEntrant.meta ? newEntrant.meta.link : ''}
               onChange={handleFieldChange}
             />
           </div>

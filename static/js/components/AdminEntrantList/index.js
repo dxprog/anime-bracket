@@ -84,7 +84,7 @@ const AdminEntrantList = ({ entrants, bracket }) => {
           characterId: newEntrant.id || 0,
           name: newEntrant.name || '',
           source: newEntrant.source || '',
-          metaLink: typeof newEntrant.meta === 'string' ? newEntrant.meta : '',
+          metaLink: newEntrant.meta && typeof newEntrant.meta.link === 'string' ? newEntrant.meta.link : '',
           imageFile: (
             newEntrant.image !== editingEntrant.image || forceNewImage
           ) ? newEntrant.image : ''
@@ -103,7 +103,7 @@ const AdminEntrantList = ({ entrants, bracket }) => {
       >
         Create Entrant
       </button>
-      <ul className="admin-entrant-list">
+      <table className="admin-table">
         {entrants.map(entrant => (
           <AdminEntrantItem
             onEdit={onEntrantEdit}
@@ -112,7 +112,7 @@ const AdminEntrantList = ({ entrants, bracket }) => {
             key={`entrant${entrant.id}`}
           />
         ))}
-      </ul>
+      </table>
       {modalOpen && (
         <EntrantModal
           entrant={editingEntrant}
