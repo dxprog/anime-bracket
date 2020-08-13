@@ -87,6 +87,13 @@
         font-size: 28px;
       }
 
+      a {
+        color: get-color(light-green);
+        &:visited {
+          color: get-color(green);
+        }
+      }
+
     }
 
     .footnote {
