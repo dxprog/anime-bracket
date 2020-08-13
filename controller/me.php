@@ -55,7 +55,7 @@ namespace Controller {
 
         protected static function _main($message = null, $force = false) {
             $out = new stdClass;
-            $out->brackets = Api\Bracket::getUserOwnedBrackets(self::$_user, $force);
+            $out->brackets = Api\Bracket::getUserOwnedBrackets(self::$_user, $force, Lib\Url::Get('all', null) === 'true');
 
             // If there's no message passed directly, check for one from cache
             $message = !$message ? self::_getStashedMessage() : $message;

@@ -198,17 +198,17 @@ namespace Api {
         /**
          * Returns brackets owned by the passed user
          */
-        public static function getUserOwnedBrackets($user, $force = false) {
+        public static function getUserOwnedBrackets($user, $force = false, $allBrackets = false) {
             $retVal = null;
 
             if ($user instanceof User) {
-                $cacheKey = 'Api:Bracket:getUserOwnedBrackets_' . implode('_', [ $user->id, BRACKET_SOURCE ]);
+                $cacheKey = 'Api:Bracket:getUserOwnedBrackets_' . implode('_', [ $user->id, BRACKET_SOURCE, $allBrackets ? 'user' : 'all' ]);
                 $cache = Lib\Cache::getInstance();
                 $retVal = $cache->get($cacheKey);
                 if (false === $retVal || $force) {
 
                     // Admins get all the fun
-                    if ($user->admin) {
+                    if ($user->admin && $allBrackets) {
                         $retVal = self::getAll(false, true);
                     } else {
                         $result = Lib\Db::Query('CALL proc_GetUserBrackets(:source, :userId)', [
