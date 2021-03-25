@@ -1,8 +1,49 @@
-import $ from 'jquery';
-import Handlebars from 'handlebars/runtime';
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import { Route } from 'molecule-router';
 
-import characterList from '@views/partials/_characterList.hbs';
+import EntrantMiniCard from '../components/EntrantMiniCard';
+import { CharacterPropTypes } from '../utils/propTypes';
+
+const sortEntrantsByName = entrants => {
+  const newEntrants = Array.from(entrants);
+  return [
+    {
+      title: 'Entrant Roster',
+      entrants: newEntrants.sort((a, b) => a.name < b.name ? -1 : 1),
+    }
+  ];
+};
+
+const EntrantsView = ({ bracket, characters }) => {
+  const [ entrantsList, setEntrantsList ] = useState([]);
+  const [ sortKey, setSortKey ] = useState(null);
+
+  // Initial population of the entrants list, sorted by name
+  useEffect(() => {
+    setEntrantsList(sortEntrantsByName(characters));
+  }, []);
+
+  return (
+    <>
+      {entrantsList.map(list => (
+        <React.Fragment key={`section-${list.title}`}>
+          <h3>{`${list.title} - ${list.entrants.length} entrants`}</h3>
+          <ul className="characters mini-card-container">
+            {list.entrants.map(entrant => (
+              <EntrantMiniCard key={`entrant-${entrant.id}`} entrant={entrant} tagName="li" />
+            ))}
+          </ul>
+        </React.Fragment>
+      ))}
+    </>
+  );
+};
+
+EntrantsView.propTypes = {
+  characters: PropTypes.arrayOf(CharacterPropTypes).isRequired,
+};
 
 export default Route('characters', {
 
@@ -80,43 +121,16 @@ export default Route('characters', {
     this._$roster.html(out);
   },
 
-  metaLabelHelper(meta) {
-    let retVal = 'More info';
-
-    switch (meta.type) {
-      case 'youtube':
-        retVal = 'Watch on YouTube';
-        break;
-      case 'vimeo':
-        retVal = 'Watch on Vimeo';
-        break;
-      case 'dailymotion':
-        retVal = 'Watch on Dailymotion';
-        break;
-      case 'video':
-        retVal = 'Watch Video';
-        break;
-      case 'audio':
-        retVal = 'Listen';
-        break;
-      default:
-        if (meta.link) {
-          const domain = /^http(s?):\/\/([^\/]+)/ig.exec(meta.link);
-          if (domain) {
-            retVal = `See more info at ${domain[2]}`;
-          }
-        }
-    }
-
-    return retVal;
-  },
-
   initRoute() {
     this._characters = window._characters;
-    this.initSortData();
-    this._$roster = $('#roster');
-    $('[name="sort"]').on('change', this.resortEntrants.bind(this));
-    Handlebars.registerHelper('metaLabel', this.metaLabelHelper.bind(this));
+    // this.initSortData();
+    // this._$roster = $('#roster');
+    // $('[name="sort"]').on('change', this.resortEntrants.bind(this));
+    // Handlebars.registerHelper('metaLabel', this.metaLabelHelper.bind(this));
+    ReactDOM.render(
+      <EntrantsView characters={window._characters} />,
+      document.getElementById('roster')
+    );
   }
 
 });
