@@ -5,6 +5,13 @@ import { Route } from 'molecule-router';
 
 import EntrantMiniCard from '../components/EntrantMiniCard';
 import { CharacterPropTypes } from '../utils/propTypes';
+import { BracketStates, sourceEnabled } from '../utils/bracket';
+
+const SortKeys = Object.freeze({
+  Name: 'name',
+  Source: 'source',
+  Seed: 'seed',
+});
 
 const sortEntrantsByName = entrants => {
   const newEntrants = Array.from(entrants);
@@ -16,17 +23,84 @@ const sortEntrantsByName = entrants => {
   ];
 };
 
+const sortEntrantsBySource = entrants => {
+  const sources = entrants.reduce((acc, entrant) => {
+    if (!acc[entrant.source]) {
+      acc[entrant.source] = [];
+    }
+    acc[entrant.source].push(entrant);
+    return acc;
+  }, {});
+  return Object.keys(sources).map(source => (
+    {
+      title: source,
+      entrants: sources[source].sort((a, b) => a.name < b.name ? -1 : 1),
+    }
+  )).sort((a, b) => a.title < b.title ? -1 : 1);
+}
+
 const EntrantsView = ({ bracket, characters }) => {
   const [ entrantsList, setEntrantsList ] = useState([]);
-  const [ sortKey, setSortKey ] = useState(null);
+  const [ sortKey, setSortKey ] = useState(SortKeys.Name);
 
   // Initial population of the entrants list, sorted by name
   useEffect(() => {
-    setEntrantsList(sortEntrantsByName(characters));
-  }, []);
+    switch (sortKey) {
+      case SortKeys.Source:
+        setEntrantsList(sortEntrantsBySource(characters));
+        break;
+      case SortKeys.Name:
+      default:
+        setEntrantsList(sortEntrantsByName(characters));
+        break;
+    }
+    console.log('changed', sortKey);
+  }, [sortKey]);
+
+  const hasSeededEntrants = bracket.state === BracketStates.Voting || bracket.state === BracketStates.Final;
 
   return (
-    <>
+    <div className="entrants-page">
+      <ul className="sorter">
+        <li className="label">Sort By:</li>
+        <li>
+            <input
+              type="radio"
+              name="sort"
+              id="nameSort"
+              value={SortKeys.Name}
+              checked={sortKey === SortKeys.Name}
+              onChange={e => setSortKey(e.target.value)}
+            />
+            <label htmlFor="nameSort">Entrant Name</label>
+        </li>
+        {hasSeededEntrants && (
+          <li>
+            <input
+              type="radio"
+              name="sort"
+              id="seedSort"
+              value={SortKeys.Seed}
+              checked={sortKey === SortKeys.Seed}
+              onChange={e => setSortKey(e.target.value)}
+            />
+            <label htmlFor="seedSort">Seed</label>
+          </li>
+        )}
+        {sourceEnabled(bracket) && (
+          <li>
+            <input
+              type="radio"
+              name="sort"
+              id="sourceSort"
+              value={SortKeys.Source}
+              checked={sortKey === SortKeys.Source}
+              onChange={e => setSortKey(e.target.value)}
+            />
+            <label htmlFor="sourceSort">{bracket.sourceLabel}</label>
+          </li>
+        )}
+      </ul>
       {entrantsList.map(list => (
         <React.Fragment key={`section-${list.title}`}>
           <h3>{`${list.title} - ${list.entrants.length} entrants`}</h3>
@@ -37,7 +111,7 @@ const EntrantsView = ({ bracket, characters }) => {
           </ul>
         </React.Fragment>
       ))}
-    </>
+    </div>
   );
 };
 
@@ -128,7 +202,7 @@ export default Route('characters', {
     // $('[name="sort"]').on('change', this.resortEntrants.bind(this));
     // Handlebars.registerHelper('metaLabel', this.metaLabelHelper.bind(this));
     ReactDOM.render(
-      <EntrantsView characters={window._characters} />,
+      <EntrantsView characters={window.bootstrap.characters} bracket={window.bootstrap.bracket} />,
       document.getElementById('roster')
     );
   }
