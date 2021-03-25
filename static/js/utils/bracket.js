@@ -9,5 +9,5 @@ export const BracketStates = Object.freeze({
 });
 
 export function sourceEnabled(bracket) {
-  return bracket.source !== 'NO_SOURCE';
+  return bracket.sourceLabel !== 'NO_SOURCE';
 }
