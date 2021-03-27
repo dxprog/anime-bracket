@@ -91,9 +91,11 @@ namespace Api {
                     $closestRound = null;
                     $lostTo = null;
                     $totalVotes = 0;
+                    $characterGroup = 0;
 
                     if (isset($characterRounds[$character->id])) {
                         $roundsForCharacter = array_values($characterRounds[$character->id]);
+                        $characterGroup = $roundsForCharacter[0]->group;
                         foreach ($roundsForCharacter as $round) {
                             // Heheheh... so gross
                             $isCharacter1 = $round->character1Id == $character->id;
@@ -127,7 +129,7 @@ namespace Api {
                         'closestRound' => $closestRound,
                         'lostTo' => $lostTo,
                         'totalVotes' => $totalVotes,
-                        'group' => chr(65 + $roundsForCharacter[0]->group)
+                        'group' => chr(65 + $characterGroup)
                     ];
 
                 }
