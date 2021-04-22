@@ -73,7 +73,7 @@ namespace Controller {
                 }, $out->brackets);
 
                 $bracketRoundData = [];
-                $result = Lib\Db::Query('SELECT bracket_id, MIN(round_group) AS current_group, MAX(round_group) AS last_group FROM `round` WHERE bracket_id IN ("' . implode('","', $bracketIds) . '") AND round_final = 0 GROUP BY bracket_id');
+                $result = Lib\Db::Query('SELECT bracket_id, MIN(round_group) AS current_group, MAX(round_group) AS last_group FROM `round` WHERE bracket_id IN ("' . implode('","', $bracketIds) . '") AND round_final = 0 AND round_deleted = 0 GROUP BY bracket_id');
                 if ($result && $result->count) {
                   while ($row = Lib\Db::Fetch($result)) {
                     $bracketRoundData[(int) $row->bracket_id] = $row;
