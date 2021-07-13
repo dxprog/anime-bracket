@@ -3,3 +3,8 @@
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
 }
+
+.admin-entrant-item .entrant-lockup__info {
+  display: flex;
+  flex-direction: column;
+}

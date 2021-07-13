@@ -9,9 +9,21 @@ function encodeFormData(obj) {
     .join('&');
 }
 
+// TODO: this needs to be moved somewhere more generic. brackets probably need models
+const BracketStates = {
+  NotStarted: 0,
+  Nominations: 1,
+  Elminations: 2,
+  Voting: 3,
+  WildCard: 4,
+  Final: 5,
+  Hidden: 6,
+};
+
 const AdminEntrantList = ({ entrants, bracket }) => {
   const [ editingEntrant, setEditingEntrant ] = useState({});
   const [ modalOpen, setModalOpen ] = useState(false);
+  const [ entrantsList, setEntrantsList ] = useState(Array.isArray(entrants) ? [ ...entrants ] : []);
 
   const onEntrantEdit = entrant => {
     setEditingEntrant(entrant);
@@ -90,6 +102,16 @@ const AdminEntrantList = ({ entrants, bracket }) => {
           ) ? newEntrant.image : ''
         })
       }).then(res => res.json());
+
+      if (response?.success) {
+        // add new entrants to the beginning of the list
+        if (!newEntrant.id) {
+          setEntrantsList([ ...entrantsList, newEntrant ]);
+        } else {
+          // replace the existing entrant with the new one
+          setEntrantsList(entrantsList.map(entrant => entrant.id === newEntrant.id ? newEntrant : entrant));
+        }
+      }
     }
 
     setModalOpen(false);
@@ -97,21 +119,26 @@ const AdminEntrantList = ({ entrants, bracket }) => {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={onEntrantCreate}
-      >
-        Create Entrant
-      </button>
+      {bracket.state < BracketStates.Voting && (
+        <button
+          type="button"
+          onClick={onEntrantCreate}
+          className="button button--small"
+        >
+          Create Entrant
+        </button>
+      )}
       <table className="admin-table">
-        {entrants.map(entrant => (
-          <AdminEntrantItem
-            onEdit={onEntrantEdit}
-            onDelete={onEntrantDelete}
-            entrant={entrant}
-            key={`entrant${entrant.id}`}
-          />
-        ))}
+        <tbody>
+          {entrantsList.map(entrant => (
+            <AdminEntrantItem
+              onEdit={onEntrantEdit}
+              onDelete={onEntrantDelete}
+              entrant={entrant}
+              key={`entrant${entrant.id}`}
+            />
+          ))}
+        </tbody>
       </table>
       {modalOpen && (
         <EntrantModal
