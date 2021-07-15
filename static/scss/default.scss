@@ -89,6 +89,10 @@ footer {
   &--small {
     @include button--small;
   }
+
+  &--critical {
+    @include button--critical;
+  }
 }
 
 .small-button {

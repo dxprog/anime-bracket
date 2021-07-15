@@ -1,10 +1,22 @@
-.admin-entrant-list__item {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 10px;
+@import '../../../scss/lib/spacing';
+
+.admin-entrant-item {
+  &__item {
+    padding-bottom: spacing(2);
+    border-bottom: 1px solid #ccc;
+    margin-bottom: spacing(2);
+  }
+
+  .entrant-lockup__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .entrant-lockup__meta {
+    margin-left: spacing(4);
+  }
 }
 
-.admin-entrant-item .entrant-lockup__info {
-  display: flex;
-  flex-direction: column;
+.admin-table__actions .button {
+  margin-left: spacing(2);
 }

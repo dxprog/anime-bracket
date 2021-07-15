@@ -17,10 +17,18 @@ const AdminEntrantItem = ({
             <span className="entrant-lockup__name" type="text" name="name">{entrant.name}</span>
             <span className="entrant-lockup__source" type="text" name="source">{entrant.source}</span>
           </div>
+          {entrant?.meta?.link && (
+            <p className="entrant-lockup__meta">
+              {entrant.meta.link}
+            </p>
+          )}
         </div>
       </td>
       <td className="admin-table__actions">
         <button onClick={() => onEdit(entrant)} className="button button--small">Edit</button>
+        {typeof onDelete === 'function' && (
+          <button onClick={() => onDelete(entrant)} className="button button--small button--critical">Delete</button>
+        )}
       </td>
     </tr>
   );

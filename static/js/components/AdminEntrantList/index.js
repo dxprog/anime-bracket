@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import AdminEntrantItem from '../AdminEntrantItem';
 import EntrantModal from '../EntrantModal';
 
+import './AdminEntrantList.scss';
+
 function encodeFormData(obj) {
   return Object.keys(obj)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
@@ -21,6 +23,8 @@ const BracketStates = {
 };
 
 const AdminEntrantList = ({ entrants, bracket }) => {
+  const canDelete = bracket.state < BracketStates.Voting;
+
   const [ editingEntrant, setEditingEntrant ] = useState({});
   const [ modalOpen, setModalOpen ] = useState(false);
   const [ entrantsList, setEntrantsList ] = useState(Array.isArray(entrants) ? [ ...entrants ] : []);
@@ -30,8 +34,36 @@ const AdminEntrantList = ({ entrants, bracket }) => {
     setModalOpen(true);
   };
 
-  const onEntrantDelete = entrant => {
+  const onEntrantDelete = async entrant => {
+    // hard exit if the bracket is in voting mode
+    if (!canDelete) {
+      window.alert('Cannot delete entrants after a bracket has passed the elmination round.');
+      return;
+    }
 
+    const confirmDelete = window.confirm(`Any cast votes for ${entrant.name} will be lost and cannot be recovered. Are you sure you want to proceed?`);
+    if (confirmDelete) {
+      try {
+        const response = await fetch(`/me/process/${bracket.perma}/character`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: encodeFormData({
+            action: 'delete',
+            characterId: entrant.id,
+          })
+        }).then(res => res.json());
+
+        if (response.success) {
+          setEntrantsList(entrantsList.filter(listEntrant => listEntrant.id !== entrant.id));
+        } else {
+          throw new Error('Server barfed');
+        }
+      } catch (err) {
+        window.alert(`Encountered an error deleting ${entrant.name}: ${err}`);
+      }
+    }
   };
 
   const onEntrantCreate = () => {
@@ -133,7 +165,7 @@ const AdminEntrantList = ({ entrants, bracket }) => {
           {entrantsList.map(entrant => (
             <AdminEntrantItem
               onEdit={onEntrantEdit}
-              onDelete={onEntrantDelete}
+              onDelete={canDelete && onEntrantDelete}
               entrant={entrant}
               key={`entrant${entrant.id}`}
             />
