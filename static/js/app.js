@@ -8,6 +8,7 @@ import Nav from './views/nav';
 import Nominations from './views/nominations';
 import Voting from './views/voting';
 import Admin from './views/admin';
+import EntrantStats from './pages/Stats';
 
 import '../scss/index.scss';
 
@@ -18,11 +19,13 @@ Router.addRoutes({
   '/vote/:perma': Voting,
   '/nominate/:perma': Nominations,
   '/characters/:perma': Characters,
+  '/stats/:perma': EntrantStats,
   // New URL scheme
   '/:perma/results': BracketDisplay,
   '/:perma/vote': Voting,
   '/:perma/nominate': Nominations,
   '/:perma/characters': Characters,
+  '/:perma/stats': EntrantStats,
   // Admin
   '/me': Admin,
   '/me/*': Admin

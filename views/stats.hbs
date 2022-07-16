@@ -2,55 +2,10 @@
   <h2>{{bracket.name}}</h2>
 </header>
 <h3>Entrant Statistics</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Entrant</th>
-      <th class="votes">Votes</th>
-      <th>Closest Match</th>
-      <th>Lost To</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each entrants}}
-      <tr class="entrant-row" id="entrant-{{character.id}}">
-        <td>
-          {{>_entrantImage character=character}}
-          <h4>{{character.name}}</h4>
-          <h5>Group {{group}}</h5>
-        </td>
-        <td>
-          {{totalVotes}}
-        </td>
-        <td>
-          {{#if closestRound}}
-            <a href="#entrant-{{closestRound.character.id}}">
-              {{>_entrantImage character=closestRound.character}}
-              <h4>{{closestRound.character.name}}</h4>
-              <h5>Round {{closestRound.round.tier}}</h5>
-              <h5>{{closestRound.difference}} vote difference</h5>
-            </a>
-          {{else}}
-            N/A
-          {{/if}}
-        </td>
-        <td>
-          {{#if lostTo}}
-            <a href="#entrant-{{lostTo.character.id}}">
-              {{>_entrantImage character=lostTo.character}}
-              <h4>{{lostTo.character.name}}</h4>
-              <h5>Round {{lostTo.round.tier}}</h5>
-              <h5>
-                {{#if lostTo.lostBy}}
-                  Lost by {{lostTo.lostBy}} votes
-                {{else}}
-                  Lost to higer seed
-                {{/if}}
-              </h5>
-            </a>
-          {{/if}}
-        </td>
-      </td>
-    {{/each}}
-  </tbody>
-</table>
+<div id="reactApp"></div>
+<script>
+  window._appData = {
+    bracket: {{{jsonBlob bracket}}},
+    entrants: {{{jsonBlob entrants}}},
+  };
+</script>

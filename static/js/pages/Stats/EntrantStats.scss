@@ -1,0 +1,88 @@
+@import '@scss/globals';
+
+#page-stats {
+  #content {
+    @include page;
+    @include page--light;
+
+    header {
+      @include header;
+      @include header--in-light-page;
+    }
+  }
+
+  h3 {
+    @include sub-heading;
+    color: $dark;
+  }
+}
+
+.entrant-stats {
+  width: 100%;
+
+  &__header {
+    @include body--inverse;
+    @include body--large;
+    text-transform: uppercase;
+    padding: spacing(2) spacing(6);
+    background-color: get-color(dark-gray);
+
+    &--name {
+      text-align: left;
+      border-right: 10px solid #fff;
+    }
+
+    &--group {
+      border-right: 10px solid #fff;
+    }
+
+    &--image {
+      padding: 0;
+    }
+
+    &--votes {
+      background-color: get-color(dark-green);
+    }
+
+    &--lost-to {
+      background-color: get-color(dark-red);
+      text-align: left;
+    }
+  }
+
+  &__image {
+    max-width: spacing(10);
+    max-height: spacing(10);
+    display: block;
+  }
+
+  &__row:hover {
+    .entrant-stats__col {
+      background-color: get-color(light-green);
+    }
+  }
+
+  &__col {
+    @include body;
+    padding: 0 spacing(6);
+    background-color: get-color(light-gray);
+    text-align: center;
+
+    &--image {
+      padding: 0;
+    }
+
+    &--name,
+    &--lost-to {
+      text-align: left;
+    }
+
+    &--name {
+      border-right: 10px solid #fff;
+    }
+
+    &--group {
+      border-right: 10px solid #fff;
+    }
+  }
+}
