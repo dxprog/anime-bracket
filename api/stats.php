@@ -114,7 +114,13 @@ namespace Api {
                                 ];
                             }
 
-                            $lost = ($isCharacter1 && $round->character1Votes < $round->character2Votes) || (!$isCharacter1 && $round->character2Votes < $round->character1Votes);
+                            // check for a tie, the loser is the lower seed
+                            if ($round->character1Votes !== $round->character2Votes) {
+                                $lost = ($isCharacter1 && $round->character1Votes < $round->character2Votes) || (!$isCharacter1 && $round->character2Votes < $round->character1Votes);
+                            } else {
+                                $lost = ($isCharacter1 && $round->character1->seed > $round->character2->seed) || (!$isCharacter1 && $round->character2->seed > $round->character1->seed);
+                            }
+
                             $lostTo = $lost ? (object)[
                                 'character' => $isCharacter1 ? $round->character2 : $round->character1,
                                 'lostBy' => $diff,
