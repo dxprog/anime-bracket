@@ -40,7 +40,13 @@
               {{>_entrantImage character=lostTo.character}}
               <h4>{{lostTo.character.name}}</h4>
               <h5>Round {{lostTo.round.tier}}</h5>
-              <h5>Lost by {{lostTo.lostBy}} votes</h5>
+              <h5>
+                {{#if lostTo.lostBy}}
+                  Lost by {{lostTo.lostBy}} votes
+                {{else}}
+                  Lost to higer seed
+                {{/if}}
+              </h5>
             </a>
           {{/if}}
         </td>
