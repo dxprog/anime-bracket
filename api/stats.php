@@ -142,7 +142,7 @@ namespace Api {
 
                 return $retVal;
 
-            }, 'Stats::PerformanceStats_' . $bracket->id, $force);
+            }, 'Stats::PerformanceStats_v2_' . $bracket->id, $force);
 
         }
 
