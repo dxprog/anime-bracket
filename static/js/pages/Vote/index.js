@@ -5,30 +5,34 @@ import { Route } from 'molecule-router';
 import { AuthContextProvider, useAuth } from '@src/hooks/useAuth';
 
 import { BallotEntrant } from './components/BallotEntrant';
+import { useVoteForm } from './useVoteForm';
 
 const Vote = ({ rounds, bracket, showCaptcha }) => {
   const { csrfToken } = useAuth();
+  const { ballot, selectEntrant } = useVoteForm({ rounds, bracket });
 
   return (
     <>
       <p className="message hidden"></p>
-      <form action="/submit/?action=vote" method="post" id="vote-form">
+      <div id="vote-form">
         <ul className="voting mini-card-container">
-          {rounds.map(round => {
-            const { character1, character2 } = round;
+          {Object.keys(ballot).map(roundId => {
+            const { character1, character2 } = ballot[roundId];
             return (
               <>
                 <li
                   className="mini-card mini-card--left entrant1"
                   key={`entrant-${character1.id}`}
+                  onClick={() => selectEntrant({ roundId, entrantId: character1.id })}
                 >
-                  <BallotEntrant roundId={round.id} {...character1} />
+                  <BallotEntrant roundId={roundId} {...character1} />
                 </li>
                 <li
                   className="mini-card mini-card--right entrant2"
                   key={`entrant-${character2.id}`}
+                  onClick={() => selectEntrant({ roundId, entrantId: character2.id })}
                 >
-                  <BallotEntrant roundId={round.id} {...character2} />
+                  <BallotEntrant roundId={roundId} {...character2} />
                 </li>
               </>
             );
@@ -45,7 +49,7 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
         <button type="submit" className="button">
           Submit Votes
         </button>
-      </form>
+      </div>
     </>
   );
 };

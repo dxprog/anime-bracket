@@ -1,21 +1,20 @@
 import React from 'react';
+import classnames from 'classnames';
 
-export const BallotEntrant = ({ roundId, id, voted, image, name, source, meta }) => (
+export const BallotEntrant = ({
+  roundId, id, voted, selected, image, name, source, meta
+}) => (
   <>
-    <input
-      type="radio"
-      name={`round:${roundId}`}
-      id={`entrant${id}`}
-      checked={voted}
-      disabled={voted}
-      className="character-input"
-      autoComplete="off"
-    />
-    <label htmlFor={`entrant${id}`} className="mini-card__content">
+    <div
+      className={classnames(
+        'mini-card__content',
+        { 'mini-card__content--selected' : selected }
+      )}
+    >
       <img src={image} alt={name} className="mini-card__image" />
       <div className="mini-card__name">{name}</div>
       {source && <div className="mini-card__source">{source}</div>}
-    </label>
+    </div>
     {meta && (
       <a
         className={`mini-card__meta mini-card__meta--${meta.type}`}

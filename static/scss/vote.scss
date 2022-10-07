@@ -50,10 +50,10 @@
     cursor: pointer;
   }
 
-  .character-input {
-    display: none;
+  .mini-card__content {
+    cursor: pointer;
 
-    & + .mini-card__content:after {
+    &:after {
       content: '';
       display: block;
       background: url(/static/images/checkmark.png);
@@ -65,12 +65,12 @@
       width: 100px;
     }
 
-    &:checked + .mini-card__content:after {
+    &--selected:after {
       opacity: 1;
     }
   }
 
-  .mini-card--right .character-input:checked + .mini-card__content:after {
+  .mini-card--right .mini-card__content--selected:after {
     left: auto;
     right: 0;
   }
