@@ -623,7 +623,7 @@ namespace Api {
             $permaOkay = false;
             $counter = 0;
             while (!$permaOkay) {
-                $this->createQuery()
+                $result = $this->createQuery()
                     ->select('id')
                     ->where('perma', $perma)
                     ->execute();
