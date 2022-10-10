@@ -60,7 +60,7 @@ export const useVoteForm = ({ rounds, bracket }) => {
       if (!round.character1.voted && round.character1.selected) {
         formData.append(`round:${roundId}`, round.character1.id);
       } else if (!round.character2.voted && round.character2.selected) {
-        formData.append(`round:${roundId}`, round.character1.id);
+        formData.append(`round:${roundId}`, round.character2.id);
       }
     });
 
