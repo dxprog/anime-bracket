@@ -31,8 +31,6 @@ export const useVoteForm = ({ rounds, bracket }) => {
       return;
     }
 
-    console.log(roundId, entrantId);
-
     const updatedRound = {
       ...roundProps,
       // update the selected state of each character such that:
@@ -50,10 +48,38 @@ export const useVoteForm = ({ rounds, bracket }) => {
 
     setBallot({ ...ballot, [roundId]: updatedRound });
   };
+  // round:312787: 231636
+  // bracketId: 6433
+  // _auth: 64ede22054670f1b
+  const submitVotes = async (csrfToken) => {
+    const formData = new FormData();
+    setLoading(true);
+
+    Object.keys(ballot).forEach(roundId => {
+      const round = ballot[roundId];
+      if (!round.character1.voted && round.character1.selected) {
+        formData.append(`round:${roundId}`, round.character1.id);
+      } else if (!round.character2.voted && round.character2.selected) {
+        formData.append(`round:${roundId}`, round.character1.id);
+      }
+    });
+
+    formData.append('bracketId', bracket.id);
+    formData.append('_auth', csrfToken);
+
+    const data = await fetch('/submit/?action=vote', {
+      method: 'POST',
+      body: formData,
+    }).then(response => response.json());
+
+    setLoading(false);
+    return data;
+  };
 
   return {
     ballot,
     loading,
     selectEntrant,
+    submitVotes,
   }
 };

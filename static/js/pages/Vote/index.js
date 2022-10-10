@@ -1,4 +1,5 @@
-import React from 'react';
+import classnames from 'classnames';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Route } from 'molecule-router';
 
@@ -8,12 +9,41 @@ import { BallotEntrant } from './components/BallotEntrant';
 import { useVoteForm } from './useVoteForm';
 
 const Vote = ({ rounds, bracket, showCaptcha }) => {
+  const [ messageText, setMessageText ] = useState('');
+  const [ messageError, setMessageError ] = useState(false);
+
   const { csrfToken } = useAuth();
-  const { ballot, selectEntrant } = useVoteForm({ rounds, bracket });
+  const {
+    ballot,
+    loading,
+    selectEntrant,
+    submitVotes,
+  } = useVoteForm({ rounds, bracket });
+
+  const handleSubmitClick = async () => {
+    try {
+      const response = await submitVotes(csrfToken);
+      setMessageError(!response.success);
+      setMessageText(response.message);
+    } catch (err) {
+      setMessageText('Encountered an error submitting votes');
+      setMessageError(true);
+    }
+    window.scroll({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <>
-      <p className="message hidden"></p>
+      <p
+        className={classnames(
+          'message',
+          {
+            'hidden': !messageText,
+            'success': !messageError,
+          },
+        )}
+        dangerouslySetInnerHTML={{ __html: messageText }}
+      />
       <div id="vote-form">
         <ul className="voting mini-card-container">
           {Object.keys(ballot).map(roundId => {
@@ -44,9 +74,12 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
             <div class="g-recaptcha" data-sitekey="6LdLPWgUAAAAAMWUFDYKtMFz0ppFaWI6DbEarLjj"></div>
           </div>
         )}
-        <input type="hidden" name="bracketId" value={bracket.id} />
-        <input type="hidden" name="_auth" value={csrfToken} />
-        <button type="submit" className="button">
+        <button
+          type="button"
+          className="button"
+          onClick={handleSubmitClick}
+          disabled={loading}
+        >
           Submit Votes
         </button>
       </div>
