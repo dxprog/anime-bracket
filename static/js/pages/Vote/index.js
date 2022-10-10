@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { Route } from 'molecule-router';
 
@@ -11,7 +11,7 @@ import { useVoteForm } from './useVoteForm';
 const Vote = ({ rounds, bracket, showCaptcha }) => {
   const [ messageText, setMessageText ] = useState('');
   const [ messageError, setMessageError ] = useState(false);
-
+  const [ hasCastVotes, setHasCastVotes ] = useState(false);
   const { csrfToken } = useAuth();
   const {
     ballot,
@@ -19,6 +19,10 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
     selectEntrant,
     submitVotes,
   } = useVoteForm({ rounds, bracket });
+
+  useMemo(() => {
+    setHasCastVotes(Object.keys(ballot).find(roundId => ballot[roundId].voted));
+  }, [ ballot ]);
 
   const handleSubmitClick = async () => {
     try {
@@ -31,6 +35,27 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
       console.error(err);
     }
     window.scroll({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCopyClick = async () => {
+    let markdownStr = Object.keys(ballot).reduce((acc, roundId) => {
+      const { character1, character2 } = ballot[roundId];
+      const character1Md = `[${character1.voted ? '**' : '~~'}${character1.name}${character1.voted ? '**' : '~~'}](${character1.image})`;
+      const character2Md = `[${character2.voted ? '**' : '~~'}${character2.name}${character2.voted ? '**' : '~~'}](${character2.image})`;
+      return `${acc}- ${character1Md} - ${character2Md}\n`;
+    }, '');
+
+    // try to share via the browser's share function, otherwise straight to
+    // clipboard if allowed
+    if (navigator.canShare) {
+      navigator.share(markdownStr);
+    } else {
+      const { state } = await navigator.permissions.query({ name: 'clipboard-write' });
+      if (state === 'granted' || state === 'prompt') {
+        navigator.clipboard.writeText(markdownStr);
+        alert('Vote markdown copied to clipboard!');
+      }
+    }
   };
 
   return (
@@ -46,6 +71,17 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
         )}
         dangerouslySetInnerHTML={{ __html: messageText }}
       />
+      {hasCastVotes && (
+        <div className="votes-code">
+          <button
+            type="button"
+            className="small-button"
+            onClick={handleCopyClick}
+          >
+            Share Votes as Markdown
+          </button>
+        </div>
+      )}
       <div id="vote-form">
         <ul className="voting mini-card-container">
           {Object.keys(ballot).map(roundId => {
