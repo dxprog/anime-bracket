@@ -6,8 +6,10 @@ import Characters from './views/characters';
 import Landing from './views/landing';
 import Nav from './views/nav';
 import Nominations from './views/nominations';
-import Voting from './views/voting';
 import Admin from './views/admin';
+
+// react migrated pages
+import Voting from './pages/Vote';
 import EntrantStats from './pages/Stats';
 
 import '../scss/index.scss';
