@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 
 export const useVoteForm = ({ rounds, bracket }) => {
-  const [ ballot, setBallot ] = useState([]);
+  const [ ballot, setBallot ] = useState({});
   const [ loading, setLoading ] = useState(false);
 
   // re-map the initial data as { ...roundId: roundData }
@@ -67,13 +67,33 @@ export const useVoteForm = ({ rounds, bracket }) => {
     formData.append('bracketId', bracket.id);
     formData.append('_auth', csrfToken);
 
-    const data = await fetch('/submit/?action=vote', {
+    const response = await fetch('/submit/?action=vote', {
       method: 'POST',
       body: formData,
-    }).then(response => response.json());
+    }).then(res => res.json());
+
+    // if the vote went through successfully, update the submitted vote info
+    if (response && response.success) {
+      setBallot(Object.keys(ballot).reduce((acc, roundId) => {
+        const { character1, character2, ...roundProps } = ballot[roundId];
+        acc[roundId] = {
+          roundProps,
+          voted: character1.selected || character2.selected,
+          character1: {
+            ...character1,
+            voted: character1.selected,
+          },
+          character2: {
+            ...character2,
+            voted: character2.selected,
+          }
+        };
+        return acc;
+      }, {}));
+    }
 
     setLoading(false);
-    return data;
+    return response;
   };
 
   return {

@@ -28,6 +28,7 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
     } catch (err) {
       setMessageText('Encountered an error submitting votes');
       setMessageError(true);
+      console.error(err);
     }
     window.scroll({ top: 0, behavior: 'smooth' });
   };
