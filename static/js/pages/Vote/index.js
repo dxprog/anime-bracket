@@ -40,6 +40,7 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
           {
             'hidden': !messageText,
             'success': !messageError,
+            'error': messageError,
           },
         )}
         dangerouslySetInnerHTML={{ __html: messageText }}
