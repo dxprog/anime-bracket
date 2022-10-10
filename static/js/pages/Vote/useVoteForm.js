@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react';
 export const useVoteForm = ({ rounds, bracket }) => {
   const [ ballot, setBallot ] = useState({});
   const [ loading, setLoading ] = useState(false);
+  const [ captchaResponse, setCaptchaResponse ] = useState(null);
 
   // re-map the initial data as { ...roundId: roundData }
   useMemo(() => {
@@ -67,6 +68,10 @@ export const useVoteForm = ({ rounds, bracket }) => {
     formData.append('bracketId', bracket.id);
     formData.append('_auth', csrfToken);
 
+    if (captchaResponse) {
+      formData.append('g-recaptcha-response', captchaResponse);
+    }
+
     const response = await fetch('/submit/?action=vote', {
       method: 'POST',
       body: formData,
@@ -101,5 +106,6 @@ export const useVoteForm = ({ rounds, bracket }) => {
     loading,
     selectEntrant,
     submitVotes,
+    setCaptchaResponse,
   }
 };

@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import React, { useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { Route } from 'molecule-router';
 
 import { AuthContextProvider, useAuth } from '@src/hooks/useAuth';
@@ -18,6 +19,7 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
     loading,
     selectEntrant,
     submitVotes,
+    setCaptchaResponse,
   } = useVoteForm({ rounds, bracket });
 
   useMemo(() => {
@@ -107,9 +109,11 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
           })}
         </ul>
         {showCaptcha && (
-          <div class="captcha">
-            <script src="https://www.google.com/recaptcha/api.js"></script>
-            <div class="g-recaptcha" data-sitekey="6LdLPWgUAAAAAMWUFDYKtMFz0ppFaWI6DbEarLjj"></div>
+          <div className="captcha">
+            <ReCAPTCHA
+              sitekey="6LdLPWgUAAAAAMWUFDYKtMFz0ppFaWI6DbEarLjj"
+              onChange={setCaptchaResponse}
+            />
           </div>
         )}
         <button
@@ -128,10 +132,10 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
 // ...I hate this route nonsense...
 export default Route('vote', {
   initRoute() {
-    const { bracket, round, userId, csrfToken } = window._appData;
+    const { bracket, round, userId, csrfToken, showCaptcha } = window._appData;
     ReactDOM.render((
       <AuthContextProvider value={{ userId, csrfToken }}>
-        <Vote bracket={bracket} rounds={round} />
+        <Vote bracket={bracket} rounds={round} showCaptcha={showCaptcha} />
       </AuthContextProvider>
     ), document.getElementById('reactApp'));
   }
