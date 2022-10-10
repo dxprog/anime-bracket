@@ -30,8 +30,6 @@ namespace Controller {
                     $out->showCaptcha = false;
                     $out->csrfToken = $user->csrfToken;
 
-                    $template = $out->bracket->state == BS_ELIMINATIONS ? 'eliminations' : 'voting';
-
                     switch ($bracket->captcha) {
                         case Api\Bracket::$CAPTCHA_STATUS['RANDOM']:
                             $out->showCaptcha = rand() > 0.5;
@@ -60,7 +58,7 @@ namespace Controller {
                     Lib\Display::addKey('CANONICAL_PATH', '/' . $bracket->perma . '/vote');
                     Lib\Display::addKey('title', $bracket->name . ' - Voting' . DEFAULT_TITLE_SUFFIX);
                     Lib\Display::addKey('bracketNav', $bracket);
-                    Lib\Display::renderAndAddKey('content', $template, $out);
+                    Lib\Display::renderAndAddKey('content', 'voting', $out);
                 }
             }
 

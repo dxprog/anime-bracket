@@ -5,6 +5,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { Route } from 'molecule-router';
 
 import { AuthContextProvider, useAuth } from '@src/hooks/useAuth';
+import { BracketState } from '@src/constants';
 
 import { BallotEntrant } from './components/BallotEntrant';
 import { useVoteForm } from './useVoteForm';
@@ -21,6 +22,9 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
     submitVotes,
     setCaptchaResponse,
   } = useVoteForm({ rounds, bracket });
+
+  const isVoting = bracket.state === BracketState.Voting;
+  const isEliminations = bracket.state === BracketState.Eliminations;
 
   useMemo(() => {
     setHasCastVotes(Object.keys(ballot).find(roundId => ballot[roundId].voted));
@@ -73,7 +77,10 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
         )}
         dangerouslySetInnerHTML={{ __html: messageText }}
       />
-      {hasCastVotes && (
+      {isEliminations && (
+        <p class="info">Select all entrants you want to move into the bracket.</p>
+      )}
+      {(hasCastVotes && isVoting) && (
         <div className="votes-code">
           <button
             type="button"
@@ -85,25 +92,40 @@ const Vote = ({ rounds, bracket, showCaptcha }) => {
         </div>
       )}
       <div id="vote-form">
-        <ul className="voting mini-card-container">
+        <ul
+          className={classnames(
+            'mini-card-container',
+            {
+              'voting': isVoting,
+              'eliminations': isEliminations,
+            },
+          )}
+        >
           {Object.keys(ballot).map(roundId => {
             const { character1, character2 } = ballot[roundId];
             return (
               <>
                 <li
-                  className="mini-card mini-card--left entrant1"
+                  className={classnames(
+                    'mini-card',
+                    {
+                      'mini-card--left entrant1': isVoting,
+                    },
+                  )}
                   key={`entrant-${character1.id}`}
                   onClick={() => selectEntrant({ roundId, entrantId: character1.id })}
                 >
                   <BallotEntrant roundId={roundId} {...character1} />
                 </li>
-                <li
-                  className="mini-card mini-card--right entrant2"
-                  key={`entrant-${character2.id}`}
-                  onClick={() => selectEntrant({ roundId, entrantId: character2.id })}
-                >
-                  <BallotEntrant roundId={roundId} {...character2} />
-                </li>
+                {isVoting && (
+                  <li
+                    className="mini-card mini-card--right entrant2"
+                    key={`entrant-${character2.id}`}
+                    onClick={() => selectEntrant({ roundId, entrantId: character2.id })}
+                  >
+                    <BallotEntrant roundId={roundId} {...character2} />
+                  </li>
+                )}
               </>
             );
           })}
