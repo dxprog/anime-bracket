@@ -11,11 +11,14 @@ import Admin from './views/admin';
 // react migrated pages
 import Voting from './pages/Vote';
 import EntrantStats from './pages/Stats';
+import Brackets from './pages/Brackets';
 
 import '../scss/index.scss';
 
 Router.addRoutes({
   'index': Landing,
+  '/brackets': Brackets,
+  '/brackets/:type': Brackets,
   // Old URL scheme
   '/results/:perma': BracketDisplay,
   '/vote/:perma': Voting,

@@ -1,36 +1,4 @@
-<header>
-  <h2>{{title}}</h2>
-</header>
-<ul class="brackets">
-    {{#each brackets}}
-        {{#isBracketNotHidden .}}
-            <li class="bracket-card">
-                {{>_card_image}}
-                <div class="info">
-                    {{#if winner}}
-                        <h4>{{name}}</h4>
-                    {{else}}
-                        <h3>{{name}}</h3>
-                        <h4>
-                            {{title}}
-                        </h4>
-                    {{/if}}
-                    <ul class="actions">
-                        {{#hasResults .}}
-                            <li><a href="/{{perma}}/results">Results</a></li>
-                        {{/hasResults}}
-                        {{#isBracketNominations .}}
-                            <li><a href="/{{perma}}/nominate">Nominate</a></li>
-                        {{/isBracketNominations}}
-                        {{#isBracketVoting .}}
-                            <li><a href="/{{perma}}/vote">Vote</a></li>
-                        {{/isBracketVoting}}
-                        {{#isBracketEliminations .}}
-                            <li><a href="/{{perma}}/vote">Vote</a></li>
-                        {{/isBracketEliminations}}
-                    </ul>
-                </div>
-            </li>
-        {{/isBracketNotHidden}}
-    {{/each}}
-</ul>
+<div id="reactApp"></div>
+<script type="text/javascript">
+    window._appData = {{{jsonBlob .}}};
+</script>
