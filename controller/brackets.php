@@ -23,7 +23,11 @@ namespace Controller {
                         $brackets[] = $bracket;
                     }
 
-                    if (!$active && $bracket->state == BS_FINAL) {
+                    if (
+                        !$active &&
+                        $bracket->state == BS_FINAL &&
+                        ($bracket->state != BS_HIDDEN && !$bracket->hidden)
+                    ) {
                         $brackets[] = $bracket;
                     }
                 }
