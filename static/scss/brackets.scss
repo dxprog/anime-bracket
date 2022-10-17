@@ -239,3 +239,40 @@ $BASE-INDEX: 1;
   }
 
 }
+
+.brackets-pagination {
+  text-align: center;
+  $arrow-size: 10px;
+  .button {
+    width: 0;
+    overflow: hidden;
+    color: transparent !important;
+    white-space: nowrap;
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: $arrow-size solid transparent;
+    }
+
+    &--back:before {
+      border-right-color: get-color(white);
+      left: calc(50% - #{$arrow-size / 2});
+    }
+
+    &--next:before {
+      border-left-color: get-color(white);
+      left: calc(50% + #{$arrow-size / 2});
+    }
+  }
+
+  &__page {
+    @include body;
+    @include body--inverse;
+    @include body--large;
+    padding: 0 spacing(5);
+  }
+}

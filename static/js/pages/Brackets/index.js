@@ -19,6 +19,11 @@ const Brackets = ({ brackets, title }) => {
     setPage(0);
   };
 
+  const handlePageChange = page => {
+    setPage(page);
+    window.scroll({ top: 0 });
+  }
+
   return (
     <>
       <header>
@@ -37,17 +42,19 @@ const Brackets = ({ brackets, title }) => {
       </ul>
       <div class="brackets-pagination">
         <button
-          onClick={() => setPage(page - 1)}
+          onClick={() => handlePageChange(page - 1)}
           disabled={page === 0}
-          className="button button--small"
+          className="button button--small button--back"
         >
           Previous Page
         </button>
-        <span>{page + 1} of {numPages}</span>
+        <span className="brackets-pagination__page">
+          {page + 1} of {numPages}
+        </span>
         <button
-          onClick={() => setPage(page + 1)}
+          onClick={() => handlePageChange(page + 1)}
           disabled={page + 1 === numPages}
-          className="button button--small"
+          className="button button--small button--next"
         >
           Next Page
         </button>
