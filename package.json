@@ -31,7 +31,7 @@
     "react-dom": "^16.13.1",
     "react-google-recaptcha": "^2.1.0",
     "react-image-crop": "^8.6.4",
-    "sass": "1.19.0",
+    "sass": "1.55.0",
     "sass-loader": "^13.0.2",
     "style-loader": "^0.23.1",
     "underscore": "^1.9.1",
