@@ -23,16 +23,35 @@ const Brackets = ({ brackets, title }) => {
     <>
       <header>
         <h2>{title}</h2>
-        <input onChange={evt => handleSearch(evt.target.value)} />
+        <input
+          type="text"
+          className="input input--search"
+          onChange={evt => handleSearch(evt.target.value)}
+          placeholder="Search brackets and winners"
+        />
       </header>
       <ul className="brackets">
         {displayBrackets.map(bracket => (
           <BracketCard bracket={bracket} />
         ))}
       </ul>
-      <button onClick={() => setPage(page - 1)} disabled={page === 0}>Previous Page</button>
-      <span>{page + 1} of {numPages}</span>
-      <button onClick={() => setPage(page + 1)} disabled={page + 1 === numPages}>Next Page</button>
+      <div class="brackets-pagination">
+        <button
+          onClick={() => setPage(page - 1)}
+          disabled={page === 0}
+          className="button button--small"
+        >
+          Previous Page
+        </button>
+        <span>{page + 1} of {numPages}</span>
+        <button
+          onClick={() => setPage(page + 1)}
+          disabled={page + 1 === numPages}
+          className="button button--small"
+        >
+          Next Page
+        </button>
+      </div>
     </>
   );
 };

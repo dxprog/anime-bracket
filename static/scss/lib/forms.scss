@@ -8,6 +8,12 @@
   text-decoration: none;
   border: 0;
   cursor: pointer;
+
+  &[disabled] {
+    background-color: get-color(gray);
+    color: get-color(white);
+    cursor: default;
+  }
 }
 
 @mixin button--small {
