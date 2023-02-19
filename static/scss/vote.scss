@@ -117,6 +117,39 @@
     margin-bottom: 20px;
   }
 
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 10000;
+    background: rgba(#000, .75);
+
+    &__content {
+      background: #fff;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      padding: spacing(4) spacing(8);
+      border-radius: spacing(1);
+      box-shadow: rgba(#000, .75) 5px;
+    }
+
+    &__header {
+      @include subheading();
+      @include subheading--in-light-page();
+      padding-bottom: spacing(3);
+    }
+
+    &__body {
+      @include body();
+      @include body--large();
+    }
+  }
+
 
   //
   // MOBILE STYLES
