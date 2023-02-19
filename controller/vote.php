@@ -29,6 +29,8 @@ namespace Controller {
                     $out->bracket = $bracket;
                     $out->showCaptcha = false;
                     $out->csrfToken = $user->csrfToken;
+                    $bracketMinAge = (int) $bracket->minAge;
+                    $out->meetsAgeRequirement = $bracketMinAge === 0 || $user->age <= time() - $bracketMinAge;
 
                     switch ($bracket->captcha) {
                         case Api\Bracket::$CAPTCHA_STATUS['RANDOM']:
