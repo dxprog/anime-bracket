@@ -29,7 +29,11 @@ namespace Lib {
          * Renders the page
          **/
         public static function render() {
-            echo self::$_hbEngine->render('layouts/' . self::$_layout . '.hbs', self::$_tplData);
+            echo self::renderToString();
+        }
+
+        public static function renderToString() {
+            return self::$_hbEngine->render('layouts/' . self::$_layout . '.hbs', self::$_tplData);
         }
 
         /**
@@ -71,6 +75,14 @@ namespace Lib {
          */
         public static function addKey($key, $value) {
             self::$_tplData[$key] = $value;
+        }
+
+        public static function getKey($key) {
+            return self::$_tplData[$key];
+        }
+
+        public static function resetData() {
+            self::$_tplData = [];
         }
 
         /**
