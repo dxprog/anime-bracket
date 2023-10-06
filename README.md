@@ -5,9 +5,9 @@
 A site for running standard elimination style brackets.
 
 ## Things you'll need to run brakkit
-- PHP 5.4+
+- PHP 7.x
 - MySQL/MariaDB 5.1+
-- NodeJS 0.12+ (to build static JavaScript assets)
+- NodeJS 14.x
 - memcached
 - redis
 
@@ -34,21 +34,27 @@ At this point, you'll want to set the values in `config.php` to connect to your 
 
 #### Building Static Assets
 
-You'll need node and npm for the following. If you don't have these, I recommend using [nvm](https://github.com/creationix/nvm) to install these on your system.
+You'll need node and npm for the following. If you don't have these, I recommend using [nvm](https://github.com/creationix/nvm) to install these on your system. Due to limitations with node-sass, node 14.x is the latest version of node currently supported.
 
 Once you've installed that (or if you already have node), run the following to build all of the static content:
 
 ```
 npm install
-grunt build
+npm run build
 ```
 
 This will build the following files that you'll want to ensure are served from your front-end:
 
 ```
-static/
+dist/static/
 ├─css/
 ├────anime-bracket.css
 ├─js/
 └────anime-bracket.min.js
+```
+
+While developing, you can run the static asset builder in watch mode so that the project is rebuilt as you develop:
+
+```
+npm start
 ```
