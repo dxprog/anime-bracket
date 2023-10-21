@@ -29,14 +29,10 @@ namespace Lib {
 		{
 			$retVal = false;
 
-			try {
-        if (!defined('DB_DISABLE')) {
-          self::$_conn = new PDO($dsn, $user, $pass, array( PDO::MYSQL_ATTR_FOUND_ROWS => true ));
-          self::$_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-          $retVal = true;
-        }
-			} catch (PDOException $e) {
-				self::$lastError = $e;
+			if (!defined('DB_DISABLE')) {
+				self::$_conn = new PDO($dsn, $user, $pass, array( PDO::MYSQL_ATTR_FOUND_ROWS => true ));
+				self::$_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$retVal = true;
 			}
 
 			return $retVal;

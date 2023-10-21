@@ -62,7 +62,7 @@ namespace Lib {
 
                 $path = self::getHostPath();
                 $uri = str_replace(substr($path, 0, strlen($path)  - 1), '', $uri);
-                if ($uri{0} == '/') {
+                if ($uri[0] == '/') {
                     $uri = substr($uri, 1);
                 }
 
