@@ -38,6 +38,11 @@ RUN mv composer.phar /usr/local/bin/composer
 ###
 
 WORKDIR /app
+
+# create the cache dir
+RUN mkdir ./cache
+RUN chmod 777 ./cache
+
 COPY . .
 
 # Install PHP package deps
@@ -46,6 +51,9 @@ RUN composer install
 # Build static assets
 RUN npm ci --legacy-peer-deps
 RUN npm run build
+# move Jcrop to the public static dir
+RUN mkdir ./dist/static/js/
+RUN cp ./static/js/*.js ./dist/static/js/
 
 # Database setup
 ARG DB_HOST
@@ -65,6 +73,7 @@ RUN rm anime_bracket.sql &2> /dev/null
 # generate the config files from the provided env vars
 # just some weird hurdles to make .env the single source
 # of truth for secrets and such
+ARG HTTP_UA
 ARG HANDLE_EXCEPTIONS
 ARG CORE_LOCATION
 ARG BRACKET_SOURCE

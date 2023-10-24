@@ -6,6 +6,7 @@ const CONFIG_SETS = {
     'DB_USER',
     'DB_PASS',
     'DB_NAME',
+    'HTTP_UA',
     'HANDLE_EXCEPTIONS',
   ],
   APP_CONFIG_VARS: [
