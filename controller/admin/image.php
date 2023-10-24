@@ -56,7 +56,7 @@ namespace Controller\Admin {
             $height = Lib\Url::Post('height', true);
 
             if ($imageFile && null !== $x && null !== $y && null !== $width && null !== $height) {
-                $imageFile = $imageFile{0} === '/' ? '.' . $imageFile : $imageFile;
+                $imageFile = $imageFile[0] === '/' ? '.' . $imageFile : $imageFile;
                 $image = Lib\ImageLoader::loadImage($imageFile);
                 if ($image) {
                     $image = self::_sizeUp($image->image);

@@ -136,7 +136,7 @@ namespace Controller\Admin {
         if ($nominee && $nominee->bracketId == $bracket->id) {
           if (!$ignore) {
 
-            $imageFile = $imageFile{0} === '/' ? '.' . $imageFile : $imageFile;
+            $imageFile = $imageFile[0] === '/' ? '.' . $imageFile : $imageFile;
 
             // Verify the image is an image and the correct size
             if (self::_verifyImage($imageFile)) {
@@ -326,7 +326,7 @@ namespace Controller\Admin {
                 // Update the image if one was sent along. Doing this after syncing
                 // to the database ensures we've got an ID for newly created characters
                 if ($imageFile) {
-                  $imageFile = $imageFile{0} === '/' ? '.' . $imageFile : $imageFile;
+                  $imageFile = $imageFile[0] === '/' ? '.' . $imageFile : $imageFile;
                   $image = Lib\ImageLoader::loadImage($imageFile);
                   if ($image) {
                     imagejpeg($image->image, IMAGE_LOCATION . '/' . base_convert($character->id, 10, 36) . '.jpg');
