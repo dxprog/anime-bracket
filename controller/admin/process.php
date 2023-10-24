@@ -366,7 +366,7 @@ namespace Controller\Admin {
 
     private static function _verifyImage($url) {
       $image = Lib\ImageLoader::loadImage($url);
-      $retVal = $image && imagesx($image->image) === BRACKET_IMAGE_SIZE && imagesy($image->image) === BRACKET_IMAGE_SIZE;
+      $retVal = $image && imagesx($image->image) === intVal(BRACKET_IMAGE_SIZE) && imagesy($image->image) === intVal(BRACKET_IMAGE_SIZE);
       imagedestroy($image->image);
       return $retVal;
     }
