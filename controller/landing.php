@@ -17,6 +17,7 @@ namespace Controller {
         );
         $featured = $featured[0];
         $featuredCharacters = Api\Character::queryReturnAll([ 'bracketId' => $featured->id, 'seed' => [ 'gt' => 0 ] ], [ 'seed' => 'asc' ], 100);
+        $featuredCharacters = is_array($featuredCharacters) ? $featuredCharacters : [];
         usort($featuredCharacters, function($a, $b) {
           return rand() < 0.5 ? -1 : 1;
         });
