@@ -1,21 +1,21 @@
 ###
 # ENV SET UP
 ###
-FROM debian:bookworm
+FROM debian:bullseye
 
 # Install server things
 RUN apt update && \
     apt install -y nodejs \
                    npm \
-                   php8.2 \
-                   php8.2-fpm \
-                   php8.2-gd \
-                   php8.2-curl \
-                   php8.2-memcached \
-                   php8.2-pdo \
-                   php8.2-mysql \
-                   php8.2-zip \
-                   php8.2-cli \
+                   php7.4 \
+                   php7.4-fpm \
+                   php7.4-gd \
+                   php7.4-curl \
+                   php7.4-memcached \
+                   php7.4-pdo \
+                   php7.4-mysql \
+                   php7.4-zip \
+                   php7.4-cli \
                    mariadb-server \
                    nginx \
                    memcached \
@@ -39,9 +39,11 @@ RUN mv composer.phar /usr/local/bin/composer
 
 WORKDIR /app
 
-# create the cache dir
+# create the writeable directories
 RUN mkdir ./cache
 RUN chmod 777 ./cache
+RUN mkdir ./images
+RUN chmod 777 ./images
 
 COPY . .
 
@@ -64,11 +66,15 @@ ARG DB_USER
 RUN service mariadb start && \
     mysql -e "CREATE DATABASE ${DB_NAME};" && \
     mysql -D ${DB_NAME} < database.sql && \
+    mysql -D ${DB_NAME} < animebracket.sql && \
     mysql -e "CREATE USER '${DB_USER}'@'${DB_HOST}' IDENTIFIED BY '${DB_PASS}'" && \
     mysql -e "GRANT SELECT, UPDATE, INSERT, DELETE, EXECUTE ON ${DB_NAME}.* TO '${DB_USER}'@'${DB_HOST}'; FLUSH PRIVILEGES;"
 
 # we don't need the giant dump file hanging around
-RUN rm anime_bracket.sql &2> /dev/null
+RUN rm animebracket.sql &2> /dev/null
+
+# setup the auto-advance cron
+RUN echo "*/60 *  * * *   root    cd /app && php cron/advance.php" >> /etc/crontab
 
 # generate the config files from the provided env vars
 # just some weird hurdles to make .env the single source
