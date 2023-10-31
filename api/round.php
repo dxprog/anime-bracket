@@ -121,8 +121,8 @@ namespace Api {
         public function __construct($round = null) {
             if (is_object($round)) {
                 parent::copyFromDbRow($round);
-                $this->final = isset($round->round_final) && $round->round_final > 0;
-                $this->deleted = isset($round->round_deleted) && $round->round_deleted > 0;
+                $this->final = isset($round->round_final) && $round->round_final > 0 ? 1 : 0;
+                $this->deleted = isset($round->round_deleted) && $round->round_deleted > 0 ? 1 : 0;
                 if (isset($round->user_vote)) {
                     $this->voted = $round->user_vote > 0;
                     $this->votedCharacterId = (int) $round->user_vote;
@@ -438,7 +438,7 @@ namespace Api {
          */
         public function finalizeRound() {
             $this->getVoteCount();
-            $this->final = true;
+            $this->final = 1;
             $this->dateEnded = time();
             $this->sync();
         }
