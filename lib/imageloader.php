@@ -258,9 +258,9 @@ namespace Lib {
         private static function _getImageType($data) {
 
             $retVal = null;
-            if (ord($data{0}) == 0xff && ord($data{1}) == 0xd8) {
+            if (ord($data[0]) == 0xff && ord($data[1]) == 0xd8) {
                 $retVal = IMAGE_TYPE_JPEG;
-            } else if (ord($data{0}) == 0x89 && substr($data, 1, 3) == 'PNG') {
+            } else if (ord($data[0]) == 0x89 && substr($data, 1, 3) == 'PNG') {
                 $retVal = IMAGE_TYPE_PNG;
             } else if (substr($data, 0, 6) == 'GIF89a' || substr($data, 0, 6) == 'GIF87a') {
                 $retVal = IMAGE_TYPE_GIF;
@@ -318,7 +318,7 @@ namespace Lib {
             $retVal = null;
 
             // Account for local files or URLs
-            if (($url{0} === '/' || $url{0} === '.') && is_readable($url) || strpos($url, 'file://') === 0) {
+            if (($url[0] === '/' || $url[0] === '.') && is_readable($url) || strpos($url, 'file://') === 0) {
                 $file = file_get_contents($url);
             } else {
                 $file = Http::get($url);

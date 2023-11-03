@@ -62,7 +62,7 @@ namespace Lib {
 
                 $path = self::getHostPath();
                 $uri = str_replace(substr($path, 0, strlen($path)  - 1), '', $uri);
-                if ($uri{0} == '/') {
+                if ($uri[0] == '/') {
                     $uri = substr($uri, 1);
                 }
 
@@ -84,7 +84,7 @@ namespace Lib {
         public static function Post($param, $isInt = false) {
             $retVal = null;
             if (isset($_POST[$param])) {
-                $retVal = get_magic_quotes_gpc() > 0 ? stripslashes($_POST[$param]) : $_POST[$param];
+                $retVal = $_POST[$param];
             }
 
             if ($retVal) {

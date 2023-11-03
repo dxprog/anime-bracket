@@ -142,7 +142,7 @@ namespace Controller {
          */
         protected static function _getBracket($perma) {
             if ($perma) {
-                $brackets = Api\Bracket::getUserOwnedBrackets(self::$_user);
+                $brackets = Api\Bracket::getUserOwnedBrackets(self::$_user, true, self::$_user->admin);
                 $bracket = Api\Bracket::getBracketByPerma($perma, true);
 
                 if ($brackets && $bracket) {

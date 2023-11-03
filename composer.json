@@ -3,8 +3,5 @@
         "xamin/handlebars.php": "0.10.3",
         "keeguon/oauth2-php": ">=1.0.0",
         "predis/predis": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "4.8.*"
     }
 }
